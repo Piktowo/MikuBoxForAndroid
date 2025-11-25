@@ -240,7 +240,6 @@
         <item name="buttonBarPositiveButtonStyle">@style/Widget.MaterialComponents.Button.TextButton.Dialog.Primary</item>
         <item name="colorBackgroundFloating">?attr/colorSurfaceContainerHigh</item>
         <item name="dialogCornerRadius">28.0dip</item>
-        <item name="actionModeTheme">@style/CrashFixTheme</item>
     </style>
 
     <style name="AppearanceFoundation.Title" parent="TextAppearance.AppCompat.Title">
