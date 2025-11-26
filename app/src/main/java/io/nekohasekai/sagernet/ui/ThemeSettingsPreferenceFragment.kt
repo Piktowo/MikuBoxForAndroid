@@ -321,6 +321,15 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
             }
         }
 
+        val hideWeatherCitySwitch = findPreference<SwitchPreference>("hide_weather_city")
+        hideWeatherCitySwitch?.apply {
+            isChecked = DataStore.hideWeatherCity
+            setOnPreferenceChangeListener { _, newValue ->
+                DataStore.hideWeatherCity = newValue as Boolean
+                true
+            }
+        }
+
         val dpiPref = findPreference<DpiEditTextPreference>("custom_dpi")
         dpiPref?.apply {
             val defaultDpi = resources.displayMetrics.densityDpi

@@ -212,7 +212,7 @@
             app:title="@string/weather_city"
             app:useSimpleSummaryProvider="true" />
         <SwitchPreference
-            android:layout="@layout/uwu_bot_switch"
+            android:layout="@layout/uwu_mid_switch"
             android:widgetLayout="@layout/uwu_switch"
             app:defaultValue="true"
             app:dependency="show_weather_info"
@@ -220,6 +220,15 @@
             app:key="show_weather_condition"
             app:summary="@string/show_weather_condition_summary"
             app:title="@string/show_weather_condition" />
+        <SwitchPreference
+            android:layout="@layout/uwu_bot_switch"
+            android:widgetLayout="@layout/uwu_switch"
+            app:defaultValue="false"
+            app:dependency="show_weather_info"
+            app:icon="@drawable/ic_city"
+            app:key="hide_weather_city"
+            app:summary="@string/hide_weather_city_summary"
+            app:title="@string/hide_weather_city" />
     </PreferenceCategory>
     <PreferenceCategory
         app:title="@string/bottom_bar_category">

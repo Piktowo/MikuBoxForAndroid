@@ -9,7 +9,6 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.util.AttributeSet
-import android.view.View
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
@@ -43,6 +42,7 @@ class Greetings @JvmOverloads constructor(
     private var showWeather = false
     private var useManualCity = false
     private var showCondition = true
+    private var hideCity = false
     
     private val weatherInterval = 60 * 60 * 1000L
 
@@ -124,7 +124,8 @@ class Greetings @JvmOverloads constructor(
     private fun refreshSettings() {
         showWeather = DataStore.showWeatherInfo
         useManualCity = DataStore.manualWeatherEnabled
-        showCondition = DataStore.showWeatherCondition 
+        showCondition = DataStore.showWeatherCondition
+        hideCity = DataStore.hideWeatherCity
     }
 
     private fun startWeatherLoop() {
@@ -155,7 +156,8 @@ class Greetings @JvmOverloads constructor(
 
         if (showWeather && cachedCode != -1 && cachedTemp != -999) {
             val emoji = getWeatherEmoji(cachedCode)
-            val locationSuffix = if (cachedCity.isNotEmpty()) " - $cachedCity" else ""
+            
+            val locationSuffix = if (cachedCity.isNotEmpty() && !hideCity) " • $cachedCity" else ""
             
             sb.append("  ")
 
