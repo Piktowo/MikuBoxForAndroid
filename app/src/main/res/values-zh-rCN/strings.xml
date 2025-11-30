@@ -630,6 +630,10 @@
     <string name="no_custom_banner_to_remove">未设置自定义横幅</string>
     <string name="hide_weather_city">隐藏城市名称</string>
     <string name="hide_weather_city_summary">在天气信息中隐藏城市位置</string>
+    <string name="traffic_title">流量</string>
+    <string name="tools_summary">来自 Miku 的魔法盒助手。</string>
+    <string name="logcat_summary">Miku 今天的日记。</string>
+    <string name="about_summary">此应用背后的秘密。</string>
     
     <!-- uwu -->
     <string name="uwu_about_miku_title">谁是 Hatsune Miku？</string>

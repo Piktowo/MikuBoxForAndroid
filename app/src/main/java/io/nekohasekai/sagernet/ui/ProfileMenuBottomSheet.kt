@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import io.nekohasekai.sagernet.R
 
 class ProfileMenuBottomSheet : BottomSheetDialogFragment() {
@@ -31,6 +33,15 @@ class ProfileMenuBottomSheet : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.uwu_bottom_sheet_import_menu, container, false)
+    }
+    
+    override fun onStart() {
+        super.onStart()
+        val sheetDialog = dialog as? BottomSheetDialog
+        sheetDialog?.behavior?.apply {
+            state = BottomSheetBehavior.STATE_EXPANDED
+            skipCollapsed = true
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

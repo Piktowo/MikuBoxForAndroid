@@ -9,14 +9,13 @@ import android.os.Build
 import android.os.Bundle
 import android.os.RemoteException
 import android.view.KeyEvent
-import android.view.MenuItem
+import android.view.View
 import androidx.activity.addCallback
 import androidx.annotation.IdRes
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceDataStore
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import io.nekohasekai.sagernet.BuildConfig
 import io.nekohasekai.sagernet.GroupType
@@ -48,27 +47,23 @@ import com.google.android.material.bottomappbar.BottomAppBar.FAB_ALIGNMENT_MODE_
 import com.google.android.material.bottomappbar.BottomAppBar.FAB_ALIGNMENT_MODE_END
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
-import com.google.android.material.shape.ShapeAppearanceModel
 import io.nekohasekai.sagernet.ktx.*
 import io.nekohasekai.sagernet.*
-import android.view.View
-import androidx.core.view.ViewCompat
 import io.nekohasekai.sagernet.widget.FabStyle
 import com.airbnb.lottie.LottieAnimationView
-import android.animation.Animator
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 class MainActivity : ThemedActivity(),
     SagerConnection.Callback,
-    OnPreferenceDataStoreChangeListener,
-    NavigationView.OnNavigationItemSelectedListener {
+    OnPreferenceDataStoreChangeListener {
 
     lateinit var binding: LayoutMainBinding
-    lateinit var navigation: NavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = LayoutMainBinding.inflate(layoutInflater)
+
         when (DataStore.fabStyle) {
             FabStyle.End -> {
                 binding.stats.fabAlignmentMode = FAB_ALIGNMENT_MODE_END
@@ -94,14 +89,13 @@ class MainActivity : ThemedActivity(),
             barBackground.shapeAppearanceModel = newShape
             barBackground.elevation = 0f
         }
-        
+
         binding.fab.initProgress(binding.fabProgress)
-        navigation = binding.navView;
-        navigation.setNavigationItemSelectedListener(this);
 
         if (savedInstanceState == null) {
             displayFragmentWithId(R.id.nav_configuration);
         }
+        
         onBackPressedDispatcher.addCallback {
             if (supportFragmentManager.findFragmentById(R.id.fragment_holder) is ConfigurationFragment) {
                 moveTaskToBack(true)
@@ -137,7 +131,7 @@ class MainActivity : ThemedActivity(),
             override fun onAnimationCancel(animation: android.animation.Animator) {}
             override fun onAnimationRepeat(animation: android.animation.Animator) {}
         })
-        
+
         changeState(BaseService.State.Idle)
         connection.connect(this, this)
         DataStore.configurationStore.registerChangeListener(this)
@@ -147,14 +141,11 @@ class MainActivity : ThemedActivity(),
             onNewIntent(intent)
         }
 
-        refreshNavMenu(DataStore.enableClashAPI)
-
         // sdk 33 notification
         if (Build.VERSION.SDK_INT >= 33) {
             val checkPermission =
                 ContextCompat.checkSelfPermission(this@MainActivity, POST_NOTIFICATIONS)
             if (checkPermission != PackageManager.PERMISSION_GRANTED) {
-                //动态申请
                 ActivityCompat.requestPermissions(
                     this@MainActivity, arrayOf(POST_NOTIFICATIONS), 0
                 )
@@ -171,18 +162,84 @@ class MainActivity : ThemedActivity(),
                 }
                 .show()
         }
+    }
 
+    fun showNavigationSheet() {
+        val dialog = BottomSheetDialog(this)
+        val view = layoutInflater.inflate(R.layout.uwu_bottom_sheet_nav_menu, null)
+        dialog.setContentView(view)
+
+        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        dialog.behavior.skipCollapsed = true
+
+        val trafficMenu = view.findViewById<View>(R.id.nav_traffic)
+        if (DataStore.enableClashAPI) {
+            trafficMenu?.visibility = View.VISIBLE
+        } else {
+            trafficMenu?.visibility = View.GONE
+        }
+
+        fun setClick(@IdRes id: Int) {
+            view.findViewById<View>(id)?.setOnClickListener {
+                displayFragmentWithId(id)
+                dialog.dismiss()
+            }
+        }
+
+        setClick(R.id.nav_configuration)
+        setClick(R.id.nav_group)
+        setClick(R.id.nav_route)
+        setClick(R.id.nav_settings)
+        setClick(R.id.nav_traffic)
+        setClick(R.id.nav_tools)
+        setClick(R.id.nav_theme)
+        setClick(R.id.nav_logcat)
+        setClick(R.id.nav_about)
+
+        dialog.show()
+    }
+
+    @SuppressLint("CommitTransaction")
+    fun displayFragment(fragment: ToolbarFragment) {
+        if (fragment is ConfigurationFragment) {
+            binding.stats.allowShow = true
+            binding.fab.show()
+        } else if (!DataStore.showBottomBar) {
+            binding.stats.allowShow = false
+            binding.stats.performHide()
+            binding.fab.hide()
+        }
+
+        supportFragmentManager.beginTransaction()
+            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+            .replace(R.id.fragment_holder, fragment)
+            .commitAllowingStateLoss()
+    }
+
+    fun displayFragmentWithId(@IdRes id: Int): Boolean {
+        when (id) {
+            R.id.nav_configuration -> displayFragment(ConfigurationFragment())
+            R.id.nav_group -> displayFragment(GroupFragment())
+            R.id.nav_route -> displayFragment(RouteFragment())
+            R.id.nav_settings -> displayFragment(SettingsFragment())
+            R.id.nav_traffic -> displayFragment(WebviewFragment())
+            R.id.nav_tools -> displayFragment(ToolsFragment())
+            R.id.nav_theme -> displayFragment(ThemeSettingsFragment())
+            R.id.nav_logcat -> displayFragment(LogcatFragment())
+            R.id.nav_about -> displayFragment(AboutFragment())
+            else -> return false
+        }
+        return true
     }
 
     override fun onResume() {
         super.onResume()
         MessageStore.setCurrentActivity(this)
-        
         if (DataStore.hideFromRecentApps) {
             applyHideFromRecentApps(DataStore.hideFromRecentApps)
         }
     }
-    
+
     fun applyHideFromRecentApps(hide: Boolean) {
         try {
             val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
@@ -196,17 +253,9 @@ class MainActivity : ThemedActivity(),
         }
     }
 
-    fun refreshNavMenu(clashApi: Boolean) {
-        if (::navigation.isInitialized) {
-            navigation.menu.findItem(R.id.nav_traffic)?.isVisible = clashApi
-        }
-    }
-
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-
         val uri = intent.data ?: return
-
         runOnDefaultDispatcher {
             if (uri.scheme == "sn" && uri.host == "subscription" || uri.scheme == "clash") {
                 importSubscription(uri)
@@ -225,14 +274,11 @@ class MainActivity : ThemedActivity(),
 
     suspend fun importSubscription(uri: Uri) {
         val group: ProxyGroup
-
         val url = uri.getQueryParameter("url")
         if (!url.isNullOrBlank()) {
             group = ProxyGroup(type = GroupType.SUBSCRIPTION)
             val subscription = SubscriptionBean()
             group.subscription = subscription
-
-            // cleartext format
             subscription.link = url
             group.name = uri.getQueryParameter("name")
         } else {
@@ -259,9 +305,7 @@ class MainActivity : ThemedActivity(),
             ?: ("Subscription #" + System.currentTimeMillis())
 
         onMainDispatcher {
-
             displayFragmentWithId(R.id.nav_group)
-
             MaterialAlertDialogBuilder(this@MainActivity).setTitle(R.string.subscription_import)
                 .setMessage(getString(R.string.subscription_import_message, name))
                 .setPositiveButton(R.string.yes) { _, _ ->
@@ -271,9 +315,7 @@ class MainActivity : ThemedActivity(),
                 }
                 .setNegativeButton(android.R.string.cancel, null)
                 .show()
-
         }
-
     }
 
     private suspend fun finishImportSubscription(subscription: ProxyGroup) {
@@ -302,32 +344,23 @@ class MainActivity : ThemedActivity(),
                 .setNegativeButton(android.R.string.cancel, null)
                 .show()
         }
-
     }
 
     private suspend fun finishImportProfile(profile: AbstractBean) {
         val targetId = DataStore.selectedGroupForImport()
-
         ProfileManager.createProfile(targetId, profile)
-
         onMainDispatcher {
             displayFragmentWithId(R.id.nav_configuration)
-
             snackbar(resources.getQuantityString(R.plurals.added, 1, 1)).show()
         }
     }
 
     override fun missingPlugin(profileName: String, pluginName: String) {
         val pluginEntity = PluginEntry.find(pluginName)
-
-        // unknown exe or neko plugin
         if (pluginEntity == null) {
             snackbar(getString(R.string.plugin_unknown, pluginName)).show()
             return
         }
-
-        // official exe
-
         MaterialAlertDialogBuilder(this).setTitle(R.string.missing_plugin)
             .setMessage(
                 getString(
@@ -373,60 +406,12 @@ class MainActivity : ThemedActivity(),
             .show()
     }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        if (item.isChecked) binding.drawerLayout.closeDrawers() else {
-            return displayFragmentWithId(item.itemId)
-        }
-        return true
-    }
-
-
-    @SuppressLint("CommitTransaction")
-    fun displayFragment(fragment: ToolbarFragment) {
-        if (fragment is ConfigurationFragment) {
-            binding.stats.allowShow = true
-            binding.fab.show()
-        } else if (!DataStore.showBottomBar) {
-            binding.stats.allowShow = false
-            binding.stats.performHide()
-            binding.fab.hide()
-        }
-        
-        supportFragmentManager.beginTransaction()
-            .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
-            .replace(R.id.fragment_holder, fragment)
-            .commitAllowingStateLoss()
-        
-        binding.drawerLayout.closeDrawers()
-    }
-
-    fun displayFragmentWithId(@IdRes id: Int): Boolean {
-        when (id) {
-            R.id.nav_configuration -> {
-                displayFragment(ConfigurationFragment())
-            }
-
-            R.id.nav_group -> displayFragment(GroupFragment())
-            R.id.nav_route -> displayFragment(RouteFragment())
-            R.id.nav_settings -> displayFragment(SettingsFragment())
-            R.id.nav_traffic -> displayFragment(WebviewFragment())
-            R.id.nav_tools -> displayFragment(ToolsFragment())
-            R.id.nav_theme -> displayFragment(ThemeSettingsFragment())
-            R.id.nav_logcat -> displayFragment(LogcatFragment())
-            R.id.nav_about -> displayFragment(AboutFragment())
-            else -> return false
-        }
-        navigation.menu.findItem(id).isChecked = true
-        return true
-    }
-
     private fun changeState(
         state: BaseService.State,
         msg: String? = null,
         animate: Boolean = false,
     ) {
         DataStore.serviceState = state
-
         binding.fab.changeState(state, DataStore.serviceState, animate)
         binding.stats.changeState(state)
         if (msg != null) snackbar(getString(R.string.vpn_error, msg)).show()
@@ -437,7 +422,6 @@ class MainActivity : ThemedActivity(),
             if (binding.fab.isShown) {
                 anchorView = binding.fab
             }
-            // TODO
         }
     }
 
@@ -464,8 +448,6 @@ class MainActivity : ThemedActivity(),
         if (it) snackbar(R.string.vpn_permission_denied).show()
     }
 
-    // may NOT called when app is in background
-    // ONLY do UI update here, write DB in bg process
     override fun cbSpeedUpdate(stats: SpeedDisplayData) {
         binding.stats.updateSpeed(stats.txRateProxy, stats.rxRateProxy)
     }
@@ -517,27 +499,10 @@ class MainActivity : ThemedActivity(),
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        when (keyCode) {
-            KeyEvent.KEYCODE_DPAD_LEFT -> {
-                if (super.onKeyDown(keyCode, event)) return true
-                binding.drawerLayout.open()
-                navigation.requestFocus()
-            }
-
-            KeyEvent.KEYCODE_DPAD_RIGHT -> {
-                if (binding.drawerLayout.isOpen) {
-                    binding.drawerLayout.close()
-                    return true
-                }
-            }
-        }
-
         if (super.onKeyDown(keyCode, event)) return true
-        if (binding.drawerLayout.isOpen) return false
-
+        
         val fragment =
             supportFragmentManager.findFragmentById(R.id.fragment_holder) as? ToolbarFragment
         return fragment != null && fragment.onKeyDown(keyCode, event)
     }
-
 }

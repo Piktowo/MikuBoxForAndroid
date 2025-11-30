@@ -729,6 +729,10 @@ Please grant this permission in System Settings."</string>
     <string name="no_custom_banner_to_remove">No custom banner is set</string>
     <string name="hide_weather_city">Hide city name</string>
     <string name="hide_weather_city_summary">Hide the city location in weather info</string>
+    <string name="traffic_title">Traffic</string>
+    <string name="tools_summary">Magic box assistance from Miku.</string>
+    <string name="logcat_summary">Miku diary for today.</string>
+    <string name="about_summary">The secret behind this app.</string>
     
     <!-- uwu -->
     <string name="uwu_about_miku_title">Who is Hatsune Miku?</string>

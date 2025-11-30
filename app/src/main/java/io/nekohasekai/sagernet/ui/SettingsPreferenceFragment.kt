@@ -78,8 +78,7 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
             true
         }
         val enableClashAPI = findPreference<SwitchPreference>(Key.ENABLE_CLASH_API)!!
-        enableClashAPI.setOnPreferenceChangeListener { _, newValue ->
-            (activity as? MainActivity)?.refreshNavMenu(newValue as Boolean)
+        enableClashAPI.setOnPreferenceChangeListener { _, _ ->
             needReload()
             true
         }

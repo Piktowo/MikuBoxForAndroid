@@ -9,17 +9,16 @@ import android.widget.CheckedTextView
 import android.widget.ImageView
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import io.nekohasekai.sagernet.GroupOrder
 import io.nekohasekai.sagernet.R
-
 
 private const val TRANSITION_DURATION = 300L
 
 private fun View.toggleWithTransition(parentView: ViewGroup, isExpanding: Boolean) {
-    
     TransitionManager.beginDelayedTransition(parentView, AutoTransition().setDuration(TRANSITION_DURATION))
-
     this.visibility = if (isExpanding) View.VISIBLE else View.GONE
 }
 
@@ -65,6 +64,15 @@ class OtherMenuBottomSheet : BottomSheetDialogFragment() {
         return inflater.inflate(R.layout.uwu_bottom_sheet_other_menu, container, false)
     }
 
+    override fun onStart() {
+        super.onStart()
+        val sheetDialog = dialog as? BottomSheetDialog
+        sheetDialog?.behavior?.apply {
+            state = BottomSheetBehavior.STATE_EXPANDED
+            skipCollapsed = true
+        }
+    }
+    
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
