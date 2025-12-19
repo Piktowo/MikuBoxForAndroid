@@ -1,29 +1,31 @@
 package io.nekohasekai.sagernet.ui
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
 import android.text.style.ForegroundColorSpan
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.doOnLayout
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.appbar.CollapsingToolbarLayout
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.databinding.LayoutLogcatBinding
 import io.nekohasekai.sagernet.ktx.*
 import io.nekohasekai.sagernet.widget.ListListener
 import libcore.Libcore
 import moe.matsuri.nb4a.utils.SendLog
-import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.appbar.CollapsingToolbarLayout
 
 class LogcatFragment : ToolbarFragment(R.layout.layout_logcat),
-    Toolbar.OnMenuItemClickListener {
+    LogcatMenuBottomSheet.OnOptionClickListener {
 
     lateinit var binding: LayoutLogcatBinding
 
@@ -37,8 +39,13 @@ class LogcatFragment : ToolbarFragment(R.layout.layout_logcat),
         val appBarLayout = binding.appbar
 
         collapsingToolbar.title = getString(R.string.menu_log)
+        
         toolbar.inflateMenu(R.menu.logcat_menu)
-        toolbar.setOnMenuItemClickListener(this)
+        
+        toolbar.setOnMenuItemClickListener {
+            LogcatMenuBottomSheet().show(childFragmentManager, LogcatMenuBottomSheet.TAG)
+            true
+        }
 
         if (Build.VERSION.SDK_INT >= 23) {
             binding.textview.breakStrategy = 0 // simple
@@ -91,8 +98,8 @@ class LogcatFragment : ToolbarFragment(R.layout.layout_logcat),
         }
     }
 
-    override fun onMenuItemClick(item: MenuItem): Boolean {
-        when (item.itemId) {
+    override fun onOptionClicked(viewId: Int) {
+        when (viewId) {
             R.id.action_clear_logcat -> {
                 runOnDefaultDispatcher {
                     try {
@@ -122,7 +129,6 @@ class LogcatFragment : ToolbarFragment(R.layout.layout_logcat),
                 reloadSession()
             }
         }
-        return true
     }
 
 }
