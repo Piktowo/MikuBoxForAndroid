@@ -219,6 +219,10 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
             "style4" -> R.layout.uwu_preference_category_4
             "style5" -> R.layout.uwu_preference_category_5
             "style6" -> R.layout.uwu_preference_category_6
+            "style7" -> R.layout.uwu_preference_category_7
+            "style8" -> R.layout.uwu_preference_category_8
+            "style9" -> R.layout.uwu_preference_category_9
+            "style10" -> R.layout.uwu_preference_category_10
             else -> R.layout.uwu_preference_category_1
         }
 

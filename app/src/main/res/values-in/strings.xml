@@ -548,6 +548,10 @@ Tolong kasih izinnya di Settingan Sistem."</string>
     <string name="style_category_entries_4">Tampilan 4</string>
     <string name="style_category_entries_5">Tampilan 5</string>
     <string name="style_category_entries_6">Tampilan 6</string>
+    <string name="style_category_entries_7">Tampilan 7</string>
+    <string name="style_category_entries_8">Tampilan 8</string>
+    <string name="style_category_entries_9">Tampilan 9</string>
+    <string name="style_category_entries_10">Tampilan 10</string>
     <string name="category_style_title">Tampilan judul preferensi kategori</string>
     <string name="dynamic_theme_min_android_12">Cuma ada di Android 12 ke atas</string>
     <string name="action_group_setting_1">Settingan server</string>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     android:gravity="center_vertical"
+    android:orientation="horizontal"
     android:background="?android:selectableItemBackground"
     android:paddingLeft="?android:listPreferredItemPaddingLeft"
     android:paddingRight="?android:listPreferredItemPaddingRight"
@@ -34,4 +35,10 @@
             android:paddingEnd="16.0dip"
             style="@style/PreferenceCategoryTitleTextStyle" />
     </com.google.android.material.card.MaterialCardView>
+    <View
+        android:id="@+id/divider"
+        android:background="?colorPrimary"
+        android:layout_width="fill_parent"
+        android:layout_height="3dip"
+        android:layout_marginStart="0.0dip" />
 </LinearLayout>

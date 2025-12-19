@@ -643,6 +643,10 @@ Please grant this permission in System Settings."</string>
     <string name="style_category_entries_4">Style 4</string>
     <string name="style_category_entries_5">Style 5</string>
     <string name="style_category_entries_6">Style 6</string>
+    <string name="style_category_entries_7">Style 7</string>
+    <string name="style_category_entries_8">Style 8</string>
+    <string name="style_category_entries_9">Style 9</string>
+    <string name="style_category_entries_10">Style 10</string>
     <string name="category_style_title">Preference category title style</string>
     <string name="dynamic_theme_min_android_12">Only available on Android 12 and above</string>
     <string name="action_group_setting_1">Server options</string>

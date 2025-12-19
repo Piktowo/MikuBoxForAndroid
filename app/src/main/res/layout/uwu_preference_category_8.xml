@@ -11,9 +11,9 @@
     android:paddingEnd="?android:listPreferredItemPaddingEnd"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <ImageView
-        android:layout_width="60.0dip"
-        android:layout_height="60.0dip"
-        android:src="@drawable/uwu_icon_teto_2" />
+        android:layout_width="70.0dip"
+        android:layout_height="fill_parent"
+        android:src="@drawable/uwu_category_start" />
     <RelativeLayout
         android:paddingTop="8.0dip"
         android:paddingBottom="8.0dip"
