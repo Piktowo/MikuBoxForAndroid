@@ -1,7 +1,9 @@
 package io.nekohasekai.sagernet.ui
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +26,8 @@ import io.nekohasekai.sagernet.widget.UndoSnackbarManager
 import io.nekohasekai.sagernet.widget.StatsBar
 import io.nekohasekai.sagernet.bg.BaseService
 
-class RouteFragment : ToolbarFragment(R.layout.layout_route), Toolbar.OnMenuItemClickListener {
+class RouteFragment : ToolbarFragment(R.layout.layout_route), 
+    RouteMenuBottomSheet.OnOptionClickListener {
 
     lateinit var activity: MainActivity
     lateinit var ruleListView: RecyclerView
@@ -43,8 +46,13 @@ class RouteFragment : ToolbarFragment(R.layout.layout_route), Toolbar.OnMenuItem
         collapsingToolbar.title = getString(R.string.menu_route)
 
         toolbar = toolbarView
+        
         toolbar.inflateMenu(R.menu.add_route_menu)
-        toolbar.setOnMenuItemClickListener(this)
+        
+        toolbar.setOnMenuItemClickListener {
+            RouteMenuBottomSheet().show(childFragmentManager, RouteMenuBottomSheet.TAG)
+            true
+        }
 
         ruleListView = view.findViewById(R.id.route_list)
         ruleListView.layoutManager = FixedLinearLayoutManager(ruleListView)
@@ -146,8 +154,8 @@ class RouteFragment : ToolbarFragment(R.layout.layout_route), Toolbar.OnMenuItem
         super.onDestroy()
     }
 
-    override fun onMenuItemClick(item: MenuItem): Boolean {
-        when (item.itemId) {
+    override fun onOptionClicked(viewId: Int) {
+        when (viewId) {
             R.id.action_new_route -> {
                 startActivity(Intent(context, RouteSettingsActivity::class.java))
             }
@@ -168,7 +176,6 @@ class RouteFragment : ToolbarFragment(R.layout.layout_route), Toolbar.OnMenuItem
                 startActivity(Intent(requireContext(), AssetsActivity::class.java))
             }
         }
-        return true
     }
 
     inner class RuleAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(), ProfileManager.RuleListener, UndoSnackbarManager.Interface<RuleEntity> {

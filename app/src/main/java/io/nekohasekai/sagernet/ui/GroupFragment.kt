@@ -1,8 +1,10 @@
 package io.nekohasekai.sagernet.ui
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.format.Formatter
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -35,8 +37,8 @@ import java.util.*
 import io.nekohasekai.sagernet.bg.BaseService
 import io.nekohasekai.sagernet.widget.StatsBar
 
-class GroupFragment : ToolbarFragment(R.layout.layout_group),
-    Toolbar.OnMenuItemClickListener {
+class GroupFragment : ToolbarFragment(R.layout.layout_group), 
+    GroupMenuBottomSheet.OnOptionClickListener {
 
     lateinit var activity: MainActivity
     lateinit var groupListView: RecyclerView
@@ -55,8 +57,13 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
         collapsingToolbar.title = getString(R.string.menu_group)
 
         toolbar = toolbarView
+        
         toolbar.inflateMenu(R.menu.add_group_menu)
-        toolbar.setOnMenuItemClickListener(this)
+
+        toolbar.setOnMenuItemClickListener {
+            GroupMenuBottomSheet().show(childFragmentManager, GroupMenuBottomSheet.TAG)
+            true
+        }
 
         groupListView = view.findViewById(R.id.group_list)
         layoutManager = FixedLinearLayoutManager(groupListView)
@@ -153,8 +160,8 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
 
     }
 
-    override fun onMenuItemClick(item: MenuItem): Boolean {
-        when (item.itemId) {
+    override fun onOptionClicked(viewId: Int) {
+        when (viewId) {
             R.id.action_new_group -> {
                 startActivity(Intent(context, GroupSettingsActivity::class.java))
             }
@@ -173,7 +180,6 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
                     .show()
             }
         }
-        return true
     }
 
     private lateinit var selectedGroup: ProxyGroup
@@ -584,5 +590,4 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
 
         }
     }
-
 }
