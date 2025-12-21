@@ -16,8 +16,11 @@ An Android universal proxy toolchain powered by **sing-box**.
 A preview of MikuBox themes.  
 *MikuBox 主題預覽*
 
-### **Light Theme**
+<details>
+  <summary><b>Light Theme / 淺色主題 (Click to view / 点击查看)</b></summary>
 
+  <br>
+  
 ![Screenshot1](https://raw.githubusercontent.com/HatsuneMikuUwU/MikuBoxForAndroid/main/image/uwu_screenshot_1.png)
 
 ![Screenshot2](https://raw.githubusercontent.com/HatsuneMikuUwU/MikuBoxForAndroid/main/image/uwu_screenshot_2.png)
@@ -28,7 +31,12 @@ A preview of MikuBox themes.
 
 ![Screenshot5](https://raw.githubusercontent.com/HatsuneMikuUwU/MikuBoxForAndroid/main/image/uwu_screenshot_5.png)
 
-### **Night Theme**
+</details>
+
+<details>
+  <summary><b>Night Theme / 深色主題 (Click to view / 点击查看)</b></summary>
+
+  <br>
 
 ![Screenshot6](https://raw.githubusercontent.com/HatsuneMikuUwU/MikuBoxForAndroid/main/image/uwu_screenshot_6.png)
 
@@ -39,6 +47,8 @@ A preview of MikuBox themes.
 ![Screenshot9](https://raw.githubusercontent.com/HatsuneMikuUwU/MikuBoxForAndroid/main/image/uwu_screenshot_9.png)
 
 ![Screenshot10](https://raw.githubusercontent.com/HatsuneMikuUwU/MikuBoxForAndroid/main/image/uwu_screenshot_10.png)
+
+</details>
 
 ---
 
@@ -55,8 +65,7 @@ MikuBox integrates the core capabilities of sing-box, supporting a wide array of
 | **Plugins/插件** | Trojan-Go, NaïveProxy, Mieru |
 
 > [!NOTE]
-> **may be outdated / 可能已過時**  
->
+> **may be outdated / 可能已過時** >
 > Please visit [here](https://matsuridayo.github.io/nb4a-plugin/) to download plugins for full proxy supports.  
 > *請訪問 [這裡](https://matsuridayo.github.io/nb4a-plugin/) 下載插件以獲得完整的代理支援.*
 
