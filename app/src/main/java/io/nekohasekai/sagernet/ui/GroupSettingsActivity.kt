@@ -2,17 +2,20 @@ package io.nekohasekai.sagernet.ui
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
-import android.view.Menu
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.preference.*
 import com.github.shadowsocks.plugin.Empty
@@ -32,15 +35,18 @@ import io.nekohasekai.sagernet.widget.OutboundPreference
 import kotlinx.parcelize.Parcelize
 import com.takisoft.preferencex.SimpleMenuPreference
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceGroup
-import androidx.preference.PreferenceScreen
 
 @Suppress("UNCHECKED_CAST")
 class GroupSettingsActivity(
     @LayoutRes resId: Int = R.layout.uwu_collapse_layout,
 ) : ThemedActivity(resId),
-    OnPreferenceDataStoreChangeListener {
+    OnPreferenceDataStoreChangeListener,
+    GroupSettingsMenuBottomSheet.OnOptionClickListener {
 
     private lateinit var frontProxyPreference: OutboundPreference
     private lateinit var landingProxyPreference: OutboundPreference
@@ -209,14 +215,20 @@ class GroupSettingsActivity(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setSupportActionBar(findViewById(R.id.toolbar))
-        val collapsingToolbar =
-            findViewById<CollapsingToolbarLayout>(R.id.collapsing_toolbar)
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        val collapsingToolbar = findViewById<CollapsingToolbarLayout>(R.id.collapsing_toolbar)
         collapsingToolbar.title = getString(R.string.group_settings)
 
-        supportActionBar?.apply {
-            setDisplayHomeAsUpEnabled(true)
-            setHomeAsUpIndicator(R.drawable.ic_navigation_close)
+        toolbar.setNavigationIcon(R.drawable.ic_navigation_close)
+        toolbar.setNavigationOnClickListener {
+            finish()
+        }
+
+        toolbar.inflateMenu(R.menu.profile_config_menu)
+
+        toolbar.setOnMenuItemClickListener {
+            GroupSettingsMenuBottomSheet().show(supportFragmentManager, GroupSettingsMenuBottomSheet.TAG)
+            true
         }
 
         if (savedInstanceState == null) {
@@ -245,9 +257,7 @@ class GroupSettingsActivity(
                     DataStore.profileCacheStore.registerChangeListener(this@GroupSettingsActivity)
                 }
             }
-
         }
-
     }
 
     suspend fun saveAndExit() {
@@ -276,22 +286,14 @@ class GroupSettingsActivity(
 
     val child by lazy { supportFragmentManager.findFragmentById(R.id.settings) as MyPreferenceFragmentCompat }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.profile_config_menu, menu)
-        return true
+    override fun onOptionClicked(viewId: Int) {
+        child.handleOptionClick(viewId)
     }
-
-    override fun onOptionsItemSelected(item: MenuItem) = child.onOptionsItemSelected(item)
 
     override fun onBackPressed() {
         if (needSave()) {
             UnsavedChangesDialogFragment().apply { key() }.show(supportFragmentManager, null)
         } else super.onBackPressed()
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        if (!super.onSupportNavigateUp()) finish()
-        return true
     }
 
     override fun onDestroy() {
@@ -331,29 +333,26 @@ class GroupSettingsActivity(
             ViewCompat.setOnApplyWindowInsetsListener(listView, ListListener)
         }
 
-        override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-            R.id.action_delete -> {
-                if (DataStore.editingId == 0L) {
-                    requireActivity().finish()
-                } else {
-                    DeleteConfirmationDialogFragment().apply {
-                        arg(GroupIdArg(DataStore.editingId))
-                        key()
-                    }.show(parentFragmentManager, null)
+        fun handleOptionClick(itemId: Int) {
+            when (itemId) {
+                R.id.action_delete -> {
+                    if (DataStore.editingId == 0L) {
+                        requireActivity().finish()
+                    } else {
+                        DeleteConfirmationDialogFragment().apply {
+                            arg(GroupIdArg(DataStore.editingId))
+                            key()
+                        }.show(parentFragmentManager, null)
+                    }
                 }
-                true
-            }
 
-            R.id.action_apply -> {
-                runOnDefaultDispatcher {
-                    activity?.saveAndExit()
+                R.id.action_apply -> {
+                    runOnDefaultDispatcher {
+                        activity?.saveAndExit()
+                    }
                 }
-                true
             }
-
-            else -> false
         }
-
     }
 
     object PasswordSummaryProvider : Preference.SummaryProvider<EditTextPreference> {
@@ -422,5 +421,66 @@ class GroupSettingsActivity(
             }
         }
     }
+}
 
+class GroupSettingsMenuBottomSheet : BottomSheetDialogFragment() {
+
+    interface OnOptionClickListener {
+        fun onOptionClicked(viewId: Int)
+    }
+
+    private var mListener: OnOptionClickListener? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnOptionClickListener) {
+            mListener = context
+        } else {
+            throw RuntimeException("$context must implement OnOptionClickListener")
+        }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.uwu_bottom_sheet_apply_and_delete_menu, container, false)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val sheetDialog = dialog as? BottomSheetDialog
+        sheetDialog?.behavior?.apply {
+            state = BottomSheetBehavior.STATE_EXPANDED
+            skipCollapsed = true
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val clickListener = View.OnClickListener {
+            mListener?.onOptionClicked(it.id)
+            dismiss()
+        }
+
+        val actionIds = listOf(
+            R.id.action_apply,
+            R.id.action_delete
+        )
+
+        actionIds.forEach { id ->
+            view.findViewById<View>(id)?.setOnClickListener(clickListener)
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        mListener = null
+    }
+
+    companion object {
+        const val TAG = "GroupSettingsMenuBottomSheet"
+    }
 }

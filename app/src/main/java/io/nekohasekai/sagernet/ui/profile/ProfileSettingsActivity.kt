@@ -1,14 +1,16 @@
 package io.nekohasekai.sagernet.ui.profile
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
-import android.view.Menu
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.Toast
@@ -17,6 +19,7 @@ import androidx.activity.result.component2
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
@@ -29,6 +32,9 @@ import androidx.preference.PreferenceFragmentCompat
 import com.github.shadowsocks.plugin.Empty
 import com.github.shadowsocks.plugin.fragment.AlertDialogFragment
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.nekohasekai.sagernet.*
 import io.nekohasekai.sagernet.database.DataStore
@@ -47,7 +53,8 @@ import kotlin.properties.Delegates
 @Suppress("UNCHECKED_CAST")
 abstract class ProfileSettingsActivity<T : AbstractBean>(
     @LayoutRes resId: Int = R.layout.uwu_collapse_layout,
-) : ThemedActivity(resId), OnPreferenceDataStoreChangeListener {
+) : ThemedActivity(resId), OnPreferenceDataStoreChangeListener,
+    ProfileMenuBottomSheet.OnOptionClickListener {
 
     class UnsavedChangesDialogFragment : AlertDialogFragment<Empty, Empty>() {
         override fun AlertDialog.Builder.prepare(listener: DialogInterface.OnClickListener) {
@@ -94,14 +101,20 @@ abstract class ProfileSettingsActivity<T : AbstractBean>(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setSupportActionBar(findViewById(R.id.toolbar))
-        val collapsingToolbar =
-            findViewById<CollapsingToolbarLayout>(R.id.collapsing_toolbar)
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        val collapsingToolbar = findViewById<CollapsingToolbarLayout>(R.id.collapsing_toolbar)
         collapsingToolbar.title = getString(R.string.profile_config)
 
-        supportActionBar?.apply {
-            setDisplayHomeAsUpEnabled(true)
-            setHomeAsUpIndicator(R.drawable.ic_navigation_close)
+        toolbar.setNavigationIcon(R.drawable.ic_navigation_close)
+        toolbar.setNavigationOnClickListener {
+            finish()
+        }
+
+        toolbar.inflateMenu(R.menu.profile_config_menu)
+
+        toolbar.setOnMenuItemClickListener {
+            ProfileMenuBottomSheet().show(supportFragmentManager, ProfileMenuBottomSheet.TAG)
+            true
         }
 
         if (savedInstanceState == null) {
@@ -129,14 +142,10 @@ abstract class ProfileSettingsActivity<T : AbstractBean>(
                         .commit()
                 }
             }
-
-
         }
-
     }
 
     open suspend fun saveAndExit() {
-
         val editingId = DataStore.editingId
         if (editingId == 0L) {
             val editingGroup = DataStore.editingGroup
@@ -152,41 +161,17 @@ abstract class ProfileSettingsActivity<T : AbstractBean>(
             ProfileManager.updateProfile(proxyEntity!!.apply { (requireBean() as T).serialize() })
         }
         finish()
-
     }
 
     val child by lazy { supportFragmentManager.findFragmentById(R.id.settings) as MyPreferenceFragmentCompat }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.profile_config_menu, menu)
-        menu.findItem(R.id.action_move)?.apply {
-            if (DataStore.editingId != 0L // not new profile
-                && SagerDatabase.groupDao.getById(DataStore.editingGroup)?.type == GroupType.BASIC // not in subscription group
-                && SagerDatabase.groupDao.allGroups()
-                    .filter { it.type == GroupType.BASIC }.size > 1 // have other basic group
-            ) isVisible = true
-        }
-        menu.findItem(R.id.action_create_shortcut)?.apply {
-            if (Build.VERSION.SDK_INT >= 26 && DataStore.editingId != 0L) {
-                isVisible = true // not new profile
-            }
-        }
-        // shared menu item
-        menu.findItem(R.id.action_custom_outbound_json)?.isVisible = true
-        menu.findItem(R.id.action_custom_config_json)?.isVisible = true
-        return true
+    override fun onOptionClicked(viewId: Int) {
+        child.handleOptionClick(viewId)
     }
-
-    override fun onOptionsItemSelected(item: MenuItem) = child.onOptionsItemSelected(item)
 
     override fun onBackPressed() {
         if (DataStore.dirty) UnsavedChangesDialogFragment().apply { key() }
             .show(supportFragmentManager, null) else super.onBackPressed()
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        if (!super.onSupportNavigateUp()) finish()
-        return true
     }
 
     override fun onDestroy() {
@@ -260,120 +245,115 @@ abstract class ProfileSettingsActivity<T : AbstractBean>(
         }
 
         @SuppressLint("CheckResult")
-        override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-            R.id.action_delete -> {
-                if (DataStore.editingId == 0L) {
-                    requireActivity().finish()
-                } else {
-                    DeleteConfirmationDialogFragment().apply {
-                        arg(
-                            ProfileIdArg(
-                                DataStore.editingId, DataStore.editingGroup
+        fun handleOptionClick(itemId: Int) {
+            when (itemId) {
+                R.id.action_delete -> {
+                    if (DataStore.editingId == 0L) {
+                        requireActivity().finish()
+                    } else {
+                        DeleteConfirmationDialogFragment().apply {
+                            arg(
+                                ProfileIdArg(
+                                    DataStore.editingId, DataStore.editingGroup
+                                )
                             )
-                        )
-                        key()
-                    }.show(parentFragmentManager, null)
+                            key()
+                        }.show(parentFragmentManager, null)
+                    }
                 }
-                true
-            }
 
-            R.id.action_apply -> {
-                runOnDefaultDispatcher {
-                    activity?.saveAndExit()
+                R.id.action_apply -> {
+                    runOnDefaultDispatcher {
+                        activity?.saveAndExit()
+                    }
                 }
-                true
-            }
 
-            R.id.action_custom_outbound_json -> {
-                activity?.proxyEntity?.apply {
-                    val bean = requireBean()
-                    DataStore.serverCustomOutbound = bean.customOutboundJson
-                    callbackCustomOutbound = { bean.customOutboundJson = it }
-                    resultCallbackCustomOutbound.launch(
-                        Intent(
-                            requireContext(),
-                            ConfigEditActivity::class.java
-                        ).apply {
-                            putExtra("key", Key.SERVER_CUSTOM_OUTBOUND)
-                        })
+                R.id.action_custom_outbound_json -> {
+                    activity?.proxyEntity?.apply {
+                        val bean = requireBean()
+                        DataStore.serverCustomOutbound = bean.customOutboundJson
+                        callbackCustomOutbound = { bean.customOutboundJson = it }
+                        resultCallbackCustomOutbound.launch(
+                            Intent(
+                                requireContext(),
+                                ConfigEditActivity::class.java
+                            ).apply {
+                                putExtra("key", Key.SERVER_CUSTOM_OUTBOUND)
+                            })
+                    }
                 }
-                true
-            }
 
-            R.id.action_custom_config_json -> {
-                activity?.proxyEntity?.apply {
-                    val bean = requireBean()
-                    DataStore.serverCustom = bean.customConfigJson
-                    callbackCustom = { bean.customConfigJson = it }
-                    resultCallbackCustom.launch(
-                        Intent(
-                            requireContext(),
-                            ConfigEditActivity::class.java
-                        ).apply {
-                            putExtra("key", Key.SERVER_CUSTOM)
-                        })
+                R.id.action_custom_config_json -> {
+                    activity?.proxyEntity?.apply {
+                        val bean = requireBean()
+                        DataStore.serverCustom = bean.customConfigJson
+                        callbackCustom = { bean.customConfigJson = it }
+                        resultCallbackCustom.launch(
+                            Intent(
+                                requireContext(),
+                                ConfigEditActivity::class.java
+                            ).apply {
+                                putExtra("key", Key.SERVER_CUSTOM)
+                            })
+                    }
                 }
-                true
-            }
 
-            R.id.action_create_shortcut -> {
-                val activity = requireActivity() as ProfileSettingsActivity<*>
-                val ent = activity.proxyEntity!!
-                val shortcut = ShortcutInfoCompat.Builder(activity, "shortcut-profile-${ent.id}")
-                    .setShortLabel(ent.displayName())
-                    .setLongLabel(ent.displayName())
-                    .setIcon(
-                        IconCompat.createWithResource(
-                            activity, R.drawable.ic_qu_shadowsocks_launcher
-                        )
-                    ).setIntent(Intent(
-                        context, QuickToggleShortcut::class.java
-                    ).apply {
-                        action = Intent.ACTION_MAIN
-                        putExtra("profile", ent.id)
-                    }).build()
-                ShortcutManagerCompat.requestPinShortcut(activity, shortcut, null)
-            }
-
-            R.id.action_move -> {
-                val activity = requireActivity() as ProfileSettingsActivity<*>
-                val view = LinearLayout(context).apply {
+                R.id.action_create_shortcut -> {
+                    val activity = requireActivity() as ProfileSettingsActivity<*>
                     val ent = activity.proxyEntity!!
-                    orientation = LinearLayout.VERTICAL
+                    val shortcut = ShortcutInfoCompat.Builder(activity, "shortcut-profile-${ent.id}")
+                        .setShortLabel(ent.displayName())
+                        .setLongLabel(ent.displayName())
+                        .setIcon(
+                            IconCompat.createWithResource(
+                                activity, R.drawable.ic_qu_shadowsocks_launcher
+                            )
+                        ).setIntent(Intent(
+                            context, QuickToggleShortcut::class.java
+                        ).apply {
+                            action = Intent.ACTION_MAIN
+                            putExtra("profile", ent.id)
+                        }).build()
+                    ShortcutManagerCompat.requestPinShortcut(activity, shortcut, null)
+                }
 
-                    SagerDatabase.groupDao.allGroups()
-                        .filter { it.type == GroupType.BASIC && it.id != ent.groupId }
-                        .forEach { group ->
-                            LayoutGroupItemBinding.inflate(layoutInflater, this, true).apply {
-                                edit.isVisible = false
-                                options.isVisible = false
-                                groupName.text = group.displayName()
-                                groupUpdate.text = getString(R.string.move)
-                                groupUpdate.setOnClickListener {
-                                    runOnDefaultDispatcher {
-                                        val oldGroupId = ent.groupId
-                                        val newGroupId = group.id
-                                        ent.groupId = newGroupId
-                                        ProfileManager.updateProfile(ent)
-                                        GroupManager.postUpdate(oldGroupId) // reload
-                                        GroupManager.postUpdate(newGroupId)
-                                        DataStore.editingGroup = newGroupId // post switch animation
-                                        runOnMainDispatcher {
-                                            activity.finish()
+                R.id.action_move -> {
+                    val activity = requireActivity() as ProfileSettingsActivity<*>
+                    val view = LinearLayout(context).apply {
+                        val ent = activity.proxyEntity!!
+                        orientation = LinearLayout.VERTICAL
+
+                        SagerDatabase.groupDao.allGroups()
+                            .filter { it.type == GroupType.BASIC && it.id != ent.groupId }
+                            .forEach { group ->
+                                LayoutGroupItemBinding.inflate(layoutInflater, this, true).apply {
+                                    edit.isVisible = false
+                                    options.isVisible = false
+                                    groupName.text = group.displayName()
+                                    groupUpdate.text = getString(R.string.move)
+                                    groupUpdate.setOnClickListener {
+                                        runOnDefaultDispatcher {
+                                            val oldGroupId = ent.groupId
+                                            val newGroupId = group.id
+                                            ent.groupId = newGroupId
+                                            ProfileManager.updateProfile(ent)
+                                            GroupManager.postUpdate(oldGroupId) // reload
+                                            GroupManager.postUpdate(newGroupId)
+                                            DataStore.editingGroup = newGroupId // post switch animation
+                                            runOnMainDispatcher {
+                                                activity.finish()
+                                            }
                                         }
                                     }
                                 }
                             }
-                        }
+                    }
+                    val scrollView = ScrollView(context).apply {
+                        addView(view)
+                    }
+                    MaterialAlertDialogBuilder(activity).setView(scrollView).show()
                 }
-                val scrollView = ScrollView(context).apply {
-                    addView(view)
-                }
-                MaterialAlertDialogBuilder(activity).setView(scrollView).show()
-                true
             }
-
-            else -> false
         }
 
         override fun onDisplayPreferenceDialog(preference: Preference) {
@@ -382,11 +362,9 @@ abstract class ProfileSettingsActivity<T : AbstractBean>(
             }
             super.onDisplayPreferenceDialog(preference)
         }
-
     }
 
     object PasswordSummaryProvider : Preference.SummaryProvider<EditTextPreference> {
-
         override fun provideSummary(preference: EditTextPreference): CharSequence {
             val text = preference.text
             return if (text.isNullOrBlank()) {
@@ -395,7 +373,91 @@ abstract class ProfileSettingsActivity<T : AbstractBean>(
                 "\u2022".repeat(text.length)
             }
         }
+    }
+}
 
+class ProfileMenuBottomSheet : BottomSheetDialogFragment() {
+
+    interface OnOptionClickListener {
+        fun onOptionClicked(viewId: Int)
     }
 
+    private var mListener: OnOptionClickListener? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnOptionClickListener) {
+            mListener = context
+        } else {
+            throw RuntimeException("$context must implement OnOptionClickListener")
+        }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.uwu_bottom_sheet_profile_config_menu, container, false)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val sheetDialog = dialog as? BottomSheetDialog
+        sheetDialog?.behavior?.apply {
+            state = BottomSheetBehavior.STATE_EXPANDED
+            skipCollapsed = true
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val clickListener = View.OnClickListener {
+            mListener?.onOptionClicked(it.id)
+            dismiss()
+        }
+
+        val btnMove = view.findViewById<View>(R.id.action_move)
+        val btnShortcut = view.findViewById<View>(R.id.action_create_shortcut)
+        val btnCustomOutbound = view.findViewById<View>(R.id.action_custom_outbound_json)
+        val btnCustomConfig = view.findViewById<View>(R.id.action_custom_config_json)
+        val btnApply = view.findViewById<View>(R.id.action_apply)
+        val btnDelete = view.findViewById<View>(R.id.action_delete)
+
+        btnMove?.isVisible = false
+        if (DataStore.editingId != 0L
+            && SagerDatabase.groupDao.getById(DataStore.editingGroup)?.type == GroupType.BASIC // not in subscription group
+            && SagerDatabase.groupDao.allGroups().filter { it.type == GroupType.BASIC }.size > 1 // have other basic group
+        ) {
+            btnMove?.isVisible = true
+        }
+
+        btnShortcut?.isVisible = false
+        if (Build.VERSION.SDK_INT >= 26 && DataStore.editingId != 0L) {
+            btnShortcut?.isVisible = true
+        }
+
+        val actionIds = listOf(
+            R.id.action_apply,
+            R.id.action_delete,
+            R.id.action_move,
+            R.id.action_create_shortcut,
+            R.id.action_custom_outbound_json,
+            R.id.action_custom_config_json
+        )
+
+        actionIds.forEach { id ->
+            view.findViewById<View>(id)?.setOnClickListener(clickListener)
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        mListener = null
+    }
+
+    companion object {
+        const val TAG = "ProfileMenuBottomSheet"
+    }
 }

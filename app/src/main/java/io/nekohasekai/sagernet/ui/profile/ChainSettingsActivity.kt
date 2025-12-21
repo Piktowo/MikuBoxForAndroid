@@ -9,8 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.activity.result.component1
-import androidx.activity.result.component2
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.preference.PreferenceFragmentCompat
@@ -60,8 +58,7 @@ class ChainSettingsActivity : ProfileSettingsActivity<ChainBean>(R.layout.uwu_co
     @SuppressLint("InlinedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        supportActionBar!!.setTitle(R.string.chain_settings)
+        
         configurationList = findViewById(R.id.configuration_list)
         layoutManager = FixedLinearLayoutManager(configurationList)
         configurationList.layoutManager = layoutManager
@@ -206,12 +203,14 @@ class ChainSettingsActivity : ProfileSettingsActivity<ChainBean>(R.layout.uwu_co
     var replacing = 0
 
     val selectProfileForAdd =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { (resultCode, data) ->
-            if (resultCode == Activity.RESULT_OK) runOnDefaultDispatcher {
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) runOnDefaultDispatcher {
                 DataStore.dirty = true
 
+                val dataIntent = result.data ?: return@runOnDefaultDispatcher
+
                 val profile = ProfileManager.getProfile(
-                    data!!.getLongExtra(
+                    dataIntent.getLongExtra(
                         ProfileSelectActivity.EXTRA_PROFILE_ID, 0
                     )
                 )!!

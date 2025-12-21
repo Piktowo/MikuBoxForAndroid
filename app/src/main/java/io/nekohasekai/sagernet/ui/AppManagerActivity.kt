@@ -1,6 +1,7 @@
 package io.nekohasekai.sagernet.ui
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
@@ -9,6 +10,7 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.SparseBooleanArray
 import android.view.KeyEvent
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -24,6 +26,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
@@ -46,9 +52,10 @@ import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
 import moe.matsuri.nb4a.utils.NGUtil
 import kotlin.coroutines.coroutineContext
-import com.google.android.material.appbar.CollapsingToolbarLayout
 
-class AppManagerActivity : ThemedActivity() {
+class AppManagerActivity : ThemedActivity(), 
+    AppManagerMenuBottomSheet.OnOptionClickListener {
+
     companion object {
         @SuppressLint("StaticFieldLeak")
         private var instance: AppManagerActivity? = null
@@ -209,10 +216,14 @@ class AppManagerActivity : ThemedActivity() {
             startActivity(intent)
         }
 
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.apply {
-            setDisplayHomeAsUpEnabled(true)
-            setHomeAsUpIndicator(R.drawable.ic_navigation_close)
+        binding.toolbar.setNavigationIcon(R.drawable.ic_navigation_close)
+        binding.toolbar.setNavigationOnClickListener { finish() }
+        
+        binding.toolbar.inflateMenu(R.menu.per_app_proxy_menu)
+        
+        binding.toolbar.setOnMenuItemClickListener {
+            AppManagerMenuBottomSheet().show(supportFragmentManager, AppManagerMenuBottomSheet.TAG)
+            true
         }
         
         binding.collapsingToolbar.title = getString(R.string.proxied_apps)
@@ -258,13 +269,8 @@ class AppManagerActivity : ThemedActivity() {
 
     private var sysApps = true
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.per_app_proxy_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
+    override fun onOptionClicked(viewId: Int) {
+        when (viewId) {
             R.id.action_invert_selections -> {
                 runOnDefaultDispatcher {
                     val proxiedUidsOld = proxiedUids.clone()
@@ -282,8 +288,6 @@ class AppManagerActivity : ThemedActivity() {
                         appsAdapter.filter.filter(binding.search.text?.toString() ?: "")
                     }
                 }
-
-                return true
             }
 
             R.id.action_clear_selections -> {
@@ -305,7 +309,6 @@ class AppManagerActivity : ThemedActivity() {
                     if (success) R.string.action_export_msg else R.string.action_export_err,
                     Snackbar.LENGTH_LONG
                 ).show()
-                return true
             }
 
             R.id.action_import_clipboard -> {
@@ -326,14 +329,13 @@ class AppManagerActivity : ThemedActivity() {
                         ).show()
                         initProxiedUids(apps)
                         appsAdapter.notifyItemRangeChanged(0, appsAdapter.itemCount, SWITCH)
-                        return true
+                        return
                     } catch (_: IllegalArgumentException) {
                     }
                 }
                 Snackbar.make(binding.list, R.string.action_import_err, Snackbar.LENGTH_LONG).show()
             }
         }
-        return super.onOptionsItemSelected(item)
     }
 
     private fun selectProxyApp() {
@@ -401,5 +403,69 @@ class AppManagerActivity : ThemedActivity() {
         instance = null
         loader?.cancel()
         super.onDestroy()
+    }
+}
+
+class AppManagerMenuBottomSheet : BottomSheetDialogFragment() {
+
+    interface OnOptionClickListener {
+        fun onOptionClicked(viewId: Int)
+    }
+
+    private var mListener: OnOptionClickListener? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnOptionClickListener) {
+            mListener = context
+        } else {
+            throw RuntimeException("$context must implement OnOptionClickListener")
+        }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.uwu_bottom_sheet_app_manager_menu, container, false)
+    }
+    
+    override fun onStart() {
+        super.onStart()
+        val sheetDialog = dialog as? BottomSheetDialog
+        sheetDialog?.behavior?.apply {
+            state = BottomSheetBehavior.STATE_EXPANDED
+            skipCollapsed = true
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        
+        val clickListener = View.OnClickListener {
+            mListener?.onOptionClicked(it.id)
+            dismiss()
+        }
+
+        val actionIds = listOf(
+            R.id.action_invert_selections,
+            R.id.action_clear_selections,
+            R.id.action_export_clipboard,
+            R.id.action_import_clipboard
+        )
+
+        actionIds.forEach { id ->
+            view.findViewById<View>(id)?.setOnClickListener(clickListener)
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        mListener = null
+    }
+
+    companion object {
+        const val TAG = "AppManagerMenuBottomSheet"
     }
 }
