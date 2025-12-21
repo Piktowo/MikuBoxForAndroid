@@ -24,13 +24,21 @@ A preview of MikuBox themes.
 
 ![Screenshot3](https://raw.githubusercontent.com/HatsuneMikuUwU/MikuBoxForAndroid/main/image/uwu_screenshot_3.png)
 
-### **Night Theme**
-
 ![Screenshot4](https://raw.githubusercontent.com/HatsuneMikuUwU/MikuBoxForAndroid/main/image/uwu_screenshot_4.png)
 
 ![Screenshot5](https://raw.githubusercontent.com/HatsuneMikuUwU/MikuBoxForAndroid/main/image/uwu_screenshot_5.png)
 
+### **Night Theme**
+
 ![Screenshot6](https://raw.githubusercontent.com/HatsuneMikuUwU/MikuBoxForAndroid/main/image/uwu_screenshot_6.png)
+
+![Screenshot7](https://raw.githubusercontent.com/HatsuneMikuUwU/MikuBoxForAndroid/main/image/uwu_screenshot_7.png)
+
+![Screenshot8](https://raw.githubusercontent.com/HatsuneMikuUwU/MikuBoxForAndroid/main/image/uwu_screenshot_8.png)
+
+![Screenshot9](https://raw.githubusercontent.com/HatsuneMikuUwU/MikuBoxForAndroid/main/image/uwu_screenshot_9.png)
+
+![Screenshot10](https://raw.githubusercontent.com/HatsuneMikuUwU/MikuBoxForAndroid/main/image/uwu_screenshot_10.png)
 
 ---
 
