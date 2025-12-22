@@ -10,7 +10,6 @@ import androidx.appcompat.widget.TooltipCompat
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.whenStarted
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.neko.marquee.text.AutoMarqueeTextView
 import io.nekohasekai.sagernet.R
@@ -22,7 +21,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -75,7 +73,7 @@ class StatsBar @JvmOverloads constructor(
 
     override fun setOnClickListener(l: OnClickListener?) {
         statusText = findViewById(R.id.status)
-        ipStatusText = findViewById(R.id.ip_status) 
+        ipStatusText = findViewById(R.id.ip_status)
         txText = findViewById(R.id.tx)
         rxText = findViewById(R.id.rx)
         super.setOnClickListener(l)
@@ -151,32 +149,30 @@ class StatsBar @JvmOverloads constructor(
     private suspend fun getPublicIpInfo(): String {
         return withContext(Dispatchers.IO) {
             try {
-                val url = URL("https://speed.cloudflare.com/meta")
+                val url = URL("https://speed.cloudflare.com/cdn-cgi/trace")
                 val connection = url.openConnection() as HttpURLConnection
                 connection.requestMethod = "GET"
                 connection.connectTimeout = 5000
                 connection.readTimeout = 5000
-                connection.setRequestProperty("User-Agent", "Mozilla/5.0")
+                
+                connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36")
+                
                 val response = connection.inputStream.bufferedReader().use { it.readText() }
-                val json = JSONObject(response)
 
-                if (json.has("clientIp") && json.has("country")) {
-                    val ip = json.getString("clientIp")
-                    val countryCode = json.getString("country")
+                var ip = ""
+                var countryCode = ""
+
+                response.lines().forEach { line ->
+                    if (line.startsWith("ip=")) {
+                        ip = line.substringAfter("ip=")
+                    } else if (line.startsWith("loc=")) {
+                        countryCode = line.substringAfter("loc=")
+                    }
+                }
+
+                if (ip.isNotEmpty()) {
                     val flag = getFlagEmoji(countryCode)
-                    
-                    val organization = if (json.has("asOrganization")) {
-                         json.getString("asOrganization")
-                    } else {
-                        ""
-                    }
-
-                    val ipInfo = "IP: $ip ($flag $countryCode)"
-                    if (organization.isNotEmpty()) {
-                        "$ipInfo • $organization"
-                    } else {
-                        ipInfo
-                    }
+                    "IP: $ip ($flag $countryCode)"
                 } else {
                     context.getString(R.string.ip_info_failed)
                 }
@@ -186,15 +182,15 @@ class StatsBar @JvmOverloads constructor(
             }
         }
     }
-    
+
     fun testConnection() {
         val activity = context as MainActivity
         isEnabled = false
         setStatus(app.getText(R.string.connection_test_testing))
-        
+
         ipStatusText.visibility = View.GONE
         ipStatusText.text = ""
-        
+
         runOnDefaultDispatcher {
             try {
                 val elapsed = activity.urlTest()
@@ -214,7 +210,7 @@ class StatsBar @JvmOverloads constructor(
                         activity.lifecycleScope.launch {
                             val ipInfo = getPublicIpInfo()
 
-                            if (DataStore.showIpInTwoLine) { 
+                            if (DataStore.showIpInTwoLine) {
                                 ipStatusText.text = ipInfo
                                 ipStatusText.visibility = View.VISIBLE
                             } else {
@@ -229,7 +225,7 @@ class StatsBar @JvmOverloads constructor(
                 Logs.w(e.toString())
                 onMainDispatcher {
                     isEnabled = true
-                    setStatus(app.getText(R.string.connection_test_testing)) 
+                    setStatus(app.getText(R.string.connection_test_testing))
                     ipStatusText.visibility = View.GONE
                     ipStatusText.text = ""
                     activity.snackbar(
