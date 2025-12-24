@@ -266,7 +266,7 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
                     if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                         != PackageManager.PERMISSION_GRANTED
                     ) {
-                        AlertDialog.Builder(requireContext())
+                        MaterialAlertDialogBuilder(requireContext())
                             .setTitle(R.string.permission_location_title)
                             .setMessage(R.string.permission_location_message)
                             .setPositiveButton(R.string.permission_grant) { _, _ ->
@@ -277,7 +277,7 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
                                 this.isChecked = false
                             }
                             .setCancelable(false)
-                            .show()
+                            .showBlur()
                     } else {
                         DataStore.showWeatherInfo = true
                     }
@@ -403,7 +403,7 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
         deleteBannerPref?.setOnPreferenceClickListener {
             val savedUriString = DataStore.configurationStore.getString("custom_banner_uri", null)
             if (!savedUriString.isNullOrEmpty()) {
-                AlertDialog.Builder(requireContext())
+                MaterialAlertDialogBuilder(requireContext())
                     .setTitle(R.string.delete_custom_banner_title)
                     .setMessage(R.string.delete_custom_banner_message)
                     .setPositiveButton(R.string.yes) { _, _ ->
@@ -424,7 +424,7 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
                         snackbar(R.string.custom_banner_removed).show()
                     }
                     .setNegativeButton(R.string.no, null)
-                    .show()
+                    .showBlur()
             } else {
                 snackbar(R.string.no_custom_banner_to_remove).show()
             }
@@ -457,7 +457,7 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
         deleteProfileBannerPref?.setOnPreferenceClickListener {
             val savedUriString = DataStore.configurationStore.getString("profile_banner_uri", null)
             if (!savedUriString.isNullOrEmpty()) {
-                AlertDialog.Builder(requireContext())
+                MaterialAlertDialogBuilder(requireContext())
                     .setTitle(R.string.delete_custom_banner_title)
                     .setMessage(R.string.delete_custom_banner_message)
                     .setPositiveButton(R.string.yes) { _, _ ->
@@ -478,7 +478,7 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
                         snackbar(R.string.custom_banner_removed).show()
                     }
                     .setNegativeButton(R.string.no, null)
-                    .show()
+                    .showBlur()
             } else {
                 snackbar(R.string.no_custom_banner_to_remove).show()
             }

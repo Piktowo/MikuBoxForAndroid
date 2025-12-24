@@ -21,6 +21,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.ktx.getColorAttr
 import kotlin.math.roundToInt
+import io.nekohasekai.sagernet.utils.showBlur
 
 class ColorPickerPreference
 @JvmOverloads constructor(
@@ -113,6 +114,6 @@ class ColorPickerPreference
                 addView(grid)
             })
             .setNegativeButton(android.R.string.cancel, null)
-            .show()
+            .showBlur()
     }
 }

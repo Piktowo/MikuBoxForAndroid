@@ -10,6 +10,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.utils.DPIController
+import io.nekohasekai.sagernet.utils.showBlur
 
 class DpiEditTextPreference @JvmOverloads constructor(
     context: Context,
@@ -41,7 +42,7 @@ class DpiEditTextPreference @JvmOverloads constructor(
                     (context as? Activity)?.recreate()
                 }
                 .setNegativeButton(android.R.string.cancel, null)
-                .show()
+                .showBlur()
 
             true
         }

@@ -36,6 +36,7 @@ import java.lang.NumberFormatException
 import java.util.*
 import io.nekohasekai.sagernet.bg.BaseService
 import io.nekohasekai.sagernet.widget.StatsBar
+import io.nekohasekai.sagernet.utils.showBlur
 
 class GroupFragment : ToolbarFragment(R.layout.layout_group), 
     GroupMenuBottomSheet.OnOptionClickListener {
@@ -177,7 +178,7 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
                             }
                     }
                     .setNegativeButton(R.string.no, null)
-                    .show()
+                    .showBlur()
             }
         }
     }
@@ -422,7 +423,7 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
                             }
                         }
                         .setNegativeButton(android.R.string.cancel, null)
-                        .show()
+                        .showBlur()
                 }
             }
 

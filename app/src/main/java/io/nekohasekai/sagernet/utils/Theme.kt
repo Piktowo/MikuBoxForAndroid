@@ -2,6 +2,9 @@ package io.nekohasekai.sagernet.utils
 
 import android.content.Context
 import android.content.res.Configuration
+import android.os.Build
+import android.view.Window
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatDelegate
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.database.DataStore
@@ -61,6 +64,25 @@ object Theme {
 
         if (usingNightMode() && DataStore.trueBlackEnabled) {
             context.setTheme(R.style.Theme_SagerNet_True_Black)
+        }
+    }
+
+    fun applyWindowBlur(window: Window?) {
+        if (window == null) return
+        try {
+            window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+            val attributes = window.attributes
+
+            if (Build.VERSION.SDK_INT >= 31) {
+                window.addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND)
+                attributes.blurBehindRadius = 30
+                attributes.dimAmount = 0.3f
+            } else {
+                attributes.dimAmount = 0.6f
+            }
+            window.attributes = attributes
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -157,4 +179,18 @@ object Theme {
     fun applyNightTheme() {
         AppCompatDelegate.setDefaultNightMode(getNightMode())
     }
+}
+
+fun com.google.android.material.dialog.MaterialAlertDialogBuilder.showBlur(): androidx.appcompat.app.AlertDialog {
+    val dialog = this.create()
+    io.nekohasekai.sagernet.utils.Theme.applyWindowBlur(dialog.window)
+    dialog.show()
+    return dialog
+}
+
+fun androidx.appcompat.app.AlertDialog.Builder.showBlur(): androidx.appcompat.app.AlertDialog {
+    val dialog = this.create()
+    io.nekohasekai.sagernet.utils.Theme.applyWindowBlur(dialog.window)
+    dialog.show()
+    return dialog
 }

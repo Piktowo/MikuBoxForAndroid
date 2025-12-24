@@ -53,6 +53,8 @@ import io.nekohasekai.sagernet.widget.FabStyle
 import com.airbnb.lottie.LottieAnimationView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import io.nekohasekai.sagernet.utils.Theme
+import io.nekohasekai.sagernet.utils.showBlur
 
 class MainActivity : ThemedActivity(),
     SagerConnection.Callback,
@@ -160,12 +162,15 @@ class MainActivity : ThemedActivity(),
                 .setNegativeButton(R.string.hide) { _, _ ->
                     DataStore.hidePreviewDialog = true
                 }
-                .show()
+                .showBlur()
         }
     }
 
     fun showNavigationSheet() {
         val dialog = BottomSheetDialog(this)
+        
+        Theme.applyWindowBlur(dialog.window)
+
         val view = layoutInflater.inflate(R.layout.uwu_bottom_sheet_nav_menu, null)
         dialog.setContentView(view)
 
@@ -314,7 +319,7 @@ class MainActivity : ThemedActivity(),
                     }
                 }
                 .setNegativeButton(android.R.string.cancel, null)
-                .show()
+                .showBlur()
         }
     }
 
@@ -342,7 +347,7 @@ class MainActivity : ThemedActivity(),
                     }
                 }
                 .setNegativeButton(android.R.string.cancel, null)
-                .show()
+                .showBlur()
         }
     }
 
@@ -374,7 +379,7 @@ class MainActivity : ThemedActivity(),
             .setNeutralButton(R.string.action_learn_more) { _, _ ->
                 launchCustomTab("https://matsuridayo.github.io/nb4a-plugin/")
             }
-            .show()
+            .showBlur()
     }
 
     private fun showDownloadDialog(pluginEntry: PluginEntry) {
@@ -403,7 +408,7 @@ class MainActivity : ThemedActivity(),
                     downloadIndex -> launchCustomTab(pluginEntry.downloadSource.downloadLink)
                 }
             }
-            .show()
+            .showBlur()
     }
 
     private fun changeState(

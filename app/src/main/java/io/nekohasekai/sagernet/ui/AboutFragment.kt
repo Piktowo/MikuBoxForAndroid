@@ -39,6 +39,7 @@ import org.json.JSONObject
 import io.nekohasekai.sagernet.bg.BaseService
 import io.nekohasekai.sagernet.widget.StatsBar
 import androidx.core.widget.NestedScrollView
+import io.nekohasekai.sagernet.utils.showBlur
 
 class AboutFragment : ToolbarFragment(R.layout.layout_about) {
 
@@ -338,7 +339,7 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                                     context.startActivity(intent)
                                 }
                                 .setNegativeButton(R.string.no, null)
-                                .show()
+                                .showBlur()
                         } else {
                             Toast.makeText(app, R.string.check_update_no, Toast.LENGTH_SHORT).show()
                         }

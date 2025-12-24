@@ -1,5 +1,6 @@
 package io.nekohasekai.sagernet.ui
 
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
@@ -11,13 +12,15 @@ import androidx.core.app.ActivityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import io.nekohasekai.sagernet.R
-import io.nekohasekai.sagernet.utils.Theme
-import android.content.Context
-import io.nekohasekai.sagernet.utils.DPIController
 import io.nekohasekai.sagernet.database.DataStore
+import io.nekohasekai.sagernet.utils.DPIController
+import io.nekohasekai.sagernet.utils.Theme
 
 abstract class ThemedActivity : AppCompatActivity {
     constructor() : super()
@@ -38,10 +41,20 @@ abstract class ThemedActivity : AppCompatActivity {
             Theme.apply(this)
         } else {
             Theme.applyDialog(this)
+            
+            Theme.applyWindowBlur(window)
         }
         Theme.applyNightTheme()
 
         super.onCreate(savedInstanceState)
+        
+        supportFragmentManager.registerFragmentLifecycleCallbacks(object : FragmentManager.FragmentLifecycleCallbacks() {
+            override fun onFragmentStarted(fm: FragmentManager, f: Fragment) {
+                if (f is DialogFragment) {
+                    Theme.applyWindowBlur(f.dialog?.window)
+                }
+            }
+        }, true)
 
         uiMode = resources.configuration.uiMode
 
@@ -51,12 +64,14 @@ abstract class ThemedActivity : AppCompatActivity {
         }
 
         if (Build.VERSION.SDK_INT >= 35) {
-            ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content)) { _, insets ->
-                val top = insets.getInsets(WindowInsetsCompat.Type.systemBars()).top
-                findViewById<AppBarLayout>(R.id.appbar)?.apply {
-                    updatePadding(top = top)
+             findViewById<android.view.View>(android.R.id.content)?.let { rootView ->
+                ViewCompat.setOnApplyWindowInsetsListener(rootView) { _, insets ->
+                    val top = insets.getInsets(WindowInsetsCompat.Type.systemBars()).top
+                    findViewById<AppBarLayout>(R.id.appbar)?.apply {
+                        updatePadding(top = top)
+                    }
+                    insets
                 }
-                insets
             }
         }
     }
@@ -98,5 +113,4 @@ abstract class ThemedActivity : AppCompatActivity {
     }
 
     internal open fun snackbarInternal(text: CharSequence): Snackbar = throw NotImplementedError()
-
 }

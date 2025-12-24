@@ -112,7 +112,7 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.zip.ZipInputStream
-
+import io.nekohasekai.sagernet.utils.showBlur
 
 class ConfigurationFragment @JvmOverloads constructor(
     val select: Boolean = false, val selectedItem: ProxyEntity? = null, val titleRes: Int = 0
@@ -466,7 +466,7 @@ class ConfigurationFragment @JvmOverloads constructor(
                                     }
                                 }
                                 .setNegativeButton(R.string.no, null)
-                                .show()
+                                .showBlur()
                         }
                     }
                 }
@@ -518,7 +518,7 @@ class ConfigurationFragment @JvmOverloads constructor(
                                     }
                                 }
                                 .setNegativeButton(R.string.no, null)
-                                .show()
+                                .showBlur()
                         }
                     }
                 }
@@ -753,7 +753,7 @@ class ConfigurationFragment @JvmOverloads constructor(
     fun pingTest(icmpPing: Boolean) {
         if (DataStore.runningTest) return else DataStore.runningTest = true
         val test = TestDialog()
-        val dialog = test.builder.show()
+        val dialog = test.builder.showBlur()
         val testJobs = mutableListOf<Job>()
         val group = DataStore.currentGroup()
 
@@ -894,7 +894,7 @@ class ConfigurationFragment @JvmOverloads constructor(
     fun urlTest() {
         if (DataStore.runningTest) return else DataStore.runningTest = true
         val test = TestDialog()
-        val dialog = test.builder.show()
+        val dialog = test.builder.showBlur()
         val testJobs = mutableListOf<Job>()
         val group = DataStore.currentGroup()
 
@@ -1619,7 +1619,7 @@ class ConfigurationFragment @JvmOverloads constructor(
                     adapter?.let { adapter ->
                         val index = adapter.configurationIdList.indexOf(proxyEntity.id)
                         if (DataStore.confirmProfileDelete) {
-                            AlertDialog.Builder(requireContext())
+                            MaterialAlertDialogBuilder(requireContext())
                                 .setTitle(R.string.delete_confirm_prompt)
                                 // .setMessage(getString(R.string.delete_confirm_prompt))
                                 .setPositiveButton(R.string.yes) { dialog: DialogInterface, which: Int ->
@@ -1627,7 +1627,7 @@ class ConfigurationFragment @JvmOverloads constructor(
                                     undoManager.remove(index to proxyEntity)
                                 }
                                 .setNegativeButton(R.string.no, null)
-                                .show()
+                                .showBlur()
                         } else {
                             adapter.remove(index)
                             undoManager.remove(index to proxyEntity)

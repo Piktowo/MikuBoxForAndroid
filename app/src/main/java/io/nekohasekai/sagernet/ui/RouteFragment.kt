@@ -25,6 +25,7 @@ import io.nekohasekai.sagernet.widget.ListListener
 import io.nekohasekai.sagernet.widget.UndoSnackbarManager
 import io.nekohasekai.sagernet.widget.StatsBar
 import io.nekohasekai.sagernet.bg.BaseService
+import io.nekohasekai.sagernet.utils.showBlur
 
 class RouteFragment : ToolbarFragment(R.layout.layout_route), 
     RouteMenuBottomSheet.OnOptionClickListener {
@@ -170,7 +171,7 @@ class RouteFragment : ToolbarFragment(R.layout.layout_route),
                         }
                     }
                     .setNegativeButton(R.string.no, null)
-                    .show()
+                    .showBlur()
             }
             R.id.action_manage_assets -> {
                 startActivity(Intent(requireContext(), AssetsActivity::class.java))

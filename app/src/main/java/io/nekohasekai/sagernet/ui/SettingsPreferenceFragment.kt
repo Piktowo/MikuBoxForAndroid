@@ -121,7 +121,7 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
                             needRestart()
                         }
                         .setNegativeButton(android.R.string.cancel, null)
-                        .show()
+                        .showBlur()
                 }
                 true
             }
@@ -135,7 +135,7 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
                     clearAppCache()
                 }
                 setNegativeButton(android.R.string.cancel, null)
-            }.show()
+            }.showBlur()
             true
         }
         mixedPort.onPreferenceChangeListener = reloadListener

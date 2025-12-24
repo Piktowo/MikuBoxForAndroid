@@ -7,6 +7,7 @@ import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.ktx.Logs
 import io.nekohasekai.sagernet.ktx.readableMessage
 import io.nekohasekai.sagernet.ktx.runOnMainDispatcher
+import io.nekohasekai.sagernet.utils.showBlur
 
 object Dialogs {
     fun logExceptionAndShow(context: Context, e: Exception, callback: Runnable) {
@@ -19,7 +20,7 @@ object Dialogs {
                 .setPositiveButton(android.R.string.ok) { _, _ ->
                     callback.run()
                 }
-                .show()
+                .showBlur()
         }
     }
 
@@ -29,7 +30,7 @@ object Dialogs {
                 .setTitle(title)
                 .setMessage(message)
                 .setCancelable(true)
-                .show()
+                .showBlur()
             dialog.findViewById<TextView>(android.R.id.message)?.apply {
                 setTextIsSelectable(true)
             }

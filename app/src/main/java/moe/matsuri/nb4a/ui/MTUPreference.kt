@@ -9,6 +9,7 @@ import androidx.preference.ListPreference
 import androidx.preference.PreferenceViewHolder
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.nekohasekai.sagernet.R
+import io.nekohasekai.sagernet.utils.showBlur
 
 class MTUPreference
 @JvmOverloads constructor(
@@ -39,7 +40,7 @@ class MTUPreference
                     value = mtu.toString()
                 }
                 .setNegativeButton(android.R.string.cancel, null)
-                .show()
+                .showBlur()
             true
         }
     }
