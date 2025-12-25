@@ -113,6 +113,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.zip.ZipInputStream
 import io.nekohasekai.sagernet.utils.showBlur
+import com.neko.speedtest.SpeedTestBottomSheet
 
 class ConfigurationFragment @JvmOverloads constructor(
     val select: Boolean = false, val selectedItem: ProxyEntity? = null, val titleRes: Int = 0
@@ -179,7 +180,12 @@ class ConfigurationFragment @JvmOverloads constructor(
         super.onViewCreated(view, savedInstanceState)
 
         setupBannerLayoutController()
-
+        
+        val speedTestTrigger = view.findViewById<View>(R.id.banner_home)
+        speedTestTrigger?.setOnClickListener {
+            SpeedTestBottomSheet().show(childFragmentManager, "SpeedTestBottomSheet")
+         }
+         
         if (!select) {
             toolbar.inflateMenu(R.menu.add_profile_menu)
             toolbar.setOnMenuItemClickListener(this)

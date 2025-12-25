@@ -114,24 +114,21 @@
                         android:layout_marginBottom="0.0dip"
                         android:layout_marginStart="0.0dip"
                         android:layout_marginEnd="16.0dip">
-                        <LinearLayout
-                            android:background="@drawable/uwu_bg_icon"
-                            android:layout_width="35.0dip"
-                            android:layout_height="35.0dip"
-                            android:layout_marginStart="10.0dip"
-                            android:layout_marginEnd="5.0dip"
-                            android:backgroundTint="?attr/colorSecondaryContainer">
-                            <com.airbnb.lottie.LottieAnimationView
-                                android:gravity="center"
-                                android:layout_width="20.0dip"
-                                android:layout_height="20.0dip"
-                                android:layout_marginTop="8.0dip"
-                                android:layout_marginStart="8.0dip"
-                                app:lottie_autoPlay="true"
-                                app:lottie_colorFilter="?attr/colorPrimary"
-                                app:lottie_loop="true"
-                                app:lottie_rawRes="@raw/uwu_lottie_heart" />
-                        </LinearLayout>
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="28.0dip"
+                        android:layout_height="28.0dip"
+                        app:cardBackgroundColor="?attr/colorSurfaceContainerHighest"
+                        app:cardCornerRadius="99.0dip"
+                        app:cardElevation="0.0dip"
+                        app:strokeWidth="0.0dip">
+                    <ImageView
+                       android:layout_width="25.0dip"
+                       android:layout_height="25.0dip"
+                       android:layout_marginTop="1.0dip"
+                       android:src="@drawable/uwu_arrow"
+                       android:tint="?attr/colorOnSurfaceVariant"
+                       android:layout_marginStart="2.0dip" />
+                        </com.google.android.material.card.MaterialCardView>
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>

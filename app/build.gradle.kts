@@ -66,6 +66,7 @@ dependencies {
     implementation("com.airbnb.android:lottie:4.2.2")
     implementation("com.github.bumptech.glide:glide:5.0.5")
     implementation("com.github.yalantis:ucrop:2.2.11")
+    implementation("com.github.anastr:speedviewlib:1.6.1")
     
     implementation("com.google.android.gms:play-services-location:21.2.0")
 
