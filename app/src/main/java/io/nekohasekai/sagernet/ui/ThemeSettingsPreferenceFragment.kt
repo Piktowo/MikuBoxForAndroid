@@ -14,6 +14,7 @@ import android.view.inputmethod.EditorInfo
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -40,6 +41,7 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import com.google.android.material.snackbar.Snackbar
+import io.nekohasekai.sagernet.utils.showBlur
 
 class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
 

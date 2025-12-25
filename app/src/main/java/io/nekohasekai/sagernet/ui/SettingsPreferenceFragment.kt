@@ -32,6 +32,7 @@ import java.io.File
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
+import io.nekohasekai.sagernet.utils.showBlur
 
 class SettingsPreferenceFragment : PreferenceFragmentCompat() {
 
