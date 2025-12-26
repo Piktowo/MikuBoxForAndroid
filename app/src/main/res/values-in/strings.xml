@@ -642,16 +642,16 @@ Tolong kasih izinnya di Settingan Sistem."</string>
      <string name="tools_summary">Bantuan kotak ajaib dari Miku.</string>
      <string name="logcat_summary">Catatan harian Miku hari ini.</string>
      <string name="about_summary">Rahasia di balik aplikasi ini.</string>
-     <string name="st_check_internet">Cek internetnya dulu dong</string>
      <string name="st_status_testing">Lagi ngetes...</string>
      <string name="st_status_waiting">Bentar ya...</string>
      <string name="st_status_running">Lagi jalan...</string>
      <string name="st_format_mbps">%.2f Mbps</string>
-     <string name="st_error_generic">Waduh, error: %1$s</string>
     <string name="st_download">Unduh</string>
     <string name="st_upload">Unggah</string>
     <string name="st_test_download">Klik sini buat tes unduh aja</string>
    <string name="st_test_upload">Klik sini buat tes unggah aja</string>
+   <string name="st_test_ping">Klik sini buat tes ping aja</string>
+   <string name="st_test_jitter">Klik sini buat tes jitter aja</string>
     
     <string name="uwu_about_miku_title">Siapa itu Hatsune Miku?</string>
     <string name="uwu_about_miku_summary">Hatsune Miku itu penyanyi virtual berbasis Vocaloid yang dirilis sama Crypton Future Media, kode namanya CV01. Dikenal gara-gara rambut twintail panjang warna biru kehijauan sama suaranya yang jernih, dia itu cewek 16 tahun dan idola virtual yang terkenal sedunia. Dia aktif di musik, konser, dan anime, plus disayang banget sama fans-fansnya.</string>
