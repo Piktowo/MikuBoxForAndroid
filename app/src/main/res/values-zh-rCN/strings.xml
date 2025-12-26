@@ -638,6 +638,16 @@
     <string name="tools_summary">来自 Miku 的魔法盒助手。</string>
     <string name="logcat_summary">Miku 今天的日记。</string>
     <string name="about_summary">此应用背后的秘密。</string>
+    <string name="st_check_internet">请检查您的网络连接</string>
+    <string name="st_status_testing">测试中...</string>
+    <string name="st_status_waiting">等待中...</string>
+    <string name="st_status_running">运行中...</string>
+    <string name="st_format_mbps">%.2f Mbps</string>
+    <string name="st_error_generic">错误：%1$s</string>
+    <string name="st_download">下载</string>
+   <string name="st_upload">上传</string>
+   <string name="st_test_download">点击这里仅测试下载</string>
+   <string name="st_test_upload">点击这里仅测试上传</string>
     
     <!-- uwu -->
     <string name="uwu_about_miku_title">谁是 Hatsune Miku？</string>

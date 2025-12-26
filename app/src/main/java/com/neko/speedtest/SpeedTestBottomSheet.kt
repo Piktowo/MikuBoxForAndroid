@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import com.google.android.material.card.MaterialCardView
 import com.github.anastr.speedviewlib.PointerSpeedometer
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -21,7 +22,8 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
-import kotlin.math.min
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.util.concurrent.TimeUnit
 
 class SpeedTestBottomSheet : BottomSheetDialogFragment() {
 
@@ -30,17 +32,21 @@ class SpeedTestBottomSheet : BottomSheetDialogFragment() {
     private lateinit var textUpload: TextView
     private lateinit var startButton: Button
     private lateinit var stopButton: Button
+    private lateinit var cardDownload: MaterialCardView
+    private lateinit var cardUpload: MaterialCardView
 
     private val scope = CoroutineScope(Dispatchers.Main + Job())
     private var testJob: Job? = null
     
+    private val TEST_DURATION = 15.0 
+
     private val client = OkHttpClient.Builder()
-        .connectTimeout(10, java.util.concurrent.TimeUnit.SECONDS)
-        .readTimeout(10, java.util.concurrent.TimeUnit.SECONDS)
-        .writeTimeout(10, java.util.concurrent.TimeUnit.SECONDS)
+        .connectTimeout(10, TimeUnit.SECONDS) 
+        .readTimeout(10, TimeUnit.SECONDS)
+        .writeTimeout(10, TimeUnit.SECONDS)
         .build()
 
-    private val dummyData by lazy { ByteArray(2 * 1024 * 1024) }
+    private val dummyData by lazy { ByteArray(1024 * 1024) }
 
     override fun onCreateView(
         inflater: LayoutInflater, 
@@ -61,24 +67,34 @@ class SpeedTestBottomSheet : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        
         speedometer = view.findViewById(R.id.speedometer)
         textDownload = view.findViewById(R.id.textDownload)
         textUpload = view.findViewById(R.id.textUpload)
         startButton = view.findViewById(R.id.startButton)
         stopButton = view.findViewById(R.id.stopButton)
+        
+        cardDownload = view.findViewById(R.id.cardDownload)
+        cardUpload = view.findViewById(R.id.cardUpload)
 
-        startButton.setOnClickListener { startSpeedTest() }
+        startButton.setOnClickListener { startFullSpeedTest() }
         stopButton.setOnClickListener { stopSpeedTest() }
 
-        startButton.visibility = View.VISIBLE
-        stopButton.visibility = View.GONE
+        cardDownload.setOnClickListener {
+            if (testJob?.isActive == true) return@setOnClickListener
+            runIndividualTest(isDownload = true)
+        }
+
+        cardUpload.setOnClickListener {
+            if (testJob?.isActive == true) return@setOnClickListener
+            runIndividualTest(isDownload = false)
+        }
         
-        speedometer.visibility = View.VISIBLE 
-        speedometer.alpha = 1f
+        setDefaultText()
+        resetButtonState()
         
         scope.launch(Dispatchers.IO) {
-            dummyData.fill(0)
+            dummyData.fill(1) 
         }
     }
 
@@ -90,69 +106,112 @@ class SpeedTestBottomSheet : BottomSheetDialogFragment() {
                (capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
                 capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED))
     }
+    
+    private fun setDefaultText() {
+        textDownload.setText(R.string.st_test_download)
+        textUpload.setText(R.string.st_test_upload)
+    }
 
-    private fun startSpeedTest() {
+    private fun runIndividualTest(isDownload: Boolean) {
         if (!isInternetAvailable()) {
-            Toast.makeText(requireContext(), "Please check your internet connection", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.st_check_internet), Toast.LENGTH_SHORT).show()
             return
         }
 
-        startButton.visibility = View.GONE
-        stopButton.visibility = View.VISIBLE
-
-        textDownload.text = "Testing..."
-        textUpload.text = "Testing..."
-        
-        speedometer.speedTo(0f)
+        prepareUIForTest()
 
         testJob = scope.launch {
             try {
-                val downloadSpeed = measureDownloadSpeed()
-                textDownload.text = "%.2f Mbps".format(downloadSpeed)
+                if (isDownload) {
+                    textDownload.setText(R.string.st_status_running)
+                    speedometer.speedTo(0f)
+                    
+                    val downloadSpeed = measureDownloadSpeed()
+                    textDownload.text = getString(R.string.st_format_mbps, downloadSpeed)
+                    speedometer.speedTo(downloadSpeed.toFloat())
+                } else {
+                    textUpload.setText(R.string.st_status_running)
+                    speedometer.speedTo(0f)
 
-                speedometer.speedTo(downloadSpeed.toFloat())
-                delay(1000)
-
-                val uploadSpeed = measureUploadSpeed()
-                textUpload.text = "%.2f Mbps".format(uploadSpeed)
-
-                speedometer.speedTo(uploadSpeed.toFloat())
-                
-                delay(2000)
-
-            } catch (e: CancellationException) {
-                Log.d("SpeedTest", "Test cancelled by user")
-            } catch (e: Exception) {
-                Log.e("SpeedTest", "Error during speed test: ${e.message}", e)
-                if (isAdded) {
-                    Toast.makeText(requireContext(), "Error: ${e.localizedMessage ?: "Unknown error"}", Toast.LENGTH_SHORT).show()
+                    val uploadSpeed = measureUploadSpeed()
+                    textUpload.text = getString(R.string.st_format_mbps, uploadSpeed)
+                    speedometer.speedTo(uploadSpeed.toFloat())
                 }
-                resetUI()
+            } catch (e: Exception) {
+                Log.e("SpeedTest", "Individual Test Error: ${e.message}")
+                if (isAdded) {
+                    Toast.makeText(requireContext(), getString(R.string.st_error_generic, e.localizedMessage), Toast.LENGTH_SHORT).show()
+                }
             } finally {
                 withContext(Dispatchers.Main) {
-                    if (isAdded) {
-                        startButton.visibility = View.VISIBLE
-                        stopButton.visibility = View.GONE
-                        
-                        speedometer.speedTo(0f)
-                    }
+                    if (isAdded) resetButtonState()
                 }
             }
         }
     }
 
+    private fun startFullSpeedTest() {
+        if (!isInternetAvailable()) {
+            Toast.makeText(requireContext(), getString(R.string.st_check_internet), Toast.LENGTH_SHORT).show()
+            return
+        }
+        
+        prepareUIForTest()
+        
+        textDownload.setText(R.string.st_status_testing)
+        textUpload.setText(R.string.st_status_waiting) 
+        speedometer.speedTo(0f)
+
+        testJob = scope.launch {
+            try {
+                textDownload.setText(R.string.st_status_running)
+                val downloadSpeed = measureDownloadSpeed()
+                textDownload.text = getString(R.string.st_format_mbps, downloadSpeed)
+                speedometer.speedTo(downloadSpeed.toFloat())           
+                
+                delay(1000)
+                speedometer.speedTo(0f)      
+                delay(800)
+
+                textUpload.setText(R.string.st_status_running)
+                val uploadSpeed = measureUploadSpeed()
+                textUpload.text = getString(R.string.st_format_mbps, uploadSpeed)
+                speedometer.speedTo(uploadSpeed.toFloat())
+                
+                delay(1000)
+
+            } catch (e: CancellationException) {
+                Log.d("SpeedTest", "Test cancelled by user")
+            } catch (e: Exception) {
+                Log.e("SpeedTest", "Error: ${e.message}", e)
+                if (isAdded) {
+                    Toast.makeText(requireContext(), getString(R.string.st_error_generic, e.localizedMessage), Toast.LENGTH_SHORT).show()
+                }
+            } finally {
+                withContext(Dispatchers.Main) {
+                    if (isAdded) resetButtonState()
+                }
+            }
+        }
+    }
+
+    private fun prepareUIForTest() {
+        startButton.visibility = View.GONE
+        stopButton.visibility = View.VISIBLE
+    }
+
     private fun stopSpeedTest() {
         testJob?.cancel("Test stopped by user")
         testJob = null
-        resetUI()
+        
+        setDefaultText()
+        resetButtonState()
     }
 
-    private fun resetUI() {
-        if (view == null) return
-        
+    private fun resetButtonState() {
+        if (view == null) return      
         startButton.visibility = View.VISIBLE
-        stopButton.visibility = View.GONE
-        
+        stopButton.visibility = View.GONE   
         speedometer.visibility = View.VISIBLE 
         speedometer.alpha = 1f
         speedometer.speedTo(0f)
@@ -160,133 +219,142 @@ class SpeedTestBottomSheet : BottomSheetDialogFragment() {
 
     private suspend fun measureDownloadSpeed(): Double = withContext(Dispatchers.IO) {
         val urls = listOf(
-            "https://github.com/topjohnwu/Magisk/releases/download/canary-28103/app-release.apk",
+            "https://dl.google.com/android/studio/install/android-studio-ide-2023.3.1.20-windows.exe",
             "https://download.mozilla.org/?product=firefox-latest-ssl&os=win64&lang=en-US",
-            "https://dl.google.com/android/studio/install/android-studio-ide-2023.3.1.20-windows.exe"
+            "https://github.com/topjohnwu/Magisk/releases/download/canary-28103/app-release.apk"
         )
 
         var totalBytes = 0L
         var speedMbps = 0.0
-        var successful = false
+        var currentUrlIndex = 0
 
-        for (url in urls) {
-            if (isActive.not()) break
+        val startTime = System.nanoTime()
+        var lastUpdateTime = System.currentTimeMillis()
+
+        while (isActive) {
+            val elapsedSeconds = (System.nanoTime() - startTime) / 1_000_000_000.0
+            
+            if (elapsedSeconds > TEST_DURATION) break
+            
+            if (currentUrlIndex >= urls.size) {
+                 Log.e("DownloadTest", "Semua URL download gagal/habis.")
+                 break
+            }
+
+            val currentUrl = urls[currentUrlIndex]
 
             try {
                 val request = Request.Builder()
-                    .url(url)
+                    .url(currentUrl)
                     .header("Cache-Control", "no-cache")
                     .build()
 
                 client.newCall(request).execute().use { response ->
-                    if (response.isSuccessful) {
-                        val body = response.body
-                        if (body != null) {
-                            val stream = body.byteStream()
-                            val buffer = ByteArray(8192)
-                            var bytesRead: Int
-                            val startTime = System.nanoTime()
-                            var lastUpdateTime = System.currentTimeMillis()
+                    if (!response.isSuccessful) throw java.io.IOException("HTTP ${response.code}")
 
-                            while (stream.read(buffer).also { bytesRead = it } != -1 && isActive) {
-                                totalBytes += bytesRead
+                    val body = response.body ?: throw java.io.IOException("Body null")
+                    val stream = body.byteStream()
+                    val buffer = ByteArray(8192)
+                    var bytesRead: Int
+                    
+                    while (isActive) {
+                        bytesRead = stream.read(buffer)
+                        if (bytesRead == -1) break
 
-                                val now = System.currentTimeMillis()
-                                if (now - lastUpdateTime > 300) {
-                                    val elapsedSeconds = (System.nanoTime() - startTime) / 1_000_000_000.0
-                                    speedMbps = (totalBytes * 8) / (elapsedSeconds * 1000 * 1000)
-                                    
-                                    withContext(Dispatchers.Main) {
-                                        if (isAdded) speedometer.speedTo(speedMbps.toFloat())
-                                    }
-                                    lastUpdateTime = now
-                                }
+                        totalBytes += bytesRead
 
-                                val elapsedTime = (System.nanoTime() - startTime) / 1_000_000_000.0
-                                if (totalBytes > 10 * 1024 * 1024 || elapsedTime > 15.0) {
-                                    break 
-                                }
+                        val innerElapsed = (System.nanoTime() - startTime) / 1_000_000_000.0
+                        if (innerElapsed > TEST_DURATION) break 
+
+                        val now = System.currentTimeMillis()
+                        if (now - lastUpdateTime > 200) {
+                            speedMbps = (totalBytes * 8) / (innerElapsed * 1_000_000.0)
+                            withContext(Dispatchers.Main) {
+                                if (isAdded) speedometer.speedTo(speedMbps.toFloat())
                             }
-                            successful = true
+                            lastUpdateTime = now
                         }
                     }
                 }
             } catch (e: Exception) {
-                Log.w("DownloadTest", "Failed with URL: $url, error: ${e.message}")
+                Log.w("DownloadTest", "Gagal di $currentUrl: ${e.message}. Switch URL.")
+                currentUrlIndex++
+                delay(100)
             }
-
-            if (successful) break
+            
+            if (currentUrlIndex < urls.size && (System.nanoTime() - startTime) / 1_000_000_000.0 < TEST_DURATION) {
+            }
         }
-        return@withContext if (successful) speedMbps else 0.0
+        
+        return@withContext speedMbps
     }
+
 
     private suspend fun measureUploadSpeed(): Double = withContext(Dispatchers.IO) {
         val uploadUrls = listOf(
-            "https://httpbin.org/post",
+            "https://httpbun.com/post",
             "https://postman-echo.com/post",
-            "https://httpbun.com/post"
+            "https://httpbin.org/post"
         )
 
         val mediaType = "application/octet-stream".toMediaType()
-        var speedMbps = 0.0
-        var successful = false
+        val payloadSize = dummyData.size.toLong() // 1MB
 
-        for (uploadUrl in uploadUrls) {
-            if (isActive.not()) break
+        var totalBytesUploaded = 0L
+        var speedMbps = 0.0
+        var currentUrlIndex = 0
+
+        val startTime = System.nanoTime()
+        var lastUpdateTime = System.currentTimeMillis()
+
+        while (isActive) {
+            val elapsedSeconds = (System.nanoTime() - startTime) / 1_000_000_000.0
+            
+            if (elapsedSeconds > TEST_DURATION) break
+            
+            if (currentUrlIndex >= uploadUrls.size) {
+                Log.e("UploadTest", "Semua URL upload gagal.")
+                break
+            }
+
+            val currentUrl = uploadUrls[currentUrlIndex]
 
             try {
-                val requestBody = object : RequestBody() {
-                    override fun contentType() = mediaType
-                    override fun contentLength() = dummyData.size.toLong()
-
-                    override fun writeTo(sink: okio.BufferedSink) {
-                        val chunkSize = 8192
-                        var uploaded = 0L
-                        val startTime = System.nanoTime()
-                        var lastUpdate = System.currentTimeMillis()
-
-                        while (uploaded < dummyData.size && isActive) {
-                            val size = min(chunkSize, dummyData.size - uploaded.toInt())
-                            sink.write(dummyData, uploaded.toInt(), size)
-                            uploaded += size
-
-                            val now = System.currentTimeMillis()
-                            if (now - lastUpdate > 300) {
-                                val elapsedSeconds = (System.nanoTime() - startTime) / 1_000_000_000.0
-                                speedMbps = (uploaded * 8) / (elapsedSeconds * 1000 * 1000)
-                                
-                                scope.launch(Dispatchers.Main) {
-                                   if (isAdded) speedometer.speedTo(speedMbps.toFloat())
-                                }
-                                lastUpdate = now
-                            }
-
-                            val elapsedTime = (System.nanoTime() - startTime) / 1_000_000_000.0
-                            if (elapsedTime > 15.0) {
-                                break
-                            }
-                        }
-                    }
-                }
-
+                val requestBody = dummyData.toRequestBody(mediaType, 0, dummyData.size)
                 val request = Request.Builder()
-                    .url(uploadUrl)
+                    .url(currentUrl)
                     .post(requestBody)
                     .header("Cache-Control", "no-cache")
                     .build()
 
                 client.newCall(request).execute().use { response ->
                     if (response.isSuccessful) {
-                        successful = true
+                        totalBytesUploaded += payloadSize
+                    } else {
+                        throw java.io.IOException("HTTP ${response.code}")
                     }
                 }
-            } catch (e: Exception) {
-                Log.w("UploadTest", "Failed with URL: $uploadUrl, error: ${e.message}")
-            }
 
-            if (successful) break
+                val now = System.currentTimeMillis()
+                if (now - lastUpdateTime > 200) {
+                    val currentElapsed = (System.nanoTime() - startTime) / 1_000_000_000.0
+                    if (currentElapsed > 0) {
+                        speedMbps = (totalBytesUploaded * 8) / (currentElapsed * 1_000_000.0)
+                        withContext(Dispatchers.Main) {
+                            if (isAdded) speedometer.speedTo(speedMbps.toFloat())
+                        }
+                        lastUpdateTime = now
+                    }
+                }
+
+            } catch (e: Exception) {
+                Log.w("UploadTest", "Gagal di $currentUrl: ${e.message}. Switch URL.")
+                currentUrlIndex++
+                delay(100)
+            }
         }
-        return@withContext if (successful) speedMbps else 0.0
+        
+        return@withContext speedMbps
     }
 
     override fun onDestroyView() {

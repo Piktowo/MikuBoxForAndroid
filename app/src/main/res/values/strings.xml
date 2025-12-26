@@ -737,6 +737,16 @@ Please grant this permission in System Settings."</string>
     <string name="tools_summary">Magic box assistance from Miku.</string>
     <string name="logcat_summary">Miku diary for today.</string>
     <string name="about_summary">The secret behind this app.</string>
+    <string name="st_check_internet">Please check your internet connection</string>
+    <string name="st_status_testing">Testing...</string>
+    <string name="st_status_waiting">Waiting...</string>
+    <string name="st_status_running">Running...</string>
+    <string name="st_format_mbps">%.2f Mbps</string>
+    <string name="st_error_generic">Error: %1$s</string>
+   <string name="st_download">Download</string>
+   <string name="st_upload">Upload</string> 
+   <string name="st_test_download">Click here to test download only</string>
+   <string name="st_test_upload">Click here to test upload only</string>
     
     <!-- uwu -->
     <string name="uwu_about_miku_title">Who is Hatsune Miku?</string>
