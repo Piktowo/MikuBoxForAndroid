@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckedTextView
 import android.widget.ImageView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -14,6 +16,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import io.nekohasekai.sagernet.GroupOrder
 import io.nekohasekai.sagernet.R
+import io.nekohasekai.sagernet.database.DataStore
 
 private const val TRANSITION_DURATION = 300L
 
@@ -75,6 +78,19 @@ class OtherMenuBottomSheet : BottomSheetDialogFragment() {
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        
+        val bannerImageView = view.findViewById<ImageView>(R.id.img_banner_sheet)
+
+        if (bannerImageView != null) {
+            val savedUriString = DataStore.configurationStore.getString("custom_sheet_banner_uri", null)
+
+            Glide.with(this)
+                .load(savedUriString)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .placeholder(R.drawable.uwu_banner_image_about)
+                .error(R.drawable.uwu_banner_image_about)
+                .into(bannerImageView)
+        }
 
         val checkOrigin = view.findViewById<CheckedTextView>(R.id.action_order_origin)
         val checkName = view.findViewById<CheckedTextView>(R.id.action_order_by_name)

@@ -718,7 +718,12 @@ Please grant this permission in System Settings."</string>
     <string name="cardview_arrow_summary">Hide arrow icon in preference</string>
     <string name="cardview_icon_profile_server_title">Icon profile server</string>
     <string name="cardview_icon_profile_server_summary">Hide icon in profile server</string>
-    <string name="banner_category">Banner</string>
+    <string name="banner_home_category">Banner home</string>
+    <string name="banner_sheet_category">Banner bottomsheet</string>
+    <string name="banner_custom_sheet_title">Change banner bottomsheet image</string>
+    <string name="banner_custom_sheet_summary">Select an image from the gallery for the bottomsheet banner</string>
+    <string name="delete_custom_banner_sheet">Delete custom bottomsheet banner</string>
+    <string name="delete_custom_banner_sheet_summary">Revert to default bottomsheet banner</string>
     <string name="banner_height_title">Banner height</string>
     <string name="banner_height_summary">Set homepage banner height (in dp). Default: 100</string>
     <string name="banner_custom_title">Change banner image</string>

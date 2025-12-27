@@ -48,6 +48,9 @@ import io.nekohasekai.sagernet.widget.ListListener
 import io.nekohasekai.sagernet.widget.OutboundPreference
 import kotlinx.parcelize.Parcelize
 import moe.matsuri.nb4a.ui.EditConfigPreference
+import android.widget.ImageView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 
 @Suppress("UNCHECKED_CAST")
 class RouteSettingsActivity(
@@ -468,6 +471,19 @@ class RouteSettingsMenuBottomSheet : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        
+        val bannerImageView = view.findViewById<ImageView>(R.id.img_banner_sheet)
+
+        if (bannerImageView != null) {
+            val savedUriString = DataStore.configurationStore.getString("custom_sheet_banner_uri", null)
+
+            Glide.with(this)
+                .load(savedUriString)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .placeholder(R.drawable.uwu_banner_image_about)
+                .error(R.drawable.uwu_banner_image_about)
+                .into(bannerImageView)
+        }
 
         val clickListener = View.OnClickListener {
             mListener?.onOptionClicked(it.id)

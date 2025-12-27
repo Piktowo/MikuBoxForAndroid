@@ -124,6 +124,46 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
             }
         }
 
+    private val pickSheetBannerImage =
+        registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            if (uri != null) {
+                startCropSheetActivity(uri)
+            }
+        }
+
+    private val cropSheetBannerImage =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK && result.data != null) {
+                val cacheUri = UCrop.getOutput(result.data!!)
+                if (cacheUri != null) {
+                    try {
+                        val oldUriString = DataStore.configurationStore.getString("custom_sheet_banner_uri", null)
+                        if (!oldUriString.isNullOrEmpty()) {
+                            try {
+                                val oldUri = Uri.parse(oldUriString)
+                                requireContext().contentResolver.delete(oldUri, null, null)
+                            } catch (e: Exception) {
+                                Logs.w("Failed to delete old sheet banner", e)
+                            }
+                        }
+
+                        val publicMediaUri = saveBannerToMediaStore(cacheUri, "uwu_sheet_banner_")
+                        
+                        DataStore.configurationStore.putString("custom_sheet_banner_uri", publicMediaUri.toString())
+                        snackbar(R.string.custom_banner_set).show()
+
+                    } catch (e: Exception) {
+                        Logs.e("Failed to save sheet banner", e)
+                        snackbar("Failed to save: ${e.message}").show()
+                    }
+                }
+            } else if (result.resultCode == UCrop.RESULT_ERROR) {
+                val cropError = UCrop.getError(result.data!!) ?: Throwable("Unknown UCrop error")
+                Logs.e("Cropping error: ", cropError)
+            }
+        }
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         listView.layoutManager = FixedLinearLayoutManager(listView)
@@ -138,7 +178,7 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
         preferenceScreen?.let { screen ->
             updateAllCategoryStyles(styleValue, screen)
         }
-
+        
         val customProfileNamePref = findPreference<EditTextPreference>("custom_profile_name")
         customProfileNamePref?.apply {
             val currentName = DataStore.customProfileName
@@ -433,7 +473,6 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
             true
         }
 
-
         val bannerHeightPref = findPreference<EditTextPreference>("banner_height")
         bannerHeightPref?.apply {
             setOnBindEditTextListener { editText ->
@@ -477,6 +516,44 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
                         }
 
                         DataStore.configurationStore.putString("profile_banner_uri", null)
+                        snackbar(R.string.custom_banner_removed).show()
+                    }
+                    .setNegativeButton(R.string.no, null)
+                    .showBlur()
+            } else {
+                snackbar(R.string.no_custom_banner_to_remove).show()
+            }
+            true
+        }
+
+        val changeSheetBannerPref = findPreference<Preference>("action_change_sheet_banner_image")
+        changeSheetBannerPref?.setOnPreferenceClickListener {
+            pickSheetBannerImage.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            true
+        }
+
+        val deleteSheetBannerPref = findPreference<Preference>("action_delete_sheet_banner_image")
+        deleteSheetBannerPref?.setOnPreferenceClickListener {
+            val savedUriString = DataStore.configurationStore.getString("custom_sheet_banner_uri", null)
+            if (!savedUriString.isNullOrEmpty()) {
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(R.string.delete_custom_banner_title)
+                    .setMessage(R.string.delete_custom_banner_message)
+                    .setPositiveButton(R.string.yes) { _, _ ->
+                        try {
+                            val savedUri = Uri.parse(savedUriString)
+                            val rowsDeleted = requireContext().contentResolver.delete(savedUri, null, null)
+                            if (rowsDeleted <= 0) {
+                                Logs.w("Sheet banner file not found or failed to delete.")
+                            }
+                        } catch (e: SecurityException) {
+                            Logs.e("Failed to delete custom sheet banner (SecurityException)", e)
+                            snackbar("Failed to delete file. Manually delete from Gallery.").show()
+                        } catch (e: Exception) {
+                            Logs.e("Failed to delete custom sheet banner", e)
+                        }
+
+                        DataStore.configurationStore.putString("custom_sheet_banner_uri", null)
                         snackbar(R.string.custom_banner_removed).show()
                     }
                     .setNegativeButton(R.string.no, null)
@@ -635,7 +712,7 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
         val targetHeightPx = dp2pxf(heightDp)
         val uCrop = UCrop.of(sourceUri, destinationUri)
             .withAspectRatio(screenWidthPx, targetHeightPx)
-            .withMaxResultSize(2560, 1440)
+            .withMaxResultSize(1920, 1080)
 
         try {
             val options = UCrop.Options()
@@ -669,6 +746,31 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
             Logs.e("Failed to set UCrop theme", e)
         }
         cropProfileBannerImage.launch(uCrop.getIntent(requireContext()))
+    }
+
+    private fun startCropSheetActivity(sourceUri: Uri) {
+        val destinationFileName = "cropped_sheet_banner_temp.jpg"
+        val destinationUri = Uri.fromFile(File(requireContext().cacheDir, destinationFileName))
+        
+        val displayMetrics = resources.displayMetrics
+        val screenWidthPx = displayMetrics.widthPixels.toFloat()
+        val targetHeightPx = dp2pxf(150)
+        
+        val uCrop = UCrop.of(sourceUri, destinationUri)
+            .withAspectRatio(screenWidthPx, targetHeightPx)
+            .withMaxResultSize(1920, 1080)
+
+        try {
+            val options = UCrop.Options()
+            options.setDimmedLayerColor(Color.parseColor("#CCFFFFFF"))
+            options.setCircleDimmedLayer(false)
+            options.setShowCropGrid(true)
+            options.setFreeStyleCropEnabled(false)
+            uCrop.withOptions(options)
+        } catch (e: Exception) {
+            Logs.e("Failed to set UCrop theme", e)
+        }
+        cropSheetBannerImage.launch(uCrop.getIntent(requireContext()))
     }
 
     @Throws(IOException::class)

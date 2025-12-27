@@ -55,6 +55,9 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import io.nekohasekai.sagernet.utils.Theme
 import io.nekohasekai.sagernet.utils.showBlur
+import android.widget.ImageView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 
 class MainActivity : ThemedActivity(),
     SagerConnection.Callback,
@@ -176,6 +179,19 @@ class MainActivity : ThemedActivity(),
 
         dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         dialog.behavior.skipCollapsed = true
+        
+        val bannerImageView = view.findViewById<ImageView>(R.id.img_banner_sheet)
+
+        if (bannerImageView != null) {
+            val savedUriString = DataStore.configurationStore.getString("custom_sheet_banner_uri", null)
+
+            Glide.with(this)
+                .load(savedUriString)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .placeholder(R.drawable.uwu_banner_image_about)
+                .error(R.drawable.uwu_banner_image_about)
+                .into(bannerImageView)
+        }
 
         val trafficMenu = view.findViewById<View>(R.id.nav_traffic)
         if (DataStore.enableClashAPI) {

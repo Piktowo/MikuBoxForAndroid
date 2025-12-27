@@ -623,7 +623,12 @@ Tolong kasih izinnya di Settingan Sistem."</string>
      <string name="cardview_arrow_summary">Sembunyiin tanda panah di preferensi</string>
      <string name="cardview_icon_profile_server_title">Ikon profil server</string>
      <string name="cardview_icon_profile_server_summary">Sembunyiin ikon di profil server</string>
-     <string name="banner_category">Banner</string>
+     <string name="banner_home_category">Banner beranda</string>
+     <string name="banner_sheet_category">Banner bottomsheet</string>
+     <string name="banner_custom_sheet_title">Ganti gambar banner bottomsheet</string>
+     <string name="banner_custom_sheet_summary">Pilih gambar dari galeri buat banner di bottomsheet</string>
+     <string name="delete_custom_banner_sheet">Ilangin banner kustom bottomsheet</string>
+     <string name="delete_custom_banner_sheet_summary">Balikin ke banner bottomsheet bawaan</string>
      <string name="banner_height_title">Tinggi bannernya</string>
      <string name="banner_height_summary">Atur tinggi banner buat di halaman beranda (dalam satuan dp), Default: 100</string>
      <string name="banner_custom_title">Ganti gambar banner</string>

@@ -94,7 +94,7 @@
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
     <PreferenceCategory
-        app:title="@string/banner_category">
+        app:title="@string/banner_home_category">
         <SwitchPreference
             android:layout="@layout/uwu_top_switch"
             android:title="@string/banner_home_title"
@@ -125,6 +125,21 @@
             app:summary="@string/delete_custom_banner_summary"
             app:title="@string/delete_custom_banner"
             app:dependency="show_banner_layout"
+            app:icon="@drawable/ic_action_delete" />
+            </PreferenceCategory>
+    <PreferenceCategory
+        app:title="@string/banner_sheet_category">
+        <Preference
+            android:layout="@layout/uwu_top"
+            android:title="@string/banner_custom_sheet_title"
+            android:key="action_change_sheet_banner_image"
+            android:summary="@string/banner_custom_sheet_summary"
+            app:icon="@drawable/ic_image_area" />
+        <Preference
+            android:layout="@layout/uwu_bot"
+            app:key="action_delete_sheet_banner_image"
+            app:summary="@string/delete_custom_banner_sheet_summary"
+            app:title="@string/delete_custom_banner_sheet"
             app:icon="@drawable/ic_action_delete" />
     </PreferenceCategory>
     <PreferenceCategory

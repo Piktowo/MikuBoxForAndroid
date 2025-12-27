@@ -40,6 +40,9 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceGroup
+import android.widget.ImageView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 
 @Suppress("UNCHECKED_CAST")
 class GroupSettingsActivity(
@@ -459,6 +462,19 @@ class GroupSettingsMenuBottomSheet : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        
+        val bannerImageView = view.findViewById<ImageView>(R.id.img_banner_sheet)
+
+        if (bannerImageView != null) {
+            val savedUriString = DataStore.configurationStore.getString("custom_sheet_banner_uri", null)
+
+            Glide.with(this)
+                .load(savedUriString)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .placeholder(R.drawable.uwu_banner_image_about)
+                .error(R.drawable.uwu_banner_image_about)
+                .into(bannerImageView)
+        }
 
         val clickListener = View.OnClickListener {
             mListener?.onOptionClicked(it.id)
