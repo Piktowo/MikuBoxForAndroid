@@ -48,6 +48,7 @@ class SpeedTestBottomSheet : BottomSheetDialogFragment() {
         .connectTimeout(10, TimeUnit.SECONDS) 
         .readTimeout(10, TimeUnit.SECONDS)
         .writeTimeout(10, TimeUnit.SECONDS)
+        .connectionPool(okhttp3.ConnectionPool(5, 5, TimeUnit.MINUTES))
         .build()
 
     private val dummyData by lazy { ByteArray(1024 * 1024) }
@@ -155,9 +156,18 @@ class SpeedTestBottomSheet : BottomSheetDialogFragment() {
         resetButtonState()
     }
 
-    private suspend fun performLatencyCheck(iterations: Int): List<Long> = withContext(Dispatchers.IO) {
+    private suspend fun performLatencyCheck(iterations: Int = 10): List<Long> = withContext(Dispatchers.IO) {
         val targetUrl = "https://www.gstatic.com/generate_204"
         val results = mutableListOf<Long>()
+
+        try {
+            val request = Request.Builder()
+                .url(targetUrl)
+                .header("Connection", "keep-alive")
+                .build()
+            client.newCall(request).execute().close()
+        } catch (e: Exception) {
+        }
 
         for (i in 0 until iterations) {
             if (!isActive) break
@@ -166,21 +176,28 @@ class SpeedTestBottomSheet : BottomSheetDialogFragment() {
             try {
                 val request = Request.Builder()
                     .url(targetUrl)
-                    .header("Connection", "close")
+                    .header("Connection", "keep-alive")
                     .header("Cache-Control", "no-cache")
                     .build()
 
                 client.newCall(request).execute().use { response ->
                     val end = System.nanoTime()
                     if (response.isSuccessful || response.code == 204) {
-                        val latencyMs = (end - start) / 1_000_000
+                        val latencyNs = end - start
+                        val latencyMs = latencyNs / 1_000_000
                         results.add(latencyMs)
                     }
                 }
             } catch (e: Exception) {
             }
-            delay(100)
+            delay(50)
         }
+
+        if (results.size > 4) {
+            results.sort()
+            return@withContext results.dropLast(1)
+        }
+        
         return@withContext results
     }
 
@@ -194,18 +211,15 @@ class SpeedTestBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun runPingOnlyTest() {
-        if (!isInternetAvailable()) {
-            return
-        }
+        if (!isInternetAvailable()) return
         prepareUIForTest()
         
         textPing.setText(R.string.st_status_testing)
-        
         speedometer.speedTo(0f)
 
         testJob = scope.launch {
             try {
-                val latencies = performLatencyCheck(5)
+                val latencies = performLatencyCheck(12)
                 withContext(Dispatchers.Main) {
                     if (latencies.isNotEmpty()) {
                         textPing.text = "${latencies.average().toLong()} ms"
@@ -222,18 +236,15 @@ class SpeedTestBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun runJitterOnlyTest() {
-        if (!isInternetAvailable()) {
-            return
-        }
+        if (!isInternetAvailable()) return
         prepareUIForTest()
         
         textJitter.setText(R.string.st_status_testing)
-        
         speedometer.speedTo(0f)
 
         testJob = scope.launch {
             try {
-                val latencies = performLatencyCheck(5)
+                val latencies = performLatencyCheck(12)
                 withContext(Dispatchers.Main) {
                     if (latencies.size >= 2) {
                         textJitter.text = "${calculateJitter(latencies)} ms"
@@ -250,9 +261,7 @@ class SpeedTestBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun runIndividualTest(isDownload: Boolean) {
-        if (!isInternetAvailable()) {
-            return
-        }
+        if (!isInternetAvailable()) return
 
         prepareUIForTest()
 
@@ -283,9 +292,7 @@ class SpeedTestBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun startFullSpeedTest() {
-        if (!isInternetAvailable()) {
-            return
-        }
+        if (!isInternetAvailable()) return
         
         prepareUIForTest()
         
@@ -298,7 +305,7 @@ class SpeedTestBottomSheet : BottomSheetDialogFragment() {
 
         testJob = scope.launch {
             try {
-                val latencies = performLatencyCheck(5)
+                val latencies = performLatencyCheck(12)
                 
                 withContext(Dispatchers.Main) {
                     if (latencies.isNotEmpty()) {
@@ -400,13 +407,10 @@ class SpeedTestBottomSheet : BottomSheetDialogFragment() {
                 currentUrlIndex++
                 delay(100)
             }
-            if (currentUrlIndex < urls.size && (System.nanoTime() - startTime) / 1_000_000_000.0 < TEST_DURATION) {
-            }
         }
         
         return@withContext speedMbps
     }
-
 
     private suspend fun measureUploadSpeed(): Double = withContext(Dispatchers.IO) {
         val uploadUrls = listOf(
