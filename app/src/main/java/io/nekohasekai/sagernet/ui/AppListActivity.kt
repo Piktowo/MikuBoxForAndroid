@@ -49,7 +49,7 @@ import kotlinx.coroutines.withContext
 import kotlin.coroutines.coroutineContext
 import android.widget.ImageView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 
 class AppListActivity : ThemedActivity(),
     AppListMenuBottomSheet.OnOptionClickListener {
@@ -368,14 +368,17 @@ class AppListMenuBottomSheet : BottomSheetDialogFragment() {
         val bannerImageView = view.findViewById<ImageView>(R.id.img_banner_sheet)
 
         if (bannerImageView != null) {
+            bannerImageView.setImageResource(R.drawable.uwu_banner_image_about)
+
             val savedUriString = DataStore.configurationStore.getString("custom_sheet_banner_uri", null)
 
-            Glide.with(this)
-                .load(savedUriString)
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .placeholder(R.drawable.uwu_banner_image_about)
-                .error(R.drawable.uwu_banner_image_about)
-                .into(bannerImageView)
+            if (!savedUriString.isNullOrBlank()) {
+                Glide.with(this)
+                    .load(savedUriString)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .dontAnimate()
+                    .into(bannerImageView)
+            }
         }
         
         val clickListener = View.OnClickListener {

@@ -6,7 +6,6 @@ import android.util.AttributeSet
 import androidx.preference.PreferenceDataStore
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.neko.shapeimageview.ShaderImageView
 import com.neko.shapeimageview.shader.ShaderHelper
 import com.neko.shapeimageview.shader.SvgShader
@@ -28,6 +27,9 @@ class ProfileBannerImageView @JvmOverloads constructor(
 
     init {
         scaleType = ScaleType.CENTER_CROP
+        if (!isInEditMode) {
+             loadImage()
+        }
     }
 
     override fun onAttachedToWindow() {
@@ -62,10 +64,9 @@ class ProfileBannerImageView @JvmOverloads constructor(
             Glide.with(this)
                 .asBitmap()
                 .load(savedUri)
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .skipMemoryCache(false)
-                .placeholder(R.drawable.uwu_banner_profile)
-                .error(R.drawable.uwu_banner_profile)
+                .dontAnimate()
                 .into(this)
 
         } else {
@@ -74,9 +75,6 @@ class ProfileBannerImageView @JvmOverloads constructor(
     }
 
     private fun loadDefault() {
-        Glide.with(this)
-            .asBitmap()
-            .load(R.drawable.uwu_banner_profile)
-            .into(this)
+        setImageResource(R.drawable.uwu_banner_profile)
     }
 }

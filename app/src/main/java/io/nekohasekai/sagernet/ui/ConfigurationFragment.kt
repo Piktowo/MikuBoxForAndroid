@@ -41,7 +41,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -1778,7 +1778,8 @@ class ConfigurationFragment @JvmOverloads constructor(
         bannerImageView?.let {
             Glide.with(this)
                 .load(uri)
-                .transition(DrawableTransitionOptions.withCrossFade())
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .dontAnimate()
                 .into(it)
         }
     }
@@ -1795,7 +1796,6 @@ class ConfigurationFragment @JvmOverloads constructor(
                 params.height = dp2px(heightDp)
                 
                 layoutParams = params
-                scaleType = ImageView.ScaleType.CENTER_CROP
                 requestLayout()
             }
         }
