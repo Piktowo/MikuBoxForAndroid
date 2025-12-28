@@ -24,20 +24,23 @@ class V2rayConfigBottomSheet : BottomSheetDialogFragment() {
     private lateinit var textLoading: TextView
     private lateinit var btnGenerate: Button
     private lateinit var btnCopy: Button
-    
+    private lateinit var editLimit: EditText
     private lateinit var autoCompleteProtocol: AutoCompleteTextView 
 
     private var currentConfig: String = ""
-    private var currentPort: Int = 443 
     private var selectedProtocol: String = ""
     private var listProtocols: List<String> = emptyList()
 
     companion object {
         const val TAG = "V2rayConfigBottomSheet"
         
-        private const val PRIMARY_URL = "https://www.afrcloud.site/api/subscription/v2ray?type=mix&domain=all&limit=50&tls=true"
+        // Base URL Primary
+        private const val PRIMARY_BASE_URL = "https://www.afrcloud.site/api/subscription/v2ray?type=mix&domain=all&tls=true"
         
+        // Fallback URLs
         private const val FALLBACK_BASE_URL = "https://raw.githubusercontent.com/barry-far/V2ray-Config/refs/heads/main/Sub"
+        private const val FALLBACK_SECONDARY_URL = "https://raw.githubusercontent.com/Epodonios/v2ray-configs/refs/heads/main/All_Configs_Sub.txt"
+        private const val FALLBACK_TERTIARY_URL = "https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/v2ray/all_sub.txt"
 
         private val PROTOCOL_PREFIXES = listOf(
             "vmess://", "vless://", "trojan://",
@@ -77,18 +80,16 @@ class V2rayConfigBottomSheet : BottomSheetDialogFragment() {
         textLoading = view.findViewById(R.id.textLoading)
         btnGenerate = view.findViewById(R.id.btnGenerate)
         btnCopy = view.findViewById(R.id.btnCopy)
-        
+        editLimit = view.findViewById(R.id.editLimit)
         autoCompleteProtocol = view.findViewById(R.id.autoCompleteProtocol)
     }
 
     private fun setupMaterialDropdown() {
         val labelAll = getString(R.string.protocol_all)
         listProtocols = listOf(labelAll, "VMess", "VLESS", "Trojan", "Shadowsocks", "WireGuard", "Hysteria2")
-        
         selectedProtocol = labelAll
 
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, listProtocols)
-        
         autoCompleteProtocol.setAdapter(adapter)
         autoCompleteProtocol.setText(selectedProtocol, false) 
 
@@ -101,7 +102,11 @@ class V2rayConfigBottomSheet : BottomSheetDialogFragment() {
         btnGenerate.setOnClickListener {
             resetUI()
             val protocol = if (selectedProtocol.isNotEmpty()) selectedProtocol else autoCompleteProtocol.text.toString()
-            fetchV2rayConfig(protocol)
+            
+            val limitStr = editLimit.text.toString()
+            val limit = limitStr.toIntOrNull()?.coerceAtLeast(1) ?: 1
+            
+            fetchV2rayConfig(protocol, limit)
         }
 
         btnCopy.setOnClickListener {
@@ -113,7 +118,6 @@ class V2rayConfigBottomSheet : BottomSheetDialogFragment() {
         textLoading.text = getString(R.string.label_loading)
         textConfig.text = ""
         currentConfig = ""
-        currentPort = 443 
     }
 
     private fun copyConfigToClipboard() {
@@ -143,40 +147,59 @@ class V2rayConfigBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
-    private fun fetchV2rayConfig(protocol: String) {
+    private fun fetchV2rayConfig(protocol: String, limit: Int) {
         lifecycleScope.launch(Dispatchers.IO) {
-            var finalConfig: String? = null
+            var finalResult: String? = null
             var errorMsg: String = ""
 
+            // 1. Primary
             try {
-                val rawContent = URL(PRIMARY_URL).openStream().bufferedReader().use { it.readText() }
+                val requestLimit = if (limit < 10) 10 else limit
+                val primaryUrl = "$PRIMARY_BASE_URL&limit=$requestLimit"
+                val rawContent = URL(primaryUrl).openStream().bufferedReader().use { it.readText() }
                 val decodedContent = tryDecodeSubscription(rawContent)
-                val candidate = selectRandomConfigLine(decodedContent, protocol, isPrimary = true)
-                
-                if (!candidate.startsWith("Error") && !candidate.startsWith("No")) {
-                    finalConfig = candidate
-                }
+                finalResult = selectConfigs(decodedContent, protocol, limit)
             } catch (e: Exception) {
-                errorMsg = e.localizedMessage ?: "Primary source error"
+                errorMsg = "Primary: ${e.message}"
             }
 
-            if (finalConfig == null) {
+            // 2. Fallback 1
+            if (finalResult == null) {
                 try {
-
                     val fallbackUrl = "$FALLBACK_BASE_URL${(1..50).random()}.txt"
                     val content = URL(fallbackUrl).openStream().bufferedReader().use { it.readText() }
-                    
-                    finalConfig = selectRandomConfigLine(content, protocol, isPrimary = false)
+                    finalResult = selectConfigs(content, protocol, limit)
                 } catch (e: Exception) {
-                    errorMsg = e.localizedMessage ?: "All sources failed"
+                    errorMsg = "Fallback 1: ${e.message}"
                 }
             }
 
-            if (finalConfig != null && !finalConfig.startsWith("Error") && !finalConfig.startsWith("No")) {
-                val serverPort = extractPortFromConfig(finalConfig)
-                currentConfig = finalConfig
-                currentPort = serverPort
-                updateUI(finalConfig, currentPort)
+            // 3. Fallback 2
+            if (finalResult == null) {
+                try {
+                    val content = URL(FALLBACK_SECONDARY_URL).openStream().bufferedReader().use { it.readText() }
+                    val decodedContent = tryDecodeSubscription(content)
+                    finalResult = selectConfigs(decodedContent, protocol, limit)
+                } catch (e: Exception) {
+                    errorMsg = "Fallback 2: ${e.message}"
+                }
+            }
+
+            // 4. Fallback 3
+            if (finalResult == null) {
+                try {
+                    val content = URL(FALLBACK_TERTIARY_URL).openStream().bufferedReader().use { it.readText() }
+                    val decodedContent = tryDecodeSubscription(content)
+                    finalResult = selectConfigs(decodedContent, protocol, limit)
+                } catch (e: Exception) {
+                    errorMsg = "All sources failed"
+                }
+            }
+
+            if (finalResult != null) {
+                currentConfig = finalResult!!
+                val count = finalResult!!.lines().filter { it.isNotBlank() }.count()
+                updateUI(finalResult!!, count)
             } else {
                 val finalError = Exception(if (errorMsg.isNotEmpty()) errorMsg else "No config found for $protocol")
                 handleConfigError(finalError)
@@ -196,7 +219,7 @@ class V2rayConfigBottomSheet : BottomSheetDialogFragment() {
         return content
     }
 
-    private fun selectRandomConfigLine(content: String, protocol: String, isPrimary: Boolean): String {
+    private fun selectConfigs(content: String, protocol: String, limit: Int): String? {
         val targetPrefix = getPrefixForProtocol(protocol)
         val labelAll = getString(R.string.protocol_all)
         
@@ -213,19 +236,24 @@ class V2rayConfigBottomSheet : BottomSheetDialogFragment() {
             }
             .toList()
         
-        return if (validLines.isNotEmpty()) {
-            validLines.random()
-        } else {
-            if (isPrimary) "No config in Primary" else getString(R.string.error_specific_protocol, protocol)
-        }
+        if (validLines.isEmpty()) return null
+
+        return validLines.shuffled()
+            .take(limit)
+            .joinToString("\n")
     }
 
-    private suspend fun updateUI(config: String, port: Int) {
+    private suspend fun updateUI(config: String, count: Int) {
         withContext(Dispatchers.Main) {
             textConfig.text = config
-            if (port > 0) {
-                val type = detectConfigType(config)
-                textLoading.text = getString(R.string.status_format, type, port)
+            if (count > 0) {
+                if (count == 1) {
+                    val port = extractPortFromConfig(config)
+                    val type = detectConfigType(config)
+                    textLoading.text = getString(R.string.status_format, type, port)
+                } else {
+                    textLoading.text = getString(R.string.status_generated_success, count)
+                }
             } else {
                 textLoading.text = getString(R.string.status_failed)
             }
@@ -248,7 +276,7 @@ class V2rayConfigBottomSheet : BottomSheetDialogFragment() {
             config.startsWith("hysteria2://") -> extractPortFromHysteria(config)
             else -> extractPortFromText(config)
         }
-        return explicitPort ?: extractPortFromText(config) ?: 443
+        return explicitPort ?: extractPortFromText(config) ?: 0
     }
 
     private fun extractPortFromVmess(config: String): Int? {
@@ -259,25 +287,43 @@ class V2rayConfigBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun extractPortFromVless(config: String): Int? {
-        return config.substringAfterLast(':').substringBefore('/').substringBefore('?').toIntOrNull()
+        return try {
+            val uriPart = config.substringAfterLast('@').substringBefore('?')
+            uriPart.substringAfterLast(':').toIntOrNull()
+        } catch (e: Exception) { null }
     }
 
     private fun extractPortFromShadowsocks(config: String): Int? {
-        val decoded = decodeBase64Safe(config.removePrefix("ss://").substringBefore('#'))
-        return decoded.substringAfterLast(':').toIntOrNull()
+        return try {
+            val raw = config.removePrefix("ss://")
+            val mainPart = if (raw.contains("#")) raw.substringBefore("#") else raw
+            if (mainPart.contains("@")) {
+                mainPart.substringAfterLast(":").toIntOrNull()
+            } else {
+                val decoded = decodeBase64Safe(mainPart)
+                decoded.substringAfterLast(':').toIntOrNull()
+            }
+        } catch (e: Exception) { null }
     }
 
     private fun extractPortFromTrojan(config: String): Int? {
-        return config.substringAfterLast(':').substringBefore('/').substringBefore('?').toIntOrNull()
+         return try {
+            val uriPart = config.substringAfterLast('@').substringBefore('?')
+            uriPart.substringAfterLast(':').toIntOrNull()
+        } catch (e: Exception) { null }
     }
 
     private fun extractPortFromHysteria(config: String): Int? {
-        return config.substringAfterLast(':').substringBefore('/').substringBefore('?').toIntOrNull()
+        return try {
+            val uriPart = config.substringAfterLast('@').substringBefore('?')
+            uriPart.substringAfterLast(':').toIntOrNull()
+        } catch (e: Exception) { null }
     }
 
     private fun extractPortFromText(text: String): Int? {
-        val portRegex = """:(\d+)(?=/|\?|$|#)""".toRegex()
-        return portRegex.find(text)?.groups?.get(1)?.value?.toIntOrNull()
+        val portRegex = """:(\d{2,5})(?=/|\?|$|#)""".toRegex()
+        val match = portRegex.find(text)
+        return match?.groups?.get(1)?.value?.toIntOrNull()
     }
 
     private fun decodeBase64Safe(encoded: String): String {

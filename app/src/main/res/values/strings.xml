@@ -766,6 +766,8 @@ Please grant this permission in System Settings."</string>
     <string name="status_format">%1$s (port: %2$d)</string>
     <string name="speedtest">Speed Test</string>
     <string name="freeconfig">Free Configuration</string>
+    <string name="config_count">Count</string>
+    <string name="status_generated_success">Successfully fetched %1$d configurations</string>
     
     <!-- uwu -->
     <string name="uwu_about_miku_title">Who is Hatsune Miku?</string>

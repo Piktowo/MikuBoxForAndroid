@@ -671,6 +671,8 @@ Tolong kasih izinnya di Settingan Sistem."</string>
     <string name="status_format">%1$s (port: %2$d)</string>
     <string name="speedtest">Cek Speed</string>
     <string name="freeconfig">Config Gratisan</string>
+    <string name="config_count">Jumlah</string>
+    <string name="status_generated_success">Berhasil dapet %1$d config</string>
     
     <string name="uwu_about_miku_title">Siapa itu Hatsune Miku?</string>
     <string name="uwu_about_miku_summary">Hatsune Miku itu penyanyi virtual berbasis Vocaloid yang dirilis sama Crypton Future Media, kode namanya CV01. Dikenal gara-gara rambut twintail panjang warna biru kehijauan sama suaranya yang jernih, dia itu cewek 16 tahun dan idola virtual yang terkenal sedunia. Dia aktif di musik, konser, dan anime, plus disayang banget sama fans-fansnya.</string>

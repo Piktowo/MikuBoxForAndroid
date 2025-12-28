@@ -666,6 +666,8 @@
     <string name="status_format">%1$s (端口: %2$d)</string>
     <string name="speedtest">测速</string>
     <string name="freeconfig">免费配置</string>
+    <string name="config_count">数量</string>
+    <string name="status_generated_success">成功获取 %1$d 个配置</string>
     
     <!-- uwu -->
     <string name="uwu_about_miku_title">谁是 Hatsune Miku？</string>

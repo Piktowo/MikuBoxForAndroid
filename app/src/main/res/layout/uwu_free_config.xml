@@ -34,6 +34,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content">
                     <com.google.android.material.textfield.TextInputLayout
+                        android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleMedium"
                         android:id="@+id/inputLayoutProtocol"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
@@ -47,6 +48,21 @@
                             android:text="@string/protocol_all"
                             android:inputType="none" />
                     </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputLayout
+                            android:layout_marginTop="16.0dip"
+                            android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleMedium"
+                            android:id="@+id/inputLayoutLimit"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/config_count"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                            <EditText
+                                android:id="@+id/editLimit"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:text="1"
+                                android:inputType="number" />
+                        </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
             <LinearLayout
