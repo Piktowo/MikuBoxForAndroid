@@ -24,6 +24,7 @@ class V2rayConfigBottomSheet : BottomSheetDialogFragment() {
     private lateinit var textLoading: TextView
     private lateinit var btnGenerate: Button
     private lateinit var btnCopy: Button
+    
     private lateinit var editLimit: EditText
     private lateinit var autoCompleteProtocol: AutoCompleteTextView 
 
@@ -34,11 +35,8 @@ class V2rayConfigBottomSheet : BottomSheetDialogFragment() {
     companion object {
         const val TAG = "V2rayConfigBottomSheet"
         
-        // Base URL Primary
         private const val PRIMARY_BASE_URL = "https://www.afrcloud.site/api/subscription/v2ray?type=mix&domain=all&tls=true"
         
-        // Fallback URLs
-        private const val FALLBACK_BASE_URL = "https://raw.githubusercontent.com/barry-far/V2ray-Config/refs/heads/main/Sub"
         private const val FALLBACK_SECONDARY_URL = "https://raw.githubusercontent.com/Epodonios/v2ray-configs/refs/heads/main/All_Configs_Sub.txt"
         private const val FALLBACK_TERTIARY_URL = "https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/v2ray/all_sub.txt"
 
@@ -152,7 +150,6 @@ class V2rayConfigBottomSheet : BottomSheetDialogFragment() {
             var finalResult: String? = null
             var errorMsg: String = ""
 
-            // 1. Primary
             try {
                 val requestLimit = if (limit < 10) 10 else limit
                 val primaryUrl = "$PRIMARY_BASE_URL&limit=$requestLimit"
@@ -163,29 +160,16 @@ class V2rayConfigBottomSheet : BottomSheetDialogFragment() {
                 errorMsg = "Primary: ${e.message}"
             }
 
-            // 2. Fallback 1
-            if (finalResult == null) {
-                try {
-                    val fallbackUrl = "$FALLBACK_BASE_URL${(1..50).random()}.txt"
-                    val content = URL(fallbackUrl).openStream().bufferedReader().use { it.readText() }
-                    finalResult = selectConfigs(content, protocol, limit)
-                } catch (e: Exception) {
-                    errorMsg = "Fallback 1: ${e.message}"
-                }
-            }
-
-            // 3. Fallback 2
             if (finalResult == null) {
                 try {
                     val content = URL(FALLBACK_SECONDARY_URL).openStream().bufferedReader().use { it.readText() }
                     val decodedContent = tryDecodeSubscription(content)
                     finalResult = selectConfigs(decodedContent, protocol, limit)
                 } catch (e: Exception) {
-                    errorMsg = "Fallback 2: ${e.message}"
+                    errorMsg = "Fallback 1: ${e.message}"
                 }
             }
 
-            // 4. Fallback 3
             if (finalResult == null) {
                 try {
                     val content = URL(FALLBACK_TERTIARY_URL).openStream().bufferedReader().use { it.readText() }
