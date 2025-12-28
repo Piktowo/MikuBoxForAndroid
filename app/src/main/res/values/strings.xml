@@ -752,6 +752,20 @@ Please grant this permission in System Settings."</string>
    <string name="st_test_upload">Click here to test upload only</string>
    <string name="st_test_ping">Click here to test ping only</string>
    <string name="st_test_jitter">Click here to test jitter only</string>
+    <string name="label_loading">Loading...</string>
+    <string name="protocol_all">All</string>
+    <string name="protocol_select">Select Protocol</string>
+    <string name="generate">Generate</string>
+    <string name="status_failed">Failed / Empty</string>
+    <string name="status_load_failed">Failed to load</string>
+    <string name="toast_config_copied">Configuration copied</string>
+    <string name="toast_no_config">No valid config yet</string>
+    <string name="error_no_valid_config">No valid configuration found</string>
+    <string name="error_specific_protocol">No %1$s config in this file. Try again.</string> 
+    <string name="error_prefix">Error: %1$s</string> 
+    <string name="status_format">%1$s (port: %2$d)</string>
+    <string name="speedtest">Speed Test</string>
+    <string name="freeconfig">Free Configuration</string>
     
     <!-- uwu -->
     <string name="uwu_about_miku_title">Who is Hatsune Miku?</string>

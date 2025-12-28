@@ -114,6 +114,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import java.util.zip.ZipInputStream
 import io.nekohasekai.sagernet.utils.showBlur
 import com.neko.speedtest.SpeedTestBottomSheet
+import com.neko.config.V2rayConfigBottomSheet
 
 class ConfigurationFragment @JvmOverloads constructor(
     val select: Boolean = false, val selectedItem: ProxyEntity? = null, val titleRes: Int = 0
@@ -181,9 +182,14 @@ class ConfigurationFragment @JvmOverloads constructor(
 
         setupBannerLayoutController()
         
-        val speedTestTrigger = view.findViewById<View>(R.id.banner_home)
+        val speedTestTrigger = view.findViewById<View>(R.id.speedTest)
         speedTestTrigger?.setOnClickListener {
             SpeedTestBottomSheet().show(childFragmentManager, "SpeedTestBottomSheet")
+         }
+         
+         val V2rayConfigTrigger = view.findViewById<View>(R.id.freeConfig)
+        V2rayConfigTrigger?.setOnClickListener {
+            V2rayConfigBottomSheet().show(childFragmentManager, "V2rayConfigBottomSheet")
          }
          
         if (!select) {
@@ -1785,7 +1791,7 @@ class ConfigurationFragment @JvmOverloads constructor(
     }
 
     private fun setupBannerLayoutController() {
-        val linear = requireView().findViewById<View>(R.id.banner_home)
+        val linear = requireView().findViewById<View>(R.id.card_expandable)
         val bannerImageView = requireView().findViewById<ImageView>(R.id.img_banner_home)
 
         fun updateBannerSize() {

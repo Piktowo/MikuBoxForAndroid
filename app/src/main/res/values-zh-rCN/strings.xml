@@ -652,6 +652,20 @@
    <string name="st_test_upload">点击这里仅测试上传</string>
    <string name="st_test_ping">点击此处仅测试 Ping</string>
    <string name="st_test_jitter">点击此处仅测试 Jitter</string>
+    <string name="label_loading">加载中...</string>
+    <string name="protocol_all">全部</string>
+    <string name="protocol_select">选择协议</string>
+    <string name="generate">生成</string>
+    <string name="status_failed">失败 / 空</string>
+    <string name="status_load_failed">加载失败</string>
+    <string name="toast_config_copied">配置已复制</string>
+    <string name="toast_no_config">暂无有效配置</string>
+    <string name="error_no_valid_config">未找到有效配置</string>
+    <string name="error_specific_protocol">此文件中没有 %1$s 配置。请重试。</string> 
+    <string name="error_prefix">错误：%1$s</string>
+    <string name="status_format">%1$s (端口: %2$d)</string>
+    <string name="speedtest">测速</string>
+    <string name="freeconfig">免费配置</string>
     
     <!-- uwu -->
     <string name="uwu_about_miku_title">谁是 Hatsune Miku？</string>
