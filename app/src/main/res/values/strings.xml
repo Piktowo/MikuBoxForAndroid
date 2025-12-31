@@ -752,22 +752,23 @@ Please grant this permission in System Settings."</string>
    <string name="st_test_upload">Click here to test upload only</string>
    <string name="st_test_ping">Click here to test ping only</string>
    <string name="st_test_jitter">Click here to test jitter only</string>
-    <string name="label_loading">Loading...</string>
     <string name="protocol_all">All</string>
     <string name="protocol_select">Select Protocol</string>
     <string name="generate">Generate</string>
-    <string name="status_failed">Failed / Empty</string>
-    <string name="status_load_failed">Failed to load</string>
-    <string name="toast_config_copied">Configuration copied</string>
-    <string name="toast_no_config">No valid config yet</string>
-    <string name="error_no_valid_config">No valid configuration found</string>
-    <string name="error_specific_protocol">No %1$s config in this file. Try again.</string> 
-    <string name="error_prefix">Error: %1$s</string> 
-    <string name="status_format">%1$s (port: %2$d)</string>
     <string name="speedtest">Speed Test</string>
     <string name="freeconfig">Free Configuration</string>
     <string name="config_count">Count</string>
-    <string name="status_generated_success">Successfully fetched %1$d configurations</string>
+    <string name="config_hostname">Hostname</string>
+    <string name="config_country_code">Country Code</string>
+    <string name="option_tls_true">True (Port 443)</string>
+    <string name="option_tls_false">False (Port 80)</string>
+    <string name="option_sni_true">True</string>
+    <string name="option_sni_false">False</string>
+    <string name="msg_generating">Generating &amp; Importing...</string>
+    <string name="msg_import_success">Config imported successfully!</string>
+    <string name="msg_no_proxies">No valid proxies found in response.</string>
+    <string name="msg_fetch_failed">Failed to fetch config. Error: %1$s</string>
+    <string name="msg_import_failed">Import Failed: %1$s</string>
     
     <!-- uwu -->
     <string name="uwu_about_miku_title">Who is Hatsune Miku?</string>
@@ -821,6 +822,9 @@ By HatsuneMikuUwU Development"</string>
     <string name="uwu_mikubox">MikuBox</string>
     <string name="uwu_hatsune">Hatsune</string>
     <string name="uwu_hsskyboy">NPCN</string>
+    <string name="uwu_noir7r">Noir7R</string>
+    <string name="uwu_noir7r_summary">API &amp; server free configuration</string>
+    <string name="uwu_big_thanks">Big thanks</string>
 
     <!-- welcome -->
     <string name="uwu_skip">Skip</string>

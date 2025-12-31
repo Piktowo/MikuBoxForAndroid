@@ -8,25 +8,151 @@
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <ScrollView
+    <com.google.android.material.card.MaterialCardView
+        android:paddingTop="0.0dip"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_marginStart="0.0dip"
-        android:layout_marginEnd="0.0dip">
+        android:layout_marginTop="16.0dip"
+        android:layout_marginBottom="0.0dip"
+        android:layout_marginStart="16.0dip"
+        android:layout_marginEnd="16.0dip"
+        app:cardBackgroundColor="#00000000"
+        app:cardCornerRadius="28.0dip"
+        app:cardElevation="0.0dip">
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="-16.0dip"
+        android:layout_marginStart="-16.0dip"
+        android:layout_marginEnd="-16.0dip">
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:layout_height="wrap_content">
             <com.google.android.material.card.MaterialCardView
-                android:focusable="true"
-                android:clickable="true"
+                android:clipToPadding="false"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16.0dip"
                 android:layout_marginTop="16.0dip"
-                android:layout_marginRight="16.0dip"
+                android:layout_marginBottom="8.0dip"
+                android:layout_marginStart="16.0dip"
+                android:layout_marginEnd="16.0dip"
                 app:cardBackgroundColor="?colorCard"
-                app:cardCornerRadius="14.0dip"
+                app:cardCornerRadius="28.0dip"
+                app:cardElevation="0.0dip">
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content">
+                    <com.neko.elasticview.ElasticView
+                        android:layout_width="fill_parent"
+                        android:layout_height="150.0dip"
+                        android:layout_marginTop="12.0dip"
+                        android:layout_marginBottom="12.0dip"
+                        android:layout_marginStart="12.0dip"
+                        android:layout_marginEnd="12.0dip"
+                        app:cardBackgroundColor="#00000000"
+                        app:cardCornerRadius="19.0dip"
+                        app:cardElevation="0.0dip"
+                        app:rippleColor="#00000000">
+                        <ImageView
+                            android:id="@+id/img_banner_sheet"
+                            android:layout_width="fill_parent"
+                            android:layout_height="150.0dip"
+                            android:src="@drawable/uwu_banner_image_about"
+                            android:scaleType="centerCrop"
+                            android:elevation="0.0dip" />
+                        <View
+                            android:background="@android:color/black"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:alpha="0.2" />
+                        <com.neko.particlesdrawable.ParticlesView
+                            android:background="#00000000"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_centerInParent="true"
+                            app:dotColor="?colorPrimary"
+                            app:frameDelayMillis="10"
+                            app:lineColor="?colorPrimary"
+                            app:lineDistance="86.0dip"
+                            app:lineThickness="1.0dip"
+                            app:maxDotRadius="4.0dip"
+                            app:minDotRadius="1.0dip"
+                            app:numDots="60"
+                            app:stepMultiplier="1.0" />
+                        <LinearLayout
+                            android:gravity="bottom"
+                            android:layout_gravity="bottom"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content">
+                            <LinearLayout
+                                android:gravity="center_vertical"
+                                android:clipToPadding="false"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content">
+                                <LinearLayout
+                                    android:gravity="center"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="16.0dip"
+                                    android:layout_marginBottom="16.0dip"
+                                    android:layout_marginStart="16.0dip"
+                                    android:layout_marginEnd="5.0dip">
+                                    <com.neko.widget.ProfileBannerImageView
+                                        android:layout_width="60.0dip"
+                                        android:layout_height="60.0dip"
+                                        android:src="@drawable/uwu_banner_profile"
+                                        app:siBorderColor="@android:color/white"
+                                        app:siBorderWidth="3.0dip" />
+                                </LinearLayout>
+                                <RelativeLayout
+                                    android:paddingTop="16.0dip"
+                                    android:paddingBottom="16.0dip"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1.0"
+                                    android:layout_marginStart="5.0dip"
+                                    android:layout_marginEnd="5.0dip">
+                                    <LinearLayout
+                                        android:orientation="vertical"
+                                        android:layout_width="fill_parent"
+                                        android:layout_height="wrap_content">
+                                        <com.neko.marquee.text.UserNameTextView
+                                            android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleMedium"
+                                            android:textSize="17.0sp"
+                                            android:textColor="@android:color/white"
+                                            android:ellipsize="marquee"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:singleLine="true"
+                                            android:marqueeRepeatLimit="marquee_forever" />
+                                        <com.neko.marquee.text.RandomText
+                                            android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleMedium"
+                                            android:textSize="14.0sp"
+                                            android:textColor="@android:color/white"
+                                            android:ellipsize="marquee"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:singleLine="true"
+                                            android:marqueeRepeatLimit="marquee_forever"
+                                            uwu_runnable="false" />
+                                    </LinearLayout>
+                                </RelativeLayout>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </com.neko.elasticview.ElasticView>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8.0dip"
+                android:layout_marginBottom="8.0dip"
+                android:layout_marginStart="16.0dip"
+                android:layout_marginEnd="16.0dip"
+                app:cardBackgroundColor="?colorCard"
+                app:cardCornerRadius="28.0dip"
                 app:cardElevation="0.0dip">
                 <LinearLayout
                     android:orientation="vertical"
@@ -49,30 +175,93 @@
                             android:inputType="none" />
                     </com.google.android.material.textfield.TextInputLayout>
                     <com.google.android.material.textfield.TextInputLayout
-                            android:layout_marginTop="16.0dip"
-                            android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleMedium"
-                            android:id="@+id/inputLayoutLimit"
+                        android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleMedium"
+                        android:id="@+id/inputLayoutLimit"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16.0dip"
+                        android:hint="@string/config_count"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                        <EditText
+                            android:id="@+id/editLimit"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:hint="@string/config_count"
-                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-                            <EditText
-                                android:id="@+id/editLimit"
-                                android:layout_width="fill_parent"
-                                android:layout_height="wrap_content"
-                                android:text="1"
-                                android:inputType="number" />
-                        </com.google.android.material.textfield.TextInputLayout>
+                            android:text="1"
+                            android:inputType="number" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleMedium"
+                        android:id="@+id/inputLayoutServer"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16.0dip"
+                        android:hint="@string/config_hostname"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                        <EditText
+                            android:id="@+id/editServer"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:text="www.google.com"
+                            android:inputType="textUri" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleMedium"
+                        android:id="@+id/inputLayoutCountry"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16.0dip"
+                        android:hint="@string/config_country_code"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                        <EditText
+                            android:id="@+id/editCountry"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:text="SG"
+                            android:inputType="textCapCharacters" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleMedium"
+                        android:id="@+id/inputLayoutTls"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16.0dip"
+                        android:hint="TLS"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+                        <AutoCompleteTextView
+                            android:id="@+id/autoCompleteTls"
+                            android:padding="12.0dip"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/option_tls_true"
+                            android:inputType="none" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleMedium"
+                        android:id="@+id/inputLayoutSni"
+                        android:visibility="visible"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16.0dip"
+                        android:hint="SNI"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+                        <AutoCompleteTextView
+                            android:id="@+id/autoCompleteSni"
+                            android:padding="12.0dip"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/option_sni_true"
+                            android:inputType="none" />
+                    </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16.0dip"
-                android:layout_marginTop="16.0dip"
-                android:layout_marginRight="16.0dip"
-                android:layout_marginBottom="8.0dip">
+                android:layout_marginTop="8.0dip"
+                android:layout_marginBottom="16.0dip"
+                android:layout_marginStart="16.0dip"
+                android:layout_marginEnd="16.0dip">
                 <Button
                     android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleMedium"
                     android:textColor="?android:textColorPrimaryInverse"
@@ -83,55 +272,7 @@
                     android:text="@string/generate"
                     style="@style/Widget.AppCompat.Button.Colored" />
             </LinearLayout>
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16.0dip"
-                android:layout_marginTop="8.0dip"
-                android:layout_marginRight="16.0dip"
-                app:cardBackgroundColor="?colorCard"
-                app:cardCornerRadius="14.0dip"
-                app:cardElevation="0.0dip">
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:padding="16.0dip"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleMedium"
-                        android:textSize="17.0sp"
-                        android:textColor="?colorOnSurface"
-                        android:id="@+id/textLoading"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/hf_result" />
-                    <TextView
-                        android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleSmall"
-                        android:textSize="14.0sp"
-                        android:textColor="?colorOnSurfaceVariant"
-                        android:id="@+id/textConfig"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16.0dip"
-                android:layout_marginTop="16.0dip"
-                android:layout_marginRight="16.0dip"
-                android:layout_marginBottom="16.0dip">
-                <Button
-                    android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleMedium"
-                    android:textColor="?android:textColorPrimaryInverse"
-                    android:id="@+id/btnCopy"
-                    android:background="@drawable/uwu_bg_button"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/hf_copy"
-                    style="@style/Widget.AppCompat.Button.Colored" />
-            </LinearLayout>
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
+  </com.google.android.material.card.MaterialCardView>
 </LinearLayout>

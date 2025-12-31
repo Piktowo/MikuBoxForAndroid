@@ -652,24 +652,27 @@
    <string name="st_test_upload">点击这里仅测试上传</string>
    <string name="st_test_ping">点击此处仅测试 Ping</string>
    <string name="st_test_jitter">点击此处仅测试 Jitter</string>
-    <string name="label_loading">加载中...</string>
     <string name="protocol_all">全部</string>
     <string name="protocol_select">选择协议</string>
     <string name="generate">生成</string>
-    <string name="status_failed">失败 / 空</string>
-    <string name="status_load_failed">加载失败</string>
-    <string name="toast_config_copied">配置已复制</string>
-    <string name="toast_no_config">暂无有效配置</string>
-    <string name="error_no_valid_config">未找到有效配置</string>
-    <string name="error_specific_protocol">此文件中没有 %1$s 配置。请重试。</string> 
-    <string name="error_prefix">错误：%1$s</string>
-    <string name="status_format">%1$s (端口: %2$d)</string>
     <string name="speedtest">测速</string>
     <string name="freeconfig">免费配置</string>
     <string name="config_count">数量</string>
-    <string name="status_generated_success">成功获取 %1$d 个配置</string>
+    <string name="config_hostname">主机名</string>
+    <string name="config_country_code">国家代码</string>
+    <string name="option_tls_true">是 (端口 443)</string>
+    <string name="option_tls_false">否 (端口 80)</string>    
+    <string name="option_sni_true">是</string>
+    <string name="option_sni_false">否</string>
+    <string name="msg_generating">正在生成并导入...</string>
+    <string name="msg_import_success">配置导入成功！</string>
+    <string name="msg_no_proxies">响应中未找到有效代理。</string>
+    <string name="msg_fetch_failed">获取配置失败。错误：%1$s</string>
+    <string name="msg_import_failed">导入失败：%1$s</string>
     
     <!-- uwu -->
+	<string name="uwu_noir7r_summary">API &amp; 服务器免费配置</string>
+    <string name="uwu_big_thanks">特别感谢</string>
     <string name="uwu_about_miku_title">谁是 Hatsune Miku？</string>
     <string name="uwu_about_miku_summary">初音未来(Hatsune Miku) 是 Crypton Future Media 发布的基于 Vocaloid 制作的虚拟歌手, 代号CV01. 以青绿色的长双马尾和清亮嗓音著称, 人设为16岁少女, 是全球知名虚拟偶像, 广泛活跃于音乐、演唱会及动画, 深受粉丝们喜爱.</string>
     <string name="uwu_about_version_title">关于应用</string>

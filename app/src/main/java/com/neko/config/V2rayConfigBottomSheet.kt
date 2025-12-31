@@ -1,8 +1,8 @@
 package com.neko.config
 
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Base64
 import android.view.LayoutInflater
@@ -10,42 +10,50 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputLayout
 import io.nekohasekai.sagernet.R
 import kotlinx.coroutines.*
-import org.json.JSONObject
 import java.net.URL
+import io.nekohasekai.sagernet.database.DataStore
+import io.nekohasekai.sagernet.database.ProfileManager
+import io.nekohasekai.sagernet.group.RawUpdater
+import android.widget.ImageView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import androidx.fragment.app.FragmentActivity
 
 class V2rayConfigBottomSheet : BottomSheetDialogFragment() {
 
-    private lateinit var textConfig: TextView
-    private lateinit var textLoading: TextView
     private lateinit var btnGenerate: Button
-    private lateinit var btnCopy: Button
-    
     private lateinit var editLimit: EditText
-    private lateinit var autoCompleteProtocol: AutoCompleteTextView 
+    private lateinit var editServer: EditText
+    private lateinit var editCountry: EditText
+    private lateinit var autoCompleteProtocol: AutoCompleteTextView
+    private lateinit var autoCompleteTls: AutoCompleteTextView
+    private lateinit var autoCompleteSni: AutoCompleteTextView    
+    private lateinit var inputLayoutSni: TextInputLayout 
 
-    private var currentConfig: String = ""
     private var selectedProtocol: String = ""
+    private var selectedTls: String = "true"
+    private var selectedSni: String = "false"
     private var listProtocols: List<String> = emptyList()
 
     companion object {
         const val TAG = "V2rayConfigBottomSheet"
-        
-        private const val PRIMARY_BASE_URL = "https://www.afrcloud.site/api/subscription/v2ray?type=mix&domain=all&tls=true"
-        
-        private const val FALLBACK_SECONDARY_URL = "https://raw.githubusercontent.com/Epodonios/v2ray-configs/refs/heads/main/All_Configs_Sub.txt"
-        private const val FALLBACK_TERTIARY_URL = "https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/v2ray/all_sub.txt"
 
-        private val PROTOCOL_PREFIXES = listOf(
-            "vmess://", "vless://", "trojan://",
-            "ss://", "http://", "socks://",
-            "wireguard://", "hysteria2://"
+        private val SOURCE_URLS = listOf(
+            "https://www.afrcloud.site/api/subscription/v2ray?type=mix&domain=all",
+            "https://afrcloud07.vercel.app/api/subscription/v2ray?type=mix&domain=all",
+            "https://www.afrcloud.me/api/subscription/v2ray?type=mix&domain=all",
+            "https://www.xlaxiata.biz.id/api/subscription/v2ray?type=mix&domain=all"
         )
-        
+
+        private val PROTOCOL_PREFIXES = listOf("vmess://", "vless://", "trojan://", "ss://")
+
         fun newInstance(): V2rayConfigBottomSheet {
             return V2rayConfigBottomSheet()
         }
@@ -56,7 +64,7 @@ class V2rayConfigBottomSheet : BottomSheetDialogFragment() {
     ): View? {
         return inflater.inflate(R.layout.uwu_free_config, container, false)
     }
-    
+
     override fun onStart() {
         super.onStart()
         val sheetDialog = dialog as? BottomSheetDialog
@@ -68,68 +76,99 @@ class V2rayConfigBottomSheet : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        
+        val bannerImageView = view.findViewById<ImageView>(R.id.img_banner_sheet)
+        if (bannerImageView != null) {
+            bannerImageView.setImageResource(R.drawable.uwu_banner_image_about)
+            val savedUriString = DataStore.configurationStore.getString("custom_sheet_banner_uri", null)
+            if (!savedUriString.isNullOrBlank()) {
+                Glide.with(this)
+                    .load(savedUriString)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .dontAnimate()
+                    .into(bannerImageView)
+            }
+        }
+        
         initializeViews(view)
         setupMaterialDropdown()
+        setupTlsDropdown()
+        setupSniDropdown()
         setupButtonListeners()
     }
 
     private fun initializeViews(view: View) {
-        textConfig = view.findViewById(R.id.textConfig)
-        textLoading = view.findViewById(R.id.textLoading)
-        btnGenerate = view.findViewById(R.id.btnGenerate)
-        btnCopy = view.findViewById(R.id.btnCopy)
+        btnGenerate = view.findViewById(R.id.btnGenerate) 
         editLimit = view.findViewById(R.id.editLimit)
+        editServer = view.findViewById(R.id.editServer)
+        editCountry = view.findViewById(R.id.editCountry)
         autoCompleteProtocol = view.findViewById(R.id.autoCompleteProtocol)
+        autoCompleteTls = view.findViewById(R.id.autoCompleteTls)
+        autoCompleteSni = view.findViewById(R.id.autoCompleteSni)
+        inputLayoutSni = view.findViewById(R.id.inputLayoutSni)
     }
 
     private fun setupMaterialDropdown() {
         val labelAll = getString(R.string.protocol_all)
-        listProtocols = listOf(labelAll, "VMess", "VLESS", "Trojan", "Shadowsocks", "WireGuard", "Hysteria2")
+        listProtocols = listOf(labelAll, "VMess", "VLESS", "Trojan", "Shadowsocks")
         selectedProtocol = labelAll
-
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, listProtocols)
         autoCompleteProtocol.setAdapter(adapter)
-        autoCompleteProtocol.setText(selectedProtocol, false) 
-
+        autoCompleteProtocol.setText(selectedProtocol, false)
         autoCompleteProtocol.setOnItemClickListener { _, _, position, _ ->
             selectedProtocol = listProtocols[position]
         }
     }
 
+    private fun setupTlsDropdown() {
+        val labelTrue = getString(R.string.option_tls_true)
+        val labelFalse = getString(R.string.option_tls_false)
+        val tlsOptions = listOf(labelTrue, labelFalse)
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, tlsOptions)
+        autoCompleteTls.setAdapter(adapter) 
+        autoCompleteTls.setText(labelTrue, false)
+        selectedTls = "true"
+        inputLayoutSni.visibility = View.VISIBLE  
+        autoCompleteTls.setOnItemClickListener { _, _, position, _ ->
+            selectedTls = if (position == 0) "true" else "false"              
+            if (selectedTls == "true") {
+                inputLayoutSni.visibility = View.VISIBLE
+            } else {
+                inputLayoutSni.visibility = View.GONE
+                selectedSni = "false"
+                autoCompleteSni.setText(getString(R.string.option_sni_false), false)
+            }
+        }
+    }
+
+    private fun setupSniDropdown() {
+        val labelTrue = getString(R.string.option_sni_true)
+        val labelFalse = getString(R.string.option_sni_false)
+        val sniOptions = listOf(labelFalse, labelTrue)
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, sniOptions)
+        autoCompleteSni.setAdapter(adapter)    
+        autoCompleteSni.setText(labelFalse, false)
+        selectedSni = "false"
+        autoCompleteSni.setOnItemClickListener { _, _, position, _ ->
+            selectedSni = if (position == 1) "true" else "false"
+        }
+    }
+
     private fun setupButtonListeners() {
         btnGenerate.setOnClickListener {
-            resetUI()
             val protocol = if (selectedProtocol.isNotEmpty()) selectedProtocol else autoCompleteProtocol.text.toString()
-            
             val limitStr = editLimit.text.toString()
             val limit = limitStr.toIntOrNull()?.coerceAtLeast(1) ?: 1
-            
-            fetchV2rayConfig(protocol, limit)
-        }
-
-        btnCopy.setOnClickListener {
-            copyConfigToClipboard()
-        }
-    }
-
-    private fun resetUI() {
-        textLoading.text = getString(R.string.label_loading)
-        textConfig.text = ""
-        currentConfig = ""
-    }
-
-    private fun copyConfigToClipboard() {
-        val text = textConfig.text.toString()
-        val context = context ?: return 
-        
-        if (text.isNotBlank() && !text.startsWith("No") && !text.startsWith("Error")) {
-            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            val clip = ClipData.newPlainText("V2Ray Config", text)
-            clipboard.setPrimaryClip(clip)
-            
-            Toast.makeText(requireContext(), getString(R.string.toast_config_copied), Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(requireContext(), getString(R.string.toast_no_config), Toast.LENGTH_SHORT).show()
+            val tlsMode = if (selectedTls.isNotEmpty()) selectedTls else "true"
+            val sniMode = if (tlsMode == "false") "false" else (if (selectedSni.isNotEmpty()) selectedSni else "false")
+            val serverHost = editServer.text.toString().trim().ifEmpty { "www.google.com" }
+            val countryCode = editCountry.text.toString().trim().ifEmpty { "SG" }
+            val labelAll = getString(R.string.protocol_all)
+            val parentActivity = requireActivity()
+            val rootView = parentActivity.findViewById<View>(android.R.id.content)  
+            Snackbar.make(rootView, R.string.msg_generating, Snackbar.LENGTH_SHORT).show()    
+            dismiss() 
+            fetchV2rayConfig(parentActivity, rootView, protocol, limit, tlsMode, sniMode, serverHost, countryCode, labelAll)
         }
     }
 
@@ -139,54 +178,73 @@ class V2rayConfigBottomSheet : BottomSheetDialogFragment() {
             "VLESS" -> "vless://"
             "Trojan" -> "trojan://"
             "Shadowsocks" -> "ss://"
-            "WireGuard" -> "wireguard://"
-            "Hysteria2" -> "hysteria2://"
             else -> ""
         }
     }
 
-    private fun fetchV2rayConfig(protocol: String, limit: Int) {
-        lifecycleScope.launch(Dispatchers.IO) {
+    private fun fetchV2rayConfig(
+        activity: FragmentActivity,
+        rootView: View,
+        protocol: String, 
+        limit: Int, 
+        tlsMode: String, 
+        sniMode: String,
+        serverHost: String,
+        countryCode: String,
+        labelAll: String
+    ) {
+        activity.lifecycleScope.launch(Dispatchers.IO) {
+            val requestLimit = if (limit < 10) 10 else limit
             var finalResult: String? = null
-            var errorMsg: String = ""
-
-            try {
-                val requestLimit = if (limit < 10) 10 else limit
-                val primaryUrl = "$PRIMARY_BASE_URL&limit=$requestLimit"
-                val rawContent = URL(primaryUrl).openStream().bufferedReader().use { it.readText() }
-                val decodedContent = tryDecodeSubscription(rawContent)
-                finalResult = selectConfigs(decodedContent, protocol, limit)
-            } catch (e: Exception) {
-                errorMsg = "Primary: ${e.message}"
-            }
-
-            if (finalResult == null) {
+            var lastErrorMsg = ""
+            for (baseUrl in SOURCE_URLS) {
                 try {
-                    val content = URL(FALLBACK_SECONDARY_URL).openStream().bufferedReader().use { it.readText() }
-                    val decodedContent = tryDecodeSubscription(content)
-                    finalResult = selectConfigs(decodedContent, protocol, limit)
+                    val fullUrl = "$baseUrl&server=$serverHost&country=$countryCode&limit=$requestLimit&tls=$tlsMode&sni=$sniMode"
+                    val rawContent = URL(fullUrl).openStream().bufferedReader().use { it.readText() }
+                    val decodedContent = tryDecodeSubscription(rawContent)
+                    val result = selectConfigs(decodedContent, protocol, limit, labelAll)
+                    if (result != null) {
+                        finalResult = result
+                        break
+                    }
                 } catch (e: Exception) {
-                    errorMsg = "Fallback 1: ${e.message}"
-                }
-            }
-
-            if (finalResult == null) {
-                try {
-                    val content = URL(FALLBACK_TERTIARY_URL).openStream().bufferedReader().use { it.readText() }
-                    val decodedContent = tryDecodeSubscription(content)
-                    finalResult = selectConfigs(decodedContent, protocol, limit)
-                } catch (e: Exception) {
-                    errorMsg = "All sources failed"
+                    lastErrorMsg = e.message ?: "Unknown error"
                 }
             }
 
             if (finalResult != null) {
-                currentConfig = finalResult!!
-                val count = finalResult!!.lines().filter { it.isNotBlank() }.count()
-                updateUI(finalResult!!, count)
+                autoImportConfig(activity, rootView, finalResult)
             } else {
-                val finalError = Exception(if (errorMsg.isNotEmpty()) errorMsg else "No config found for $protocol")
-                handleConfigError(finalError)
+                withContext(Dispatchers.Main) {
+                    val errorMsg = activity.getString(R.string.msg_fetch_failed, lastErrorMsg)
+                    Snackbar.make(rootView, errorMsg, Snackbar.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    private fun autoImportConfig(activity: FragmentActivity, rootView: View, configText: String) {
+        activity.lifecycleScope.launch(Dispatchers.Default) {
+            try {
+                val proxies = RawUpdater.parseRaw(configText)         
+                if (!proxies.isNullOrEmpty()) {
+                    val targetId = DataStore.selectedGroup      
+                    for (proxy in proxies) {
+                        ProfileManager.createProfile(targetId, proxy)
+                    }
+                    withContext(Dispatchers.Main) {
+                        Snackbar.make(rootView, R.string.msg_import_success, Snackbar.LENGTH_SHORT).show()
+                    }
+                } else {
+                    withContext(Dispatchers.Main) {
+                        Snackbar.make(rootView, R.string.msg_no_proxies, Snackbar.LENGTH_SHORT).show()
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    val errorMsg = activity.getString(R.string.msg_import_failed, e.message)
+                    Snackbar.make(rootView, errorMsg, Snackbar.LENGTH_SHORT).show()
+                }
             }
         }
     }
@@ -196,141 +254,21 @@ class V2rayConfigBottomSheet : BottomSheetDialogFragment() {
         if (!trimmed.contains(" ") && !trimmed.contains("\n") && trimmed.length > 20) {
             return try {
                 String(Base64.decode(trimmed, Base64.DEFAULT))
-            } catch (e: Exception) {
-                content
-            }
+            } catch (e: Exception) { content }
         }
         return content
     }
 
-    private fun selectConfigs(content: String, protocol: String, limit: Int): String? {
+    private fun selectConfigs(content: String, protocol: String, limit: Int, labelAll: String): String? {
         val targetPrefix = getPrefixForProtocol(protocol)
-        val labelAll = getString(R.string.protocol_all)
         
-        val validLines = content.lines()
-            .asSequence()
-            .map { it.trim() }
-            .filter { it.isNotBlank() }
+        val validLines = content.lines().asSequence().map { it.trim() }.filter { it.isNotBlank() }
             .filter { line ->
-                if (protocol == labelAll) {
-                    PROTOCOL_PREFIXES.any { line.startsWith(it) }
-                } else {
-                    line.startsWith(targetPrefix)
-                }
-            }
-            .toList()
-        
+                if (protocol == labelAll) PROTOCOL_PREFIXES.any { line.startsWith(it) }
+                else line.startsWith(targetPrefix)
+            }.toList()
+
         if (validLines.isEmpty()) return null
-
-        return validLines.shuffled()
-            .take(limit)
-            .joinToString("\n")
-    }
-
-    private suspend fun updateUI(config: String, count: Int) {
-        withContext(Dispatchers.Main) {
-            textConfig.text = config
-            if (count > 0) {
-                if (count == 1) {
-                    val port = extractPortFromConfig(config)
-                    val type = detectConfigType(config)
-                    textLoading.text = getString(R.string.status_format, type, port)
-                } else {
-                    textLoading.text = getString(R.string.status_generated_success, count)
-                }
-            } else {
-                textLoading.text = getString(R.string.status_failed)
-            }
-        }
-    }
-
-    private fun handleConfigError(error: Exception) {
-        lifecycleScope.launch(Dispatchers.Main) {
-            textConfig.text = getString(R.string.error_prefix, error.localizedMessage)
-            textLoading.text = getString(R.string.status_load_failed)
-        }
-    }
-
-    private fun extractPortFromConfig(config: String): Int {
-        val explicitPort = when {
-            config.startsWith("vmess://") -> extractPortFromVmess(config)
-            config.startsWith("vless://") -> extractPortFromVless(config)
-            config.startsWith("ss://") -> extractPortFromShadowsocks(config)
-            config.startsWith("trojan://") -> extractPortFromTrojan(config)
-            config.startsWith("hysteria2://") -> extractPortFromHysteria(config)
-            else -> extractPortFromText(config)
-        }
-        return explicitPort ?: extractPortFromText(config) ?: 0
-    }
-
-    private fun extractPortFromVmess(config: String): Int? {
-        return try {
-            val decoded = decodeBase64Safe(config.removePrefix("vmess://"))
-            JSONObject(decoded).optString("port").toIntOrNull()
-        } catch (e: Exception) { null }
-    }
-
-    private fun extractPortFromVless(config: String): Int? {
-        return try {
-            val uriPart = config.substringAfterLast('@').substringBefore('?')
-            uriPart.substringAfterLast(':').toIntOrNull()
-        } catch (e: Exception) { null }
-    }
-
-    private fun extractPortFromShadowsocks(config: String): Int? {
-        return try {
-            val raw = config.removePrefix("ss://")
-            val mainPart = if (raw.contains("#")) raw.substringBefore("#") else raw
-            if (mainPart.contains("@")) {
-                mainPart.substringAfterLast(":").toIntOrNull()
-            } else {
-                val decoded = decodeBase64Safe(mainPart)
-                decoded.substringAfterLast(':').toIntOrNull()
-            }
-        } catch (e: Exception) { null }
-    }
-
-    private fun extractPortFromTrojan(config: String): Int? {
-         return try {
-            val uriPart = config.substringAfterLast('@').substringBefore('?')
-            uriPart.substringAfterLast(':').toIntOrNull()
-        } catch (e: Exception) { null }
-    }
-
-    private fun extractPortFromHysteria(config: String): Int? {
-        return try {
-            val uriPart = config.substringAfterLast('@').substringBefore('?')
-            uriPart.substringAfterLast(':').toIntOrNull()
-        } catch (e: Exception) { null }
-    }
-
-    private fun extractPortFromText(text: String): Int? {
-        val portRegex = """:(\d{2,5})(?=/|\?|$|#)""".toRegex()
-        val match = portRegex.find(text)
-        return match?.groups?.get(1)?.value?.toIntOrNull()
-    }
-
-    private fun decodeBase64Safe(encoded: String): String {
-        return try {
-            String(Base64.decode(encoded, Base64.NO_WRAP or Base64.URL_SAFE))
-        } catch (e: Exception) {
-            try {
-                String(Base64.decode(encoded, Base64.DEFAULT))
-            } catch (e2: Exception) {
-                encoded
-            }
-        }
-    }
-
-    private fun detectConfigType(config: String): String {
-        return when {
-            config.startsWith("vmess://") -> "VMess"
-            config.startsWith("vless://") -> "VLESS"
-            config.startsWith("trojan://") -> "Trojan"
-            config.startsWith("ss://") -> "Shadowsocks"
-            config.startsWith("wireguard://") -> "WireGuard"
-            config.startsWith("hysteria2://") -> "Hysteria2"
-            else -> "Unknown"
-        }
+        return validLines.shuffled().take(limit).joinToString("\n")
     }
 }

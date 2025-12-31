@@ -234,18 +234,6 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                         .addItem(
                             MaterialAboutActionItem.Builder()
                                 .icon(R.drawable.ic_github)
-                                .text(R.string.uwu_nekobox)
-                                .subText(R.string.github)
-                                .setOnClickAction {
-                                    requireContext().launchCustomTab(
-                                        "https://github.com/MatsuriDayo/NekoBoxForAndroid"
-
-                                    )
-                                }
-                                .build())
-                        .addItem(
-                            MaterialAboutActionItem.Builder()
-                                .icon(R.drawable.ic_github)
                                 .text(R.string.uwu_mikubox)
                                 .subText(R.string.github)
                                 .setOnClickAction {
@@ -266,6 +254,24 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                                     )
                                 }
                                 .build())
+                        .build())
+                        
+                        .addCard(
+                    MaterialAboutCard.Builder()
+                        .outline(false)
+                        .title(R.string.uwu_big_thanks)
+                        .addItem(
+                            MaterialAboutActionItem.Builder()
+                                .icon(R.drawable.ic_github)
+                                .text(R.string.uwu_nekobox)
+                                .subText(R.string.github)
+                                .setOnClickAction {
+                                    requireContext().launchCustomTab(
+                                        "https://github.com/MatsuriDayo/NekoBoxForAndroid"
+
+                                    )
+                                }
+                                .build())
                         .addItem(
                             MaterialAboutActionItem.Builder()
                                 .icon(R.drawable.ic_qu_shadowsocks_foreground)
@@ -274,6 +280,17 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                                 .setOnClickAction {
                                     requireContext().launchCustomTab(
                                         "https://t.me/np_nbcn"
+                                    )
+                                }
+                                .build())
+                        .addItem(
+                            MaterialAboutActionItem.Builder()
+                                .icon(R.drawable.ic_qu_shadowsocks_foreground)
+                                .text(R.string.uwu_noir7r)
+                                .subText(R.string.uwu_noir7r_summary)
+                                .setOnClickAction {
+                                    requireContext().launchCustomTab(
+                                        "https://t.me/Noir7R"
                                     )
                                 }
                                 .build())
