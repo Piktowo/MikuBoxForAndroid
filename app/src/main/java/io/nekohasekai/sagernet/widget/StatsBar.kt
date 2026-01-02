@@ -214,7 +214,7 @@ class StatsBar @JvmOverloads constructor(
                                 ipStatusText.text = ipInfo
                                 ipStatusText.visibility = View.VISIBLE
                             } else {
-                                setStatus("$latencyResult | $ipInfo")
+                                setStatus("$latencyResult • $ipInfo")
                                 ipStatusText.visibility = View.GONE
                             }
                         }

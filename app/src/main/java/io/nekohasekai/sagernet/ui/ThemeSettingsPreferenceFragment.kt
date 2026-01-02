@@ -3,6 +3,7 @@ package io.nekohasekai.sagernet.ui
 import android.Manifest
 import android.app.Activity
 import android.content.ContentValues
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
@@ -13,8 +14,6 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -41,7 +40,13 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import io.nekohasekai.sagernet.BuildConfig
 import io.nekohasekai.sagernet.utils.showBlur
+import org.json.JSONObject
+import java.net.URL
+import kotlin.concurrent.thread
+import moe.matsuri.nb4a.ui.CustomBannerPreference
 
 class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
 
@@ -163,6 +168,44 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
             }
         }
 
+    private val pickPreferenceBannerImage =
+        registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            if (uri != null) {
+                startCropPreferenceActivity(uri)
+            }
+        }
+
+    private val cropPreferenceBannerImage =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK && result.data != null) {
+                val cacheUri = UCrop.getOutput(result.data!!)
+                if (cacheUri != null) {
+                    try {
+                        val oldUriString = DataStore.configurationStore.getString("custom_preference_banner_uri", null)
+                        if (!oldUriString.isNullOrEmpty()) {
+                            try {
+                                val oldUri = Uri.parse(oldUriString)
+                                requireContext().contentResolver.delete(oldUri, null, null)
+                            } catch (e: Exception) {
+                                Logs.w("Failed to delete old preference banner", e)
+                            }
+                        }
+
+                        val publicMediaUri = saveBannerToMediaStore(cacheUri, "uwu_preference_banner_")
+                        
+                        DataStore.configurationStore.putString("custom_preference_banner_uri", publicMediaUri.toString())
+                        snackbar(R.string.custom_banner_set).show() 
+
+                    } catch (e: Exception) {
+                        Logs.e("Failed to save preference banner", e)
+                        snackbar("Failed to save: ${e.message}").show()
+                    }
+                }
+            } else if (result.resultCode == UCrop.RESULT_ERROR) {
+                val cropError = UCrop.getError(result.data!!) ?: Throwable("Unknown UCrop error")
+                Logs.e("Cropping error: ", cropError)
+            }
+        }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -173,6 +216,54 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
         preferenceManager.preferenceDataStore = DataStore.configurationStore
         DataStore.initGlobal()
         addPreferencesFromResource(R.xml.theme_preferences)
+
+        findPreference<CustomBannerPreference>("key_check_update")?.setOnPreferenceClickListener {
+            val jsonUrl = "https://raw.githubusercontent.com/HatsuneMikuUwU/MikuBoxForAndroid/refs/heads/UwU/update/update.json"
+            
+            snackbar(getString(R.string.check_update_checking)).show()
+            
+            thread {
+                try {
+                    val jsonStr = URL(jsonUrl).readText()
+                    val jsonObject = JSONObject(jsonStr)
+                    val latestVersion = jsonObject.optString("latestVersion")
+                    val currentVersion = jsonObject.optString("currentVersion")
+                    val downloadUrl = jsonObject.optString("url")
+                    
+                    val hasUpdate = latestVersion.isNotEmpty() && latestVersion != currentVersion
+                    
+                    activity?.runOnUiThread {
+                        if (hasUpdate) {
+                             MaterialAlertDialogBuilder(requireContext())
+                                .setTitle(R.string.update_available_title)
+                                .setMessage(getString(R.string.update_available_message, latestVersion, currentVersion))
+                                .setPositiveButton(R.string.action_update_now) { _, _ ->
+                                    try {
+                                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl))
+                                        startActivity(intent)
+                                    } catch (e: Exception) {
+                                        snackbar(getString(R.string.error_open_link)).show()
+                                    }
+                                }
+                                .setNegativeButton(R.string.action_later, null)
+                                .showBlur()
+                        } else {
+                            MaterialAlertDialogBuilder(requireContext())
+                                .setTitle(R.string.update_not_available_title)
+                                .setMessage(getString(R.string.update_not_available_message, currentVersion))
+                                .setPositiveButton(R.string.action_ok, null)
+                                .showBlur()
+                        }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    activity?.runOnUiThread {
+                        snackbar(getString(R.string.check_update_failed, e.message)).show()
+                    }
+                }
+            }
+            true
+        }        
 
         val styleValue = DataStore.categoryStyle
         preferenceScreen?.let { screen ->
@@ -288,7 +379,7 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
                 true
             }
         }
-
+        
         val soundConnectSwitch = findPreference<SwitchPreference>("sound_connect")
         soundConnectSwitch?.apply {
             isChecked = DataStore.soundOnConnect
@@ -564,6 +655,44 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
             true
         }
 
+        val changePreferenceBannerPref = findPreference<Preference>("action_change_preference_banner_image")
+        changePreferenceBannerPref?.setOnPreferenceClickListener {
+            pickPreferenceBannerImage.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            true
+        }
+
+        val deletePreferenceBannerPref = findPreference<Preference>("action_delete_preference_banner_image")
+        deletePreferenceBannerPref?.setOnPreferenceClickListener {
+            val savedUriString = DataStore.configurationStore.getString("custom_preference_banner_uri", null)
+            if (!savedUriString.isNullOrEmpty()) {
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(R.string.delete_custom_banner_title)
+                    .setMessage(R.string.delete_custom_banner_message)
+                    .setPositiveButton(R.string.yes) { _, _ ->
+                        try {
+                            val savedUri = Uri.parse(savedUriString)
+                            val rowsDeleted = requireContext().contentResolver.delete(savedUri, null, null)
+                            if (rowsDeleted <= 0) {
+                                Logs.w("Preference banner file not found or failed to delete.")
+                            }
+                        } catch (e: SecurityException) {
+                            Logs.e("Failed to delete custom preference banner (SecurityException)", e)
+                            snackbar("Failed to delete file. Manually delete from Gallery.").show()
+                        } catch (e: Exception) {
+                            Logs.e("Failed to delete custom preference banner", e)
+                        }
+
+                        DataStore.configurationStore.putString("custom_preference_banner_uri", null)
+                        snackbar(R.string.custom_banner_removed).show()
+                    }
+                    .setNegativeButton(R.string.no, null)
+                    .showBlur()
+            } else {
+                snackbar(R.string.no_custom_banner_to_remove).show()
+            }
+            true
+        }
+
         val splashController: SwitchPreference? = findPreference("show_splash_screen")
         splashController?.apply {
             isChecked = DataStore.showSplashScreen
@@ -573,7 +702,7 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
                 true
             }
         }
-
+        
         val ipTestController: SwitchPreference? = findPreference("connection_test_with_ip")
         ipTestController?.apply {
             isChecked = DataStore.connectionTestWithIp
@@ -771,6 +900,31 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
             Logs.e("Failed to set UCrop theme", e)
         }
         cropSheetBannerImage.launch(uCrop.getIntent(requireContext()))
+    }
+    
+    private fun startCropPreferenceActivity(sourceUri: Uri) {
+        val destinationFileName = "cropped_preference_banner_temp.jpg"
+        val destinationUri = Uri.fromFile(File(requireContext().cacheDir, destinationFileName))
+        
+        val displayMetrics = resources.displayMetrics
+        val screenWidthPx = displayMetrics.widthPixels.toFloat()
+        val targetHeightPx = dp2pxf(300)
+        
+        val uCrop = UCrop.of(sourceUri, destinationUri)
+            .withAspectRatio(screenWidthPx, targetHeightPx)
+            .withMaxResultSize(1080, 1080)
+
+        try {
+            val options = UCrop.Options()
+            options.setDimmedLayerColor(Color.parseColor("#CCFFFFFF"))
+            options.setCircleDimmedLayer(false)
+            options.setShowCropGrid(true)
+            options.setFreeStyleCropEnabled(false)
+            uCrop.withOptions(options)
+        } catch (e: Exception) {
+            Logs.e("Failed to set UCrop theme", e)
+        }
+        cropPreferenceBannerImage.launch(uCrop.getIntent(requireContext()))
     }
 
     @Throws(IOException::class)

@@ -2,9 +2,12 @@
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <Preference
+    <moe.matsuri.nb4a.ui.CustomBannerPreference
         android:layout="@layout/uwu_banner_theme"
-        android:selectable="false" />
+        android:title="@string/update"
+        android:summary="@string/update_summary"
+        app:icon="@drawable/ic_update"
+        app:key="key_check_update" />
     <PreferenceCategory
         app:title="@string/theme_category">
         <moe.matsuri.nb4a.ui.ColorPickerPreference
@@ -126,7 +129,7 @@
             app:title="@string/delete_custom_banner"
             app:dependency="show_banner_layout"
             app:icon="@drawable/ic_action_delete" />
-            </PreferenceCategory>
+     </PreferenceCategory>
     <PreferenceCategory
         app:title="@string/banner_sheet_category">
         <Preference
@@ -140,6 +143,21 @@
             app:key="action_delete_sheet_banner_image"
             app:summary="@string/delete_custom_banner_sheet_summary"
             app:title="@string/delete_custom_banner_sheet"
+            app:icon="@drawable/ic_action_delete" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        app:title="@string/banner_preference_category">
+        <Preference
+            android:layout="@layout/uwu_top"
+            android:title="@string/banner_custom_preference_title"
+            android:key="action_change_preference_banner_image"
+            android:summary="@string/banner_custom_preference_summary"
+            app:icon="@drawable/ic_image_area" />
+        <Preference
+            android:layout="@layout/uwu_bot"
+            app:key="action_delete_preference_banner_image"
+            app:summary="@string/delete_custom_banner_preference_summary"
+            app:title="@string/delete_custom_banner_preference"
             app:icon="@drawable/ic_action_delete" />
     </PreferenceCategory>
     <PreferenceCategory

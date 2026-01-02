@@ -20,7 +20,7 @@ class ThemeSettingsFragment : ToolbarFragment(R.layout.uwu_collapse_layout) {
 
         val collapsingToolbar =
             view.findViewById<CollapsingToolbarLayout>(R.id.collapsing_toolbar)
-        collapsingToolbar.title = getString(R.string.uwu_theme_settings_title)
+        collapsingToolbar.title = getString(R.string.uwu_miku_ui)
 
         val fragment = ThemeSettingsPreferenceFragment()
         parentFragmentManager.beginTransaction()

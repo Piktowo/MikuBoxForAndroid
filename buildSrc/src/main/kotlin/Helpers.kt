@@ -9,6 +9,10 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 import java.util.Base64
 import java.util.Properties
 import kotlin.system.exitProcess
+// --- TAMBAHAN IMPORT WAKTU ---
+import java.time.ZonedDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 private val Project.android get() = extensions.getByName<ApplicationExtension>("android")
 
@@ -147,11 +151,18 @@ fun Project.setupApp() {
     val pkgName = requireMetadata().getProperty("PACKAGE_NAME")
     val verName = requireMetadata().getProperty("VERSION_NAME")
     val verCode = (requireMetadata().getProperty("VERSION_CODE").toInt()) * 5
+
+    val buildDate = ZonedDateTime.now(ZoneId.of("Asia/Jakarta"))
+        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
+
     android.apply {
         defaultConfig {
             applicationId = pkgName
             versionCode = verCode
             versionName = verName
+            
+            buildConfigField("String", "BUILD_DATE", "\"$buildDate\"")
+            
             buildConfigField("String", "PRE_VERSION_NAME", "\"\"")
         }
     }

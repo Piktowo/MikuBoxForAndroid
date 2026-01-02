@@ -625,10 +625,15 @@ Tolong kasih izinnya di Settingan Sistem."</string>
      <string name="cardview_icon_profile_server_summary">Sembunyiin ikon di profil server</string>
      <string name="banner_home_category">Banner beranda</string>
      <string name="banner_sheet_category">Banner bottomsheet</string>
+     <string name="banner_preference_category">Banner preferensi</string>
      <string name="banner_custom_sheet_title">Ganti gambar banner bottomsheet</string>
      <string name="banner_custom_sheet_summary">Pilih gambar dari galeri buat banner di bottomsheet</string>
      <string name="delete_custom_banner_sheet">Ilangin banner kustom bottomsheet</string>
      <string name="delete_custom_banner_sheet_summary">Balikin ke banner bottomsheet bawaan</string>
+     <string name="banner_custom_preference_title">Ganti gambar banner preferensi</string>
+     <string name="banner_custom_preference_summary">Pilih gambar dari galeri buat banner di preferensi</string>
+     <string name="delete_custom_banner_preference">Ilangin banner kustom preferensi</string>
+     <string name="delete_custom_banner_preference_summary">Balikin ke banner preferensi bawaan</string>
      <string name="banner_height_title">Tinggi bannernya</string>
      <string name="banner_height_summary">Atur tinggi banner buat di halaman beranda (dalam satuan dp), Default: 100</string>
      <string name="banner_custom_title">Ganti gambar banner</string>
@@ -674,7 +679,26 @@ Tolong kasih izinnya di Settingan Sistem."</string>
     <string name="msg_no_proxies">Gak nemu proxy valid di responnya.</string>
     <string name="msg_fetch_failed">Gagal ngambil config. Error: %1$s</string>
     <string name="msg_import_failed">Gagal import: %1$s</string>
+    <string name="check_update_checking">Lagi ngecek update...</string>
+    <string name="update_available_title">Ada Update Baru Nih</string>
+    <string name="update_available_message">Versi %1$s udah nongol!\nYang lo pake: %2$s</string>
+    <string name="action_update_now">Update Sekarang</string>
+    <string name="error_open_link">Gak bisa buka link-nya</string>
+    <string name="action_later">Nanti Aja</string>
+    <string name="update_not_available_title">Gak Ada Update</string>
+    <string name="update_not_available_message">Aplikasi lo udah paling baru kok (%1$s).</string>
+    <string name="action_ok">Sip</string>
+    <string name="check_update_failed">Gagal ngecek update: %1$s</string>
+    <string name="update_summary">Yuk update MikuBox sayang!</string>
     
+    
+    <string name="uwu_miku_ui">Lemari Baju Miku</string>
+    <string name="uwu_name_title">Nama App</string>
+    <string name="uwu_version_name_title">Nama Versi</string>
+    <string name="uwu_version_code_title">Kode Versi</string>
+    <string name="uwu_package_name_title">Nama Paket</string>
+    <string name="uwu_mikubox_author_title">Pembuat</string>
+    <string name="uwu_build_date_title">Tanggal Build</string>
     <string name="uwu_noir7r_summary">Settingan API &amp; server gratisan</string>
     <string name="uwu_big_thanks">Makasih banyak</string>
     <string name="uwu_about_miku_title">Siapa itu Hatsune Miku?</string>
