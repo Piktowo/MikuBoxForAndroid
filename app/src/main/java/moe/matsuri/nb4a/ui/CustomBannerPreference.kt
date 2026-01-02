@@ -30,7 +30,6 @@ class CustomBannerPreference @JvmOverloads constructor(
         holder.itemView.isClickable = false
         holder.itemView.isFocusable = false
 
-        // --- Bagian Gambar Banner ---
         val bannerImageView = holder.findViewById(R.id.img_banner_preference) as? KenBurnsView
         if (bannerImageView != null) {
             val savedUriString = DataStore.configurationStore.getString("custom_preference_banner_uri", null)
@@ -52,21 +51,15 @@ class CustomBannerPreference @JvmOverloads constructor(
             }
         }
 
-        // --- Bagian Info Versi Aplikasi ---
-        
-        // 1. Version Name (contoh: v1.0.0)
         val versionTextView = holder.findViewById(R.id.uwu_version_name_summary) as? TextView
         versionTextView?.text = "${BuildConfig.VERSION_NAME}"
 
-        // 2. Version Code / Build Number (contoh: 102)
         val buildTextView = holder.findViewById(R.id.uwu_version_code_summary) as? TextView
         buildTextView?.text = "${BuildConfig.VERSION_CODE}"
         
         val dateTextView = holder.findViewById(R.id.uwu_build_date_summary) as? TextView
         dateTextView?.text = "${BuildConfig.BUILD_DATE}"
 
-
-        // --- Bagian Click Listener ---
         val clickTarget = holder.findViewById(R.id.onClick)
         clickTarget?.setOnClickListener {
             this.performClick()
