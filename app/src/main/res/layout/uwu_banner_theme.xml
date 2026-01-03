@@ -97,7 +97,6 @@
                         android:id="@+id/uwu_name_title"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="12.0dip"
                         android:text="@string/uwu_name_title"
                         android:singleLine="true" />
                     <TextView
@@ -248,8 +247,6 @@
                         android:clickable="true"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="12.0dip"
-                        android:text="uwu.mb4a"
                         android:singleLine="true"
                         android:layout_below="@+id/uwu_package_name"
                         android:marqueeRepeatLimit="marquee_forever"

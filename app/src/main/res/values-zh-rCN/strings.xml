@@ -689,6 +689,7 @@
     
     <!-- uwu -->
     <string name="uwu_miku_ui">Miku 的衣橱</string>
+    <string name="uwu_miku_ui_summary">快来把 Miku 打扮得更漂亮吧！</string>
 	<string name="uwu_name_title">应用名称</string>
     <string name="uwu_version_name_title">版本名称</string>
     <string name="uwu_version_code_title">版本代码</string>

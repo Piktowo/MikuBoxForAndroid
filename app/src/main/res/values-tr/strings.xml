@@ -725,6 +725,7 @@ Lütfen Sistem Ayarlarından bu izni verin."</string>
     <string name="update_summary">"Hadi MikuBox\'ı güncelleyelim usta!"</string>
     
     <string name="uwu_miku_ui">"Miku\'nun Gardırobu"</string>
+    <string name="uwu_miku_ui_summary">"Haydi Miku'yu giydirip daha da güzelleştirelim!"</string>
     <string name="uwu_name_title">Uygulama Adı</string>
     <string name="uwu_version_name_title">Sürüm Adı</string>
     <string name="uwu_version_code_title">Sürüm Kodu</string>

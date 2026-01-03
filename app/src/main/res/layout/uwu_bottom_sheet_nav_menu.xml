@@ -191,7 +191,7 @@
                                         android:ellipsize="marquee"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="@string/uwu_banner_theme_title"
+                                        android:text="@string/uwu_miku_ui"
                                         android:singleLine="false" />
                                     <TextView
                                         android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleSmall"
@@ -200,7 +200,7 @@
                                         android:ellipsize="marquee"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="@string/uwu_banner_theme_summary"
+                                        android:text="@string/uwu_miku_ui_summary"
                                         android:singleLine="false" />
                                 </LinearLayout>
                             </RelativeLayout>

@@ -789,6 +789,7 @@ Please grant this permission in System Settings."</string>
     
     <!-- uwu -->
     <string name="uwu_miku_ui">"Miku's Wardrobe"</string>
+    <string name="uwu_miku_ui_summary">"Let's dress up Miku to make her even cuter!"</string>
     <string name="uwu_name_title">App Name</string>
     <string name="uwu_version_name_title">Version Name</string>
     <string name="uwu_version_code_title">Version Code</string>

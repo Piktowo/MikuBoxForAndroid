@@ -3,15 +3,14 @@ package moe.matsuri.nb4a.ui
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.TextView
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.flaviofaria.kenburnsview.KenBurnsView
+import io.nekohasekai.sagernet.BuildConfig
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.database.DataStore
-import io.nekohasekai.sagernet.BuildConfig
-import com.flaviofaria.kenburnsview.KenBurnsView
 
 class CustomBannerPreference @JvmOverloads constructor(
     context: Context,
@@ -59,6 +58,9 @@ class CustomBannerPreference @JvmOverloads constructor(
         
         val dateTextView = holder.findViewById(R.id.uwu_build_date_summary) as? TextView
         dateTextView?.text = "${BuildConfig.BUILD_DATE}"
+        
+        val packageTextView = holder.findViewById(R.id.uwu_package_name_summary) as? TextView
+        packageTextView?.text = "${BuildConfig.APPLICATION_ID}"
 
         val clickTarget = holder.findViewById(R.id.onClick)
         clickTarget?.setOnClickListener {
