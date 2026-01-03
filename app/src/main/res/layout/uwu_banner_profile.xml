@@ -220,7 +220,7 @@
                                 android:layout_alignStart="@android:id/title"
                                 key="uwu_summary">
                                 <TextView
-                                    android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleMedium"
+                                    android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleSmall"
                                     android:textSize="14.0sp"
                                     android:textColor="?android:textColorSecondary"
                                     android:ellipsize="marquee"

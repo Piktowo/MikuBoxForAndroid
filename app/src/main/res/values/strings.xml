@@ -578,6 +578,7 @@
     <string name="language_id_display_name">Indonesia</string>
     <string name="language_zh_Hans_CN_display_name">简体中文（中国）</string>
     <string name="language_tr_display_name">Türkçe</string>
+    <string name="language_ja_display_name">日本語</string>
     <string name="clear_cache">Clear Cache</string>
     <string name="clear_cache_confirm">Are you sure you want to clear the cache?</string>
     <string name="clear_cache_failed">Failed to clear cache: %s</string>
@@ -786,7 +787,9 @@ Please grant this permission in System Settings."</string>
     <string name="action_ok">OK</string>
     <string name="check_update_failed">Failed to check update: %1$s</string>
     <string name="update_summary">"Let's update MikuBox master!"</string>
-    
+    <string name="create_shortcut_summary">Add shortcut to home screen.</string>
+    <string name="move_summary">Move to another group to organize.</string>
+
     <!-- uwu -->
     <string name="uwu_miku_ui">"Miku's Wardrobe"</string>
     <string name="uwu_miku_ui_summary">"Let's dress up Miku to make her even cuter!"</string>

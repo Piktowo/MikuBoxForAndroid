@@ -52,6 +52,7 @@
         <item>@string/language_id_display_name</item>
         <item>@string/language_zh_Hans_CN_display_name</item>
         <item>@string/language_tr_display_name</item>
+        <item>@string/language_ja_display_name</item>
     </string-array>
     
     <string-array name="language_value">
@@ -60,6 +61,7 @@
         <item>id</item>
         <item>zh-Hans-CN</item>
         <item>tr-TR</item>
+        <item>ja-JP</item>
     </string-array>
 
     <string-array name="int_array_2">

@@ -723,6 +723,8 @@ Lütfen Sistem Ayarlarından bu izni verin."</string>
     <string name="action_ok">Tamam</string>
     <string name="check_update_failed">Güncelleme kontrolü başarısız: %1$s</string>
     <string name="update_summary">"Hadi MikuBox\'ı güncelleyelim usta!"</string>
+    <string name="create_shortcut_summary">Ana ekrana kısayol ekle.</string>
+    <string name="move_summary">Düzenlemek için başka bir gruba taşı.</string>
     
     <string name="uwu_miku_ui">"Miku\'nun Gardırobu"</string>
     <string name="uwu_miku_ui_summary">"Haydi Miku'yu giydirip daha da güzelleştirelim!"</string>

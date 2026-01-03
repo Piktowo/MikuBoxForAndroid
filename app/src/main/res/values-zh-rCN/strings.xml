@@ -686,6 +686,8 @@
     <string name="action_ok">好的</string>
     <string name="check_update_failed">检查更新失败：%1$s</string>
     <string name="update_summary">来更新 MikuBox 吧，主人！</string>
+    <string name="create_shortcut_summary">在主屏幕创建快捷方式</string>
+    <string name="move_summary">移至其他分组进行整理</string>
     
     <!-- uwu -->
     <string name="uwu_miku_ui">Miku 的衣橱</string>

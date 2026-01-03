@@ -690,7 +690,8 @@ Tolong kasih izinnya di Settingan Sistem."</string>
     <string name="action_ok">Sip</string>
     <string name="check_update_failed">Gagal ngecek update: %1$s</string>
     <string name="update_summary">Yuk update MikuBox sayang!</string>
-    
+    <string name="create_shortcut_summary">Bikin shortcut di home screen.</string>
+    <string name="move_summary">Pindahin ke grup laen biar rapih.</string>
     
     <string name="uwu_miku_ui">Lemari Baju Miku</string>
     <string name="uwu_miku_ui_summary">Yuk, makeover Miku biar makin glowing!</string>

@@ -100,7 +100,7 @@
                         android:text="@string/uwu_name_title"
                         android:singleLine="true" />
                     <TextView
-                        android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleMedium"
+                        android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleSmall"
                         android:textSize="14.0sp"
                         android:textColor="?android:textColorSecondary"
                         android:ellipsize="marquee"
@@ -128,7 +128,7 @@
                         android:layout_below="@+id/uwu_name_title_summary"
                         android:layout_alignStart="@+id/uwu_name_title_summary" />
                     <TextView
-                        android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleMedium"
+                        android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleSmall"
                         android:textSize="14.0sp"
                         android:textColor="?android:textColorSecondary"
                         android:ellipsize="marquee"
@@ -156,7 +156,7 @@
                         android:layout_below="@+id/uwu_mikubox_author_summary"
                         android:layout_alignStart="@+id/uwu_mikubox_author_summary" />
                     <TextView
-                        android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleMedium"
+                        android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleSmall"
                         android:textSize="14.0sp"
                         android:textColor="?android:textColorSecondary"
                         android:ellipsize="marquee"
@@ -183,7 +183,7 @@
                         android:layout_below="@+id/uwu_build_date_summary"
                         android:layout_alignStart="@+id/uwu_build_date_summary" />
                     <TextView
-                        android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleMedium"
+                        android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleSmall"
                         android:textSize="14.0sp"
                         android:textColor="?android:textColorSecondary"
                         android:ellipsize="marquee"
@@ -210,7 +210,7 @@
                         android:layout_below="@+id/uwu_version_name_summary"
                         android:layout_alignStart="@+id/uwu_version_name_summary" />
                     <TextView
-                        android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleMedium"
+                        android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleSmall"
                         android:textSize="14.0sp"
                         android:textColor="?android:textColorSecondary"
                         android:ellipsize="marquee"
@@ -237,7 +237,7 @@
                         android:layout_below="@+id/uwu_version_code_summary"
                         android:layout_alignStart="@+id/uwu_version_code_summary" />
                     <TextView
-                        android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleMedium"
+                        android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleSmall"
                         android:textSize="14.0sp"
                         android:textColor="?android:textColorSecondary"
                         android:ellipsize="marquee"
@@ -331,7 +331,7 @@
                                 android:layout_below="@android:id/title"
                                 android:layout_alignStart="@android:id/title">
                                 <TextView
-                                    android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleMedium"
+                                    android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleSmall"
                                     android:textSize="14.0sp"
                                     android:textColor="?android:textColorSecondary"
                                     android:ellipsize="marquee"

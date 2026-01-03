@@ -495,6 +495,7 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
                 "id" -> getString(R.string.language_id_display_name)
                 "zh-Hans-CN" -> getString(R.string.language_zh_Hans_CN_display_name)
                 "tr-TR" -> getString(R.string.language_tr_display_name)
+                "ja-JP" -> getString(R.string.language_ja_display_name)
                 else -> Locale.forLanguageTag(code).displayName
             }
         }
