@@ -226,17 +226,24 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
                 try {
                     val jsonStr = URL(jsonUrl).readText()
                     val jsonObject = JSONObject(jsonStr)
+                    
                     val latestVersion = jsonObject.optString("latestVersion")
-                    val currentVersion = jsonObject.optString("currentVersion")
                     val downloadUrl = jsonObject.optString("url")
                     
-                    val hasUpdate = latestVersion.isNotEmpty() && latestVersion != currentVersion
+                    val installedVersionName = BuildConfig.VERSION_NAME
+                    
+                    var fullInstalledVersion = installedVersionName
+                    if (BuildConfig.PRE_VERSION_NAME.isNotEmpty()) {
+                        fullInstalledVersion += "-" + BuildConfig.PRE_VERSION_NAME
+                    }
+
+                    val hasUpdate = latestVersion.isNotEmpty() && isNewerVersion(latestVersion, installedVersionName)
                     
                     activity?.runOnUiThread {
                         if (hasUpdate) {
                              MaterialAlertDialogBuilder(requireContext())
                                 .setTitle(R.string.update_available_title)
-                                .setMessage(getString(R.string.update_available_message, latestVersion, currentVersion))
+                                .setMessage(getString(R.string.update_available_message, latestVersion, fullInstalledVersion))
                                 .setPositiveButton(R.string.action_update_now) { _, _ ->
                                     try {
                                         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl))
@@ -250,7 +257,7 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
                         } else {
                             MaterialAlertDialogBuilder(requireContext())
                                 .setTitle(R.string.update_not_available_title)
-                                .setMessage(getString(R.string.update_not_available_message, currentVersion))
+                                .setMessage(getString(R.string.update_not_available_message, fullInstalledVersion))
                                 .setPositiveButton(R.string.action_ok, null)
                                 .showBlur()
                         }
@@ -263,7 +270,7 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
                 }
             }
             true
-        }        
+        }
 
         val styleValue = DataStore.categoryStyle
         preferenceScreen?.let { screen ->
@@ -966,5 +973,28 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
                 cacheFile.delete()
             }
         }
+    }
+
+    private fun isNewerVersion(remoteVersion: String, localVersion: String): Boolean {
+        val remoteClean = remoteVersion.replace(Regex("[^0-9.]"), "")
+        val localClean = localVersion.replace(Regex("[^0-9.]"), "")
+
+        val remoteParts = remoteClean.split(".")
+        val localParts = localClean.split(".")
+
+        val length = maxOf(remoteParts.size, localParts.size)
+
+        for (i in 0 until length) {
+            val remotePart = remoteParts.getOrNull(i)?.toIntOrNull() ?: 0
+            val localPart = localParts.getOrNull(i)?.toIntOrNull() ?: 0
+
+            if (remotePart > localPart) {
+                return true
+            }
+            if (remotePart < localPart) {
+                return false
+            }
+        }
+        return false
     }
 }
