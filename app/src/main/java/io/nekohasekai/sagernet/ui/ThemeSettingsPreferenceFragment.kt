@@ -669,6 +669,16 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
             }
             true
         }
+        
+        val bannerPreferenceToggle = findPreference<SwitchPreference>("show_banner_preference")
+        bannerPreferenceToggle?.apply {
+            isChecked = DataStore.showBannerPreference
+            setOnPreferenceChangeListener { _, newValue ->
+                val isEnabled = newValue as Boolean
+                DataStore.showBannerPreference = isEnabled
+                true
+            }
+        }
 
         val changePreferenceBannerPref = findPreference<Preference>("action_change_preference_banner_image")
         changePreferenceBannerPref?.setOnPreferenceClickListener {
@@ -714,6 +724,16 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
             setOnPreferenceChangeListener { _: Preference, newValue: Any ->
                 val showSplash = newValue as Boolean
                 DataStore.showSplashScreen = showSplash
+                true
+            }
+        }
+        
+        val welcomeAnimSwitch: SwitchPreference? = findPreference("key_show_welcome_anim")
+        welcomeAnimSwitch?.apply {
+            isChecked = DataStore.showWelcomeAnim
+            setOnPreferenceChangeListener { _, newValue ->
+                val isEnabled = newValue as Boolean
+                DataStore.showWelcomeAnim = isEnabled
                 true
             }
         }

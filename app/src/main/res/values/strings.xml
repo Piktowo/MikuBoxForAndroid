@@ -789,6 +789,10 @@ Please grant this permission in System Settings."</string>
     <string name="update_summary">"Let's update MikuBox master!"</string>
     <string name="create_shortcut_summary">Add shortcut to home screen.</string>
     <string name="move_summary">Move to another group to organize.</string>
+    <string name="title_show_welcome_anim">Heart Animation</string>
+    <string name="summary_show_welcome_anim">Show Lottie animation on app launch</string>
+    <string name="title_show_banner_preference">Show Preference Banner</string>
+    <string name="summary_show_banner_preference">Show or hide the banner on the preference page</string>
 
     <!-- uwu -->
     <string name="uwu_miku_ui">"Miku's Wardrobe"</string>

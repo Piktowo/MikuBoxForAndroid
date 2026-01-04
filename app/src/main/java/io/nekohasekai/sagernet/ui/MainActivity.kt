@@ -119,23 +119,28 @@ class MainActivity : ThemedActivity(),
         setContentView(binding.root)
 
         val lottieView: LottieAnimationView = binding.lottieWelcome
-        lottieView.visibility = View.VISIBLE
-        lottieView.playAnimation()
 
-        lottieView.addAnimatorListener(object : android.animation.Animator.AnimatorListener {
-            override fun onAnimationStart(animation: android.animation.Animator) {}
+        if (DataStore.showWelcomeAnim) {
+            lottieView.visibility = View.VISIBLE
+            lottieView.playAnimation()
 
-            override fun onAnimationEnd(animation: android.animation.Animator) {
-                lottieView.animate()
-                    .alpha(0f)
-                    .setDuration(900)
-                    .withEndAction { lottieView.visibility = View.GONE }
-                    .start()
-            }
+            lottieView.addAnimatorListener(object : android.animation.Animator.AnimatorListener {
+                override fun onAnimationStart(animation: android.animation.Animator) {}
 
-            override fun onAnimationCancel(animation: android.animation.Animator) {}
-            override fun onAnimationRepeat(animation: android.animation.Animator) {}
-        })
+                override fun onAnimationEnd(animation: android.animation.Animator) {
+                    lottieView.animate()
+                        .alpha(0f)
+                        .setDuration(900)
+                        .withEndAction { lottieView.visibility = View.GONE }
+                        .start()
+                }
+
+                override fun onAnimationCancel(animation: android.animation.Animator) {}
+                override fun onAnimationRepeat(animation: android.animation.Animator) {}
+            })
+        } else {
+            lottieView.visibility = View.GONE
+        }
 
         changeState(BaseService.State.Idle)
         connection.connect(this, this)

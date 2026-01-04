@@ -688,6 +688,8 @@
     <string name="update_summary">来更新 MikuBox 吧，主人！</string>
     <string name="create_shortcut_summary">在主屏幕创建快捷方式</string>
     <string name="move_summary">移至其他分组进行整理</string>
+    <string name="title_show_welcome_anim">爱心动画</string>
+    <string name="summary_show_welcome_anim">启动应用时显示 Lottie 动画</string>
     
     <!-- uwu -->
     <string name="uwu_miku_ui">Miku 的衣橱</string>

@@ -724,6 +724,10 @@
     <string name="update_summary">「マスター、MikuBoxをアップデートしよう！」</string>
     <string name="create_shortcut_summary">ホーム画面にショートカットを追加します。</string>
     <string name="move_summary">整理するために別のグループへ移動します。</string>
+    <string name="title_show_welcome_anim">ハートのアニメーション</string>
+    <string name="summary_show_welcome_anim">アプリ起動時にLottieアニメーションを表示</string>
+    <string name="title_show_banner_preference">設定バナーを表示</string>
+    <string name="summary_show_banner_preference">設定ページでバナーを表示または非表示にする</string>
 
     <string name="uwu_miku_ui">"ミクのクローゼット"</string>
     <string name="uwu_miku_ui_summary">"ミクをもっと可愛く着せ替えよう！"</string>

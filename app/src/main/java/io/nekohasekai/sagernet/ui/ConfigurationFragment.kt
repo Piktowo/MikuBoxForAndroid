@@ -115,6 +115,7 @@ import java.util.zip.ZipInputStream
 import io.nekohasekai.sagernet.utils.showBlur
 import com.neko.speedtest.SpeedTestBottomSheet
 import com.neko.config.V2rayConfigBottomSheet
+import com.neko.expandable.layout.ExpandableView
 
 class ConfigurationFragment @JvmOverloads constructor(
     val select: Boolean = false, val selectedItem: ProxyEntity? = null, val titleRes: Int = 0
@@ -1791,16 +1792,15 @@ class ConfigurationFragment @JvmOverloads constructor(
     }
 
     private fun setupBannerLayoutController() {
-        val linear = requireView().findViewById<View>(R.id.card_expandable)
+        val linear = requireView().findViewById<View>(R.id.card_expandable) // Ini Card Header/Trigger
+        val expandableView = requireView().findViewById<ExpandableView>(R.id.expandable_view) // Ini Konten (Speedtest/Config)
         val bannerImageView = requireView().findViewById<ImageView>(R.id.img_banner_home)
 
         fun updateBannerSize() {
             bannerImageView?.apply {
                 val heightDp = DataStore.bannerHeight
-
                 val params = layoutParams
                 params.height = dp2px(heightDp)
-                
                 layoutParams = params
                 requestLayout()
             }
@@ -1813,13 +1813,10 @@ class ConfigurationFragment @JvmOverloads constructor(
             if (!savedUriString.isNullOrEmpty()) {
                 try {
                     val savedUri = Uri.parse(savedUriString)
-                    
-                    requireContext().contentResolver.openInputStream(savedUri).use {
-                    }
-                    
+                    requireContext().contentResolver.openInputStream(savedUri).use {}
                     loadBannerImage(savedUri)
                 } catch (e: Exception) {
-                    Logs.w("Failed to load banner URI (file may have been deleted): $savedUriString", e)
+                    Logs.w("Failed to load banner URI", e)
                     DataStore.configurationStore.putString("custom_banner_uri", null)
                     bannerImageView?.setImageResource(R.drawable.uwu_banner_home)
                 }
@@ -1833,6 +1830,7 @@ class ConfigurationFragment @JvmOverloads constructor(
             loadSavedBanner()
         } else {
             linear?.visibility = View.GONE
+            expandableView?.setExpanded(true, false)
         }
 
         if (bannerLayoutListener == null) {
@@ -1845,8 +1843,12 @@ class ConfigurationFragment @JvmOverloads constructor(
                             "show_banner_layout" -> {
                                 val show = DataStore.showBannerLayout
                                 linear?.visibility = if (show) View.VISIBLE else View.GONE
+                                
                                 if (show) {
                                     loadSavedBanner()
+                                    expandableView?.setExpanded(false, true) 
+                                } else {
+                                    expandableView?.setExpanded(true, true)
                                 }
                             }
                             "banner_height" -> {

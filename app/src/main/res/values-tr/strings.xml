@@ -725,6 +725,10 @@ Lütfen Sistem Ayarlarından bu izni verin."</string>
     <string name="update_summary">"Hadi MikuBox\'ı güncelleyelim usta!"</string>
     <string name="create_shortcut_summary">Ana ekrana kısayol ekle.</string>
     <string name="move_summary">Düzenlemek için başka bir gruba taşı.</string>
+    <string name="title_show_welcome_anim">Kalp Animasyonu</string>
+    <string name="summary_show_welcome_anim">Uygulama açılışında Lottie animasyonunu göster</string>
+    <string name="title_show_banner_preference">"Tercih Banner'ını Göster"</string>
+    <string name="summary_show_banner_preference">"Tercihler sayfasında banner'ı göster veya gizle"</string>
     
     <string name="uwu_miku_ui">"Miku\'nun Gardırobu"</string>
     <string name="uwu_miku_ui_summary">"Haydi Miku'yu giydirip daha da güzelleştirelim!"</string>
