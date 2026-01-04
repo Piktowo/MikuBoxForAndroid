@@ -227,23 +227,29 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
                     val jsonStr = URL(jsonUrl).readText()
                     val jsonObject = JSONObject(jsonStr)
                     
-                    val latestVersion = jsonObject.optString("latestVersion")
+                    val remoteVersion = jsonObject.optString("latestVersion")
+                    val remotePreVersion = jsonObject.optString("latestPreVersion") 
                     val downloadUrl = jsonObject.optString("url")
                     
-                    val installedVersionName = BuildConfig.VERSION_NAME
+                    val localVersion = BuildConfig.VERSION_NAME
+                    val localPreVersion = BuildConfig.PRE_VERSION_NAME
                     
-                    var fullInstalledVersion = installedVersionName
-                    if (BuildConfig.PRE_VERSION_NAME.isNotEmpty()) {
-                        fullInstalledVersion += "-" + BuildConfig.PRE_VERSION_NAME
-                    }
+                    var hasUpdate = false
 
-                    val hasUpdate = latestVersion.isNotEmpty() && isNewerVersion(latestVersion, installedVersionName)
+                    if (remoteVersion.isNotEmpty() && remoteVersion != localVersion) {
+                        hasUpdate = true
+                    } else if (remotePreVersion.isNotEmpty() && remotePreVersion != localPreVersion) {
+                        hasUpdate = true
+                    }
                     
+                    val displayRemote = if (remotePreVersion.isNotEmpty()) "$remoteVersion-$remotePreVersion" else remoteVersion
+                    val displayLocal = if (localPreVersion.isNotEmpty()) "$localVersion-$localPreVersion" else localVersion
+
                     activity?.runOnUiThread {
                         if (hasUpdate) {
                              MaterialAlertDialogBuilder(requireContext())
                                 .setTitle(R.string.update_available_title)
-                                .setMessage(getString(R.string.update_available_message, latestVersion, fullInstalledVersion))
+                                .setMessage(getString(R.string.update_available_message, displayRemote, displayLocal))
                                 .setPositiveButton(R.string.action_update_now) { _, _ ->
                                     try {
                                         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl))
@@ -257,7 +263,7 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
                         } else {
                             MaterialAlertDialogBuilder(requireContext())
                                 .setTitle(R.string.update_not_available_title)
-                                .setMessage(getString(R.string.update_not_available_message, fullInstalledVersion))
+                                .setMessage(getString(R.string.update_not_available_message, displayLocal))
                                 .setPositiveButton(R.string.action_ok, null)
                                 .showBlur()
                         }
@@ -974,28 +980,5 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
                 cacheFile.delete()
             }
         }
-    }
-
-    private fun isNewerVersion(remoteVersion: String, localVersion: String): Boolean {
-        val remoteClean = remoteVersion.replace(Regex("[^0-9.]"), "")
-        val localClean = localVersion.replace(Regex("[^0-9.]"), "")
-
-        val remoteParts = remoteClean.split(".")
-        val localParts = localClean.split(".")
-
-        val length = maxOf(remoteParts.size, localParts.size)
-
-        for (i in 0 until length) {
-            val remotePart = remoteParts.getOrNull(i)?.toIntOrNull() ?: 0
-            val localPart = localParts.getOrNull(i)?.toIntOrNull() ?: 0
-
-            if (remotePart > localPart) {
-                return true
-            }
-            if (remotePart < localPart) {
-                return false
-            }
-        }
-        return false
     }
 }
