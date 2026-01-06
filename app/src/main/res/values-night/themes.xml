@@ -95,6 +95,7 @@
         <item name="colorTertiaryFixedDim">@color/magenta_tertiaryFixedDim</item>
         <item name="colorIcon">@color/black</item>
 		<item name="android:scrollbarSize">0.0dip</item>
+		<item name="collapsingToolbarLayoutStyle">@style/Theme.SagerNet.CollapsingToolbar</item>
     </style>
     
     <style name="Theme.SagerNet.Dialog" parent="@style/Theme.MaterialComponents.DayNight.Dialog.Alert">

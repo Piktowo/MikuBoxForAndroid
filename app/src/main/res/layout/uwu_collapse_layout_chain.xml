@@ -17,7 +17,12 @@
             app:collapsedTitleTextColor="?android:textColorPrimaryInverse"
             app:contentScrim="?attr/colorPrimary"
             app:expandedTitleTextColor="?android:textColorPrimaryInverse"
-            app:layout_scrollFlags="exitUntilCollapsed|scroll">
+            app:layout_scrollFlags="exitUntilCollapsed|scroll"
+            app:titleCollapseMode="scale"
+            app:expandedTitleMarginEnd="24.0dip"
+            app:expandedTitleMarginStart="24.0dip"
+            app:maxLines="2"
+            style="?collapsingToolbarLayoutStyle">
             <com.google.android.material.appbar.MaterialToolbar
                 android:theme="?attr/actionBarTheme"
                 android:id="@+id/toolbar"

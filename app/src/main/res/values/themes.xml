@@ -3,10 +3,15 @@
     <style name="StyleFontChocoCooky">
         <item name="android:fontFamily">@font/chococookyregular</item>
         <item name="titleTextAppearance">@style/Text.Font.ChocoCooky</item>
-        <item name="collapsedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.ChocoCooky</item>
-        <item name="expandedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.ChocoCooky</item>
         <item name="materialAlertDialogTheme">@style/DialogFontChocoCooky</item>
         <item name="alertDialogTheme">@style/DialogFontChocoCooky</item>
+        <item name="collapsingToolbarLayoutStyle">@style/Theme.SagerNet.CollapsingToolbar.Font.ChocoCooky</item>
+    </style>
+    <style name="Theme.SagerNet.CollapsingToolbar.Font.ChocoCooky" parent="@style/Base.Widget.Material3.CollapsingToolbar">
+        <item name="collapsedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.ChocoCooky</item>
+        <item name="expandedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.ChocoCooky</item>
+        <item name="expandedTitleTextColor">?android:textColorPrimaryInverse</item>
+        <item name="collapsedTitleTextColor">?android:textColorPrimaryInverse</item>
     </style>
     <style name="DialogFontChocoCooky" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog.SagerNet">
         <item name="android:fontFamily">@font/chococookyregular</item>
@@ -39,14 +44,18 @@
         <item name="android:letterSpacing">-0.021954114</item>
     </style>
 
-
     <style name="StyleFontGoogle">
         <item name="android:fontFamily">@font/googlesansregular</item>
         <item name="titleTextAppearance">@style/Text.Font.Google</item>
-        <item name="collapsedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.Google</item>
-        <item name="expandedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.Google</item>
         <item name="materialAlertDialogTheme">@style/DialogFontGoogle</item>
         <item name="alertDialogTheme">@style/DialogFontGoogle</item>
+        <item name="collapsingToolbarLayoutStyle">@style/Theme.SagerNet.CollapsingToolbar.Font.Google</item>
+    </style>
+    <style name="Theme.SagerNet.CollapsingToolbar.Font.Google" parent="@style/Base.Widget.Material3.CollapsingToolbar">
+        <item name="collapsedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.Google</item>
+        <item name="expandedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.Google</item>
+        <item name="expandedTitleTextColor">?android:textColorPrimaryInverse</item>
+        <item name="collapsedTitleTextColor">?android:textColorPrimaryInverse</item>
     </style>
     <style name="DialogFontGoogle" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog.SagerNet">
         <item name="android:fontFamily">@font/googlesansregular</item>
@@ -79,14 +88,18 @@
         <item name="android:letterSpacing">-0.021954114</item>
     </style>
 
-
     <style name="StyleFontRoboto">
         <item name="android:fontFamily">@font/robotoregular</item>
         <item name="titleTextAppearance">@style/Text.Font.Roboto</item>
-        <item name="collapsedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.Roboto</item>
-        <item name="expandedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.Roboto</item>
         <item name="materialAlertDialogTheme">@style/DialogFontRoboto</item>
         <item name="alertDialogTheme">@style/DialogFontRoboto</item>
+        <item name="collapsingToolbarLayoutStyle">@style/Theme.SagerNet.CollapsingToolbar.Font.Roboto</item>
+    </style>
+    <style name="Theme.SagerNet.CollapsingToolbar.Font.Roboto" parent="@style/Base.Widget.Material3.CollapsingToolbar">
+        <item name="collapsedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.Roboto</item>
+        <item name="expandedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.Roboto</item>
+        <item name="expandedTitleTextColor">?android:textColorPrimaryInverse</item>
+        <item name="collapsedTitleTextColor">?android:textColorPrimaryInverse</item>
     </style>
     <style name="DialogFontRoboto" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog.SagerNet">
         <item name="android:fontFamily">@font/robotoregular</item>
@@ -119,14 +132,18 @@
         <item name="android:letterSpacing">-0.021954114</item>
     </style>
 
-
     <style name="StyleFontPoppins">
         <item name="android:fontFamily">@font/poppinsregular</item>
         <item name="titleTextAppearance">@style/Text.Font.Poppins</item>
-        <item name="collapsedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.Poppins</item>
-        <item name="expandedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.Poppins</item>
         <item name="materialAlertDialogTheme">@style/DialogFontPoppins</item>
         <item name="alertDialogTheme">@style/DialogFontPoppins</item>
+        <item name="collapsingToolbarLayoutStyle">@style/Theme.SagerNet.CollapsingToolbar.Font.Poppins</item>
+    </style>
+    <style name="Theme.SagerNet.CollapsingToolbar.Font.Poppins" parent="@style/Base.Widget.Material3.CollapsingToolbar">
+        <item name="collapsedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.Poppins</item>
+        <item name="expandedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.Poppins</item>
+        <item name="expandedTitleTextColor">?android:textColorPrimaryInverse</item>
+        <item name="collapsedTitleTextColor">?android:textColorPrimaryInverse</item>
     </style>
     <style name="DialogFontPoppins" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog.SagerNet">
         <item name="android:fontFamily">@font/poppinsregular</item>
@@ -159,14 +176,18 @@
         <item name="android:letterSpacing">-0.021954114</item>
     </style>
 
-
     <style name="StyleFontSimpleDay">
         <item name="android:fontFamily">@font/simpleday</item>
         <item name="titleTextAppearance">@style/Text.Font.SimpleDay</item>
-        <item name="collapsedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.SimpleDay</item>
-        <item name="expandedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.SimpleDay</item>
         <item name="materialAlertDialogTheme">@style/DialogFontSimpleDay</item>
         <item name="alertDialogTheme">@style/DialogFontSimpleDay</item>
+        <item name="collapsingToolbarLayoutStyle">@style/Theme.SagerNet.CollapsingToolbar.Font.SimpleDay</item>
+    </style>
+    <style name="Theme.SagerNet.CollapsingToolbar.Font.SimpleDay" parent="@style/Base.Widget.Material3.CollapsingToolbar">
+        <item name="collapsedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.SimpleDay</item>
+        <item name="expandedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.SimpleDay</item>
+        <item name="expandedTitleTextColor">?android:textColorPrimaryInverse</item>
+        <item name="collapsedTitleTextColor">?android:textColorPrimaryInverse</item>
     </style>
     <style name="DialogFontSimpleDay" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog.SagerNet">
         <item name="android:fontFamily">@font/simpleday</item>
@@ -199,14 +220,18 @@
         <item name="android:letterSpacing">-0.021954114</item>
     </style>
 
-
     <style name="StyleFontFucek">
         <item name="android:fontFamily">@font/fucek</item>
         <item name="titleTextAppearance">@style/Text.Font.Fucek</item>
-        <item name="collapsedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.Fucek</item>
-        <item name="expandedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.Fucek</item>
         <item name="materialAlertDialogTheme">@style/DialogFontFucek</item>
         <item name="alertDialogTheme">@style/DialogFontFucek</item>
+        <item name="collapsingToolbarLayoutStyle">@style/Theme.SagerNet.CollapsingToolbar.Font.Fucek</item>
+    </style>
+    <style name="Theme.SagerNet.CollapsingToolbar.Font.Fucek" parent="@style/Base.Widget.Material3.CollapsingToolbar">
+        <item name="collapsedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.Fucek</item>
+        <item name="expandedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.Fucek</item>
+        <item name="expandedTitleTextColor">?android:textColorPrimaryInverse</item>
+        <item name="collapsedTitleTextColor">?android:textColorPrimaryInverse</item>
     </style>
     <style name="DialogFontFucek" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog.SagerNet">
         <item name="android:fontFamily">@font/fucek</item>
@@ -239,14 +264,18 @@
         <item name="android:letterSpacing">-0.021954114</item>
     </style>
 
-
     <style name="StyleFontSFProDisplay">
         <item name="android:fontFamily">@font/sfprodisplay</item>
         <item name="titleTextAppearance">@style/Text.Font.SFProDisplay</item>
-        <item name="collapsedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.SFProDisplay</item>
-        <item name="expandedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.SFProDisplay</item>
         <item name="materialAlertDialogTheme">@style/DialogFontSFProDisplay</item>
         <item name="alertDialogTheme">@style/DialogFontSFProDisplay</item>
+        <item name="collapsingToolbarLayoutStyle">@style/Theme.SagerNet.CollapsingToolbar.Font.SFProDisplay</item>
+    </style>
+    <style name="Theme.SagerNet.CollapsingToolbar.Font.SFProDisplay" parent="@style/Base.Widget.Material3.CollapsingToolbar">
+        <item name="collapsedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.SFProDisplay</item>
+        <item name="expandedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.SFProDisplay</item>
+        <item name="expandedTitleTextColor">?android:textColorPrimaryInverse</item>
+        <item name="collapsedTitleTextColor">?android:textColorPrimaryInverse</item>
     </style>
     <style name="DialogFontSFProDisplay" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog.SagerNet">
         <item name="android:fontFamily">@font/sfprodisplay</item>
@@ -278,15 +307,19 @@
         <item name="android:textSize">30.0dip</item>
         <item name="android:letterSpacing">-0.021954114</item>
     </style>
-    
-    
+
     <style name="StyleFontDancingScript">
         <item name="android:fontFamily">@font/dancingscript</item>
         <item name="titleTextAppearance">@style/Text.Font.DancingScript</item>
-        <item name="collapsedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.DancingScript</item>
-        <item name="expandedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.DancingScript</item>
         <item name="materialAlertDialogTheme">@style/DialogFontDancingScript</item>
         <item name="alertDialogTheme">@style/DialogFontDancingScript</item>
+        <item name="collapsingToolbarLayoutStyle">@style/Theme.SagerNet.CollapsingToolbar.Font.DancingScript</item>
+    </style>
+    <style name="Theme.SagerNet.CollapsingToolbar.Font.DancingScript" parent="@style/Base.Widget.Material3.CollapsingToolbar">
+        <item name="collapsedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.DancingScript</item>
+        <item name="expandedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.DancingScript</item>
+        <item name="expandedTitleTextColor">?android:textColorPrimaryInverse</item>
+        <item name="collapsedTitleTextColor">?android:textColorPrimaryInverse</item>
     </style>
     <style name="DialogFontDancingScript" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog.SagerNet">
         <item name="android:fontFamily">@font/dancingscript</item>
@@ -319,14 +352,18 @@
         <item name="android:letterSpacing">-0.021954114</item>
     </style>
 
-
     <style name="StyleFontCream">
         <item name="android:fontFamily">@font/cream</item>
         <item name="titleTextAppearance">@style/Text.Font.Cream</item>
-        <item name="collapsedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.Cream</item>
-        <item name="expandedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.Cream</item>
         <item name="materialAlertDialogTheme">@style/DialogFontCream</item>
         <item name="alertDialogTheme">@style/DialogFontCream</item>
+        <item name="collapsingToolbarLayoutStyle">@style/Theme.SagerNet.CollapsingToolbar.Font.Cream</item>
+    </style>
+    <style name="Theme.SagerNet.CollapsingToolbar.Font.Cream" parent="@style/Base.Widget.Material3.CollapsingToolbar">
+        <item name="collapsedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.Cream</item>
+        <item name="expandedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.Cream</item>
+        <item name="expandedTitleTextColor">?android:textColorPrimaryInverse</item>
+        <item name="collapsedTitleTextColor">?android:textColorPrimaryInverse</item>
     </style>
     <style name="DialogFontCream" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog.SagerNet">
         <item name="android:fontFamily">@font/cream</item>
@@ -359,14 +396,18 @@
         <item name="android:letterSpacing">-0.021954114</item>
     </style>
 
-
     <style name="StyleFontOneUI">
         <item name="android:fontFamily">@font/oneui</item>
         <item name="titleTextAppearance">@style/Text.Font.OneUI</item>
-        <item name="collapsedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.OneUI</item>
-        <item name="expandedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.OneUI</item>
         <item name="materialAlertDialogTheme">@style/DialogFontOneUI</item>
         <item name="alertDialogTheme">@style/DialogFontOneUI</item>
+        <item name="collapsingToolbarLayoutStyle">@style/Theme.SagerNet.CollapsingToolbar.Font.OneUI</item>
+    </style>
+    <style name="Theme.SagerNet.CollapsingToolbar.Font.OneUI" parent="@style/Base.Widget.Material3.CollapsingToolbar">
+        <item name="collapsedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.OneUI</item>
+        <item name="expandedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.OneUI</item>
+        <item name="expandedTitleTextColor">?android:textColorPrimaryInverse</item>
+        <item name="collapsedTitleTextColor">?android:textColorPrimaryInverse</item>
     </style>
     <style name="DialogFontOneUI" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog.SagerNet">
         <item name="android:fontFamily">@font/oneui</item>
@@ -399,14 +440,18 @@
         <item name="android:letterSpacing">-0.021954114</item>
     </style>
 
-
     <style name="StyleFontInconsolata">
         <item name="android:fontFamily">@font/incosolata</item>
         <item name="titleTextAppearance">@style/Text.Font.Inconsolata</item>
-        <item name="collapsedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.Inconsolata</item>
-        <item name="expandedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.Inconsolata</item>
         <item name="materialAlertDialogTheme">@style/DialogFontInconsolata</item>
         <item name="alertDialogTheme">@style/DialogFontInconsolata</item>
+        <item name="collapsingToolbarLayoutStyle">@style/Theme.SagerNet.CollapsingToolbar.Font.Inconsolata</item>
+    </style>
+    <style name="Theme.SagerNet.CollapsingToolbar.Font.Inconsolata" parent="@style/Base.Widget.Material3.CollapsingToolbar">
+        <item name="collapsedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.Inconsolata</item>
+        <item name="expandedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.Inconsolata</item>
+        <item name="expandedTitleTextColor">?android:textColorPrimaryInverse</item>
+        <item name="collapsedTitleTextColor">?android:textColorPrimaryInverse</item>
     </style>
     <style name="DialogFontInconsolata" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog.SagerNet">
         <item name="android:fontFamily">@font/incosolata</item>
@@ -439,14 +484,18 @@
         <item name="android:letterSpacing">-0.021954114</item>
     </style>
 
-
     <style name="StyleFontEmilysCandy">
         <item name="android:fontFamily">@font/emilyscandy</item>
         <item name="titleTextAppearance">@style/Text.Font.EmilysCandy</item>
-        <item name="collapsedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.EmilysCandy</item>
-        <item name="expandedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.EmilysCandy</item>
         <item name="materialAlertDialogTheme">@style/DialogFontEmilysCandy</item>
         <item name="alertDialogTheme">@style/DialogFontEmilysCandy</item>
+        <item name="collapsingToolbarLayoutStyle">@style/Theme.SagerNet.CollapsingToolbar.Font.EmilysCandy</item>
+    </style>
+    <style name="Theme.SagerNet.CollapsingToolbar.Font.EmilysCandy" parent="@style/Base.Widget.Material3.CollapsingToolbar">
+        <item name="collapsedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.EmilysCandy</item>
+        <item name="expandedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.EmilysCandy</item>
+        <item name="expandedTitleTextColor">?android:textColorPrimaryInverse</item>
+        <item name="collapsedTitleTextColor">?android:textColorPrimaryInverse</item>
     </style>
     <style name="DialogFontEmilysCandy" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog.SagerNet">
         <item name="android:fontFamily">@font/emilyscandy</item>
@@ -479,14 +528,18 @@
         <item name="android:letterSpacing">-0.021954114</item>
     </style>
 
-
     <style name="StyleFontSummerDream">
         <item name="android:fontFamily">@font/summerdream</item>
         <item name="titleTextAppearance">@style/Text.Font.SummerDream</item>
-        <item name="collapsedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.SummerDream</item>
-        <item name="expandedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.SummerDream</item>
         <item name="materialAlertDialogTheme">@style/DialogFontSummerDream</item>
         <item name="alertDialogTheme">@style/DialogFontSummerDream</item>
+        <item name="collapsingToolbarLayoutStyle">@style/Theme.SagerNet.CollapsingToolbar.Font.SummerDream</item>
+    </style>
+    <style name="Theme.SagerNet.CollapsingToolbar.Font.SummerDream" parent="@style/Base.Widget.Material3.CollapsingToolbar">
+        <item name="collapsedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.SummerDream</item>
+        <item name="expandedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.SummerDream</item>
+        <item name="expandedTitleTextColor">?android:textColorPrimaryInverse</item>
+        <item name="collapsedTitleTextColor">?android:textColorPrimaryInverse</item>
     </style>
     <style name="DialogFontSummerDream" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog.SagerNet">
         <item name="android:fontFamily">@font/summerdream</item>
@@ -519,14 +572,18 @@
         <item name="android:letterSpacing">-0.021954114</item>
     </style>
 
-
     <style name="StyleFontRine">
         <item name="android:fontFamily">@font/rine</item>
         <item name="titleTextAppearance">@style/Text.Font.Rine</item>
-        <item name="collapsedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.Rine</item>
-        <item name="expandedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.Rine</item>
         <item name="materialAlertDialogTheme">@style/DialogFontRine</item>
         <item name="alertDialogTheme">@style/DialogFontRine</item>
+        <item name="collapsingToolbarLayoutStyle">@style/Theme.SagerNet.CollapsingToolbar.Font.Rine</item>
+    </style>
+    <style name="Theme.SagerNet.CollapsingToolbar.Font.Rine" parent="@style/Base.Widget.Material3.CollapsingToolbar">
+        <item name="collapsedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.Rine</item>
+        <item name="expandedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.Rine</item>
+        <item name="expandedTitleTextColor">?android:textColorPrimaryInverse</item>
+        <item name="collapsedTitleTextColor">?android:textColorPrimaryInverse</item>
     </style>
     <style name="DialogFontRine" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog.SagerNet">
         <item name="android:fontFamily">@font/rine</item>
@@ -558,26 +615,44 @@
         <item name="android:textSize">30.0dip</item>
         <item name="android:letterSpacing">-0.021954114</item>
     </style>
-
     
     <style name="BoldTextThemeOverlay">
         <item name="android:textStyle">bold</item>
-        <item name="titleTextAppearance">@style/TextAppearance.Font.BoldText</item>
+        <item name="titleTextAppearance">@style/Text.Font.BoldText</item>
+        <item name="collapsingToolbarLayoutStyle">@style/Theme.SagerNet.CollapsingToolbar.Font.BoldText</item>
+    </style>
+    <style name="Theme.SagerNet.CollapsingToolbar.Font.BoldText" parent="@style/Base.Widget.Material3.CollapsingToolbar">
         <item name="collapsedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.BoldText</item>
-        <item name="expandedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.BoldText</item>
+        <item name="expandedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.BoldText</item>
+        <item name="expandedTitleTextColor">?android:textColorPrimaryInverse</item>
+        <item name="collapsedTitleTextColor">?android:textColorPrimaryInverse</item>
+    </style>
+    <style name="DialogFontBoldText" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog.SagerNet">
+        <item name="android:textStyle">bold</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/Text.Font.BoldText.Dialog.Title</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/Text.Font.BoldText.Dialog.Body</item>
+        <item name="android:textAppearanceMedium">@style/Text.Font.BoldText</item>
+        <item name="android:textAppearanceSmall">@style/Text.Font.BoldText</item>
+        <item name="android:textAppearance">@style/Text.Font.BoldText</item>
+    </style>
+    <style name="Text.Font.BoldText" parent="TextAppearance.M3.Sys.Typescale.TitleMedium">
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="Text.Font.BoldText.Dialog.Body" parent="MaterialAlertDialog.MaterialComponents.Body.Text">
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="Text.Font.BoldText.Dialog.Title" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
+        <item name="android:textStyle">bold</item>
     </style>
     <style name="Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.BoldText" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">20.0dip</item>
         <item name="android:letterSpacing">-0.01665734</item>
     </style>
-    <style name="Theme.SagerNet.CollapsingToolbarTitle.Expanded.BoldText" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+    <style name="Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.BoldText" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">30.0dip</item>
         <item name="android:letterSpacing">-0.021954114</item>
-    </style>
-    <style name="TextAppearance.Font.BoldText" parent="Widget.MaterialComponents.TextView">
-        <item name="android:textStyle">bold</item>
     </style>
 	
 	<style name="Theme.SagerNet.BottomSheetDialog" parent="@style/ThemeOverlay.MaterialComponents.BottomSheetDialog">
@@ -711,6 +786,23 @@
         <item name="colorTertiaryFixedDim">@color/magenta_tertiaryFixedDim</item>
         <item name="colorIcon">@color/white</item>
         <item name="android:scrollbarSize">0.0dip</item>
+        <item name="collapsingToolbarLayoutStyle">@style/Theme.SagerNet.CollapsingToolbar</item>
+    </style>
+    
+    <style name="Theme.SagerNet.CollapsingToolbar" parent="@style/Base.Widget.Material3.CollapsingToolbar">
+        <item name="collapsedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Collapsed</item>
+        <item name="expandedTitleTextAppearance">@style/Theme.SagerNet.CollapsingToolbarTitle.Expanded</item>
+        <item name="expandedTitleTextColor">?android:textColorPrimaryInverse</item>
+        <item name="collapsedTitleTextColor">?android:textColorPrimaryInverse</item>
+    </style>
+    
+    <style name="Theme.SagerNet.CollapsingToolbarTitle.Collapsed" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textSize">20.0dip</item>
+        <item name="android:letterSpacing">-0.01665734</item>
+    </style>
+    <style name="Theme.SagerNet.CollapsingToolbarTitle.Expanded" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textSize">30.0dip</item>
+        <item name="android:letterSpacing">-0.021954114</item>
     </style>
 
     <style name="Theme.SagerNet.Dialog" parent="@style/Theme.MaterialComponents.DayNight.Dialog.Alert">
