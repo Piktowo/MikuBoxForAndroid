@@ -14,10 +14,8 @@
             android:background="?attr/colorPrimary"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            app:collapsedTitleTextAppearance="@style/Theme.SagerNet.CollapsingToolbarTitle.Collapsed"
             app:collapsedTitleTextColor="?android:textColorPrimaryInverse"
             app:contentScrim="?attr/colorPrimary"
-            app:expandedTitleTextAppearance="@style/Theme.SagerNet.CollapsingToolbarTitle.Expanded"
             app:expandedTitleTextColor="?android:textColorPrimaryInverse"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
             <com.google.android.material.appbar.MaterialToolbar

@@ -44,6 +44,29 @@ abstract class ThemedActivity : AppCompatActivity {
             
             Theme.applyWindowBlur(window)
         }
+        
+        val fontOverlayId = when (DataStore.appFont) { 
+            "google" -> R.style.StyleFontGoogle
+            "chococooky" -> R.style.StyleFontChocoCooky
+            "roboto" -> R.style.StyleFontRoboto
+            "poppins" -> R.style.StyleFontPoppins
+            "simpleday" -> R.style.StyleFontSimpleDay
+            "fucek" -> R.style.StyleFontFucek
+            "sfprodisplay" -> R.style.StyleFontSFProDisplay
+            "dancingscript" -> R.style.StyleFontDancingScript
+            "cream" -> R.style.StyleFontCream
+            "oneui" -> R.style.StyleFontOneUI
+            "inconsolata" -> R.style.StyleFontInconsolata
+            "emilyscandy" -> R.style.StyleFontEmilysCandy
+            "summerdream" -> R.style.StyleFontSummerDream
+            "rine" -> R.style.StyleFontRine
+            else -> 0 
+        }
+
+        if (fontOverlayId != 0) {
+            theme.applyStyle(fontOverlayId, true)
+        }
+        
         Theme.applyNightTheme()
 
         super.onCreate(savedInstanceState)

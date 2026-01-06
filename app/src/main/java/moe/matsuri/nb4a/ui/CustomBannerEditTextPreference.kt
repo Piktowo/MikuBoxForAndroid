@@ -2,6 +2,7 @@ package moe.matsuri.nb4a.ui
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.preference.EditTextPreference
 import androidx.preference.PreferenceViewHolder
@@ -27,27 +28,36 @@ class CustomBannerEditTextPreference @JvmOverloads constructor(
         holder.itemView.isClickable = false
         holder.itemView.isFocusable = false
 
+        val bannerLayout = holder.findViewById(R.id.img_banner_layout_preference)
         val bannerImageView = holder.findViewById(R.id.img_banner_preference) as? AppCompatImageView
 
-        if (bannerImageView != null) {
-            val savedUriString = DataStore.configurationStore.getString("custom_preference_banner_uri", null)
+        if (DataStore.showBannerPreference) {
+            
+            bannerLayout?.visibility = View.VISIBLE
 
-            if (savedUriString != bannerImageView.tag || savedUriString.isNullOrBlank()) {
-                
-                if (!savedUriString.isNullOrBlank()) {
-                    Glide.with(context)
-                        .load(savedUriString)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .dontAnimate()
-                        .skipMemoryCache(false)
-                        .into(bannerImageView)
+            if (bannerImageView != null) {
+                val savedUriString = DataStore.configurationStore.getString("custom_preference_banner_uri", null)
+
+                if (savedUriString != bannerImageView.tag || savedUriString.isNullOrBlank()) {
                     
-                    bannerImageView.tag = savedUriString
-                } else {
-                    bannerImageView.setImageResource(R.drawable.uwu_banner_image)
-                    bannerImageView.tag = null
+                    if (!savedUriString.isNullOrBlank()) {
+                        Glide.with(context)
+                            .load(savedUriString)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .dontAnimate()
+                            .skipMemoryCache(false)
+                            .into(bannerImageView)
+                        
+                        bannerImageView.tag = savedUriString
+                    } else {
+                        bannerImageView.setImageResource(R.drawable.uwu_banner_image)
+                        bannerImageView.tag = null
+                    }
                 }
             }
+
+        } else {
+            bannerLayout?.visibility = View.GONE
         }
 
         val editButton = holder.findViewById(R.id.editTextCustom)

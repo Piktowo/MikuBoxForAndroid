@@ -345,6 +345,13 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
             dynamicSwitch.summary = getString(R.string.dynamic_theme_min_android_12)
             appTheme.isEnabled = true
         }
+        
+        val appFont = findPreference<SimpleMenuPreference>("app_font_pref")
+        appFont?.setOnPreferenceChangeListener { _, newValue ->
+            DataStore.appFont = newValue as String
+            requireActivity().recreate()
+            true
+        }
 
         val boldFontSwitch = findPreference<SwitchPreference>("bold_font_switch")
         boldFontSwitch?.apply {

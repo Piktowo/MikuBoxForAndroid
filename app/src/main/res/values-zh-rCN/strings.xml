@@ -690,6 +690,9 @@
     <string name="move_summary">移至其他分组进行整理</string>
     <string name="title_show_welcome_anim">爱心动画</string>
     <string name="summary_show_welcome_anim">启动应用时显示 Lottie 动画</string>
+    <string name="title_show_banner_preference">显示偏好设置横幅</string>
+    <string name="summary_show_banner_preference">在偏好设置页面显示或隐藏横幅</string>
+    <string name="pref_font_style_title">更改字体样式</string>
     
     <!-- uwu -->
     <string name="uwu_miku_ui">Miku 的衣橱</string>
