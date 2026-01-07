@@ -35,12 +35,12 @@
     </style>
     <style name="Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.ChocoCooky" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:fontFamily">@font/chococookyregular</item>
-        <item name="android:textSize">20.0dip</item>
+        <item name="android:textSize">20.0sp</item>
         <item name="android:letterSpacing">-0.01665734</item>
     </style>
     <style name="Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.ChocoCooky" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:fontFamily">@font/chococookyregular</item>
-        <item name="android:textSize">30.0dip</item>
+        <item name="android:textSize">30.0sp</item>
         <item name="android:letterSpacing">-0.021954114</item>
     </style>
 
@@ -79,12 +79,12 @@
     </style>
     <style name="Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.Google" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:fontFamily">@font/googlesansregular</item>
-        <item name="android:textSize">20.0dip</item>
+        <item name="android:textSize">20.0sp</item>
         <item name="android:letterSpacing">-0.01665734</item>
     </style>
     <style name="Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.Google" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:fontFamily">@font/googlesansregular</item>
-        <item name="android:textSize">30.0dip</item>
+        <item name="android:textSize">30.0sp</item>
         <item name="android:letterSpacing">-0.021954114</item>
     </style>
 
@@ -123,12 +123,12 @@
     </style>
     <style name="Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.Roboto" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:fontFamily">@font/robotoregular</item>
-        <item name="android:textSize">20.0dip</item>
+        <item name="android:textSize">20.0sp</item>
         <item name="android:letterSpacing">-0.01665734</item>
     </style>
     <style name="Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.Roboto" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:fontFamily">@font/robotoregular</item>
-        <item name="android:textSize">30.0dip</item>
+        <item name="android:textSize">30.0sp</item>
         <item name="android:letterSpacing">-0.021954114</item>
     </style>
 
@@ -167,12 +167,12 @@
     </style>
     <style name="Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.Poppins" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:fontFamily">@font/poppinsregular</item>
-        <item name="android:textSize">20.0dip</item>
+        <item name="android:textSize">20.0sp</item>
         <item name="android:letterSpacing">-0.01665734</item>
     </style>
     <style name="Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.Poppins" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:fontFamily">@font/poppinsregular</item>
-        <item name="android:textSize">30.0dip</item>
+        <item name="android:textSize">30.0sp</item>
         <item name="android:letterSpacing">-0.021954114</item>
     </style>
 
@@ -211,12 +211,12 @@
     </style>
     <style name="Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.SimpleDay" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:fontFamily">@font/simpleday</item>
-        <item name="android:textSize">20.0dip</item>
+        <item name="android:textSize">20.0sp</item>
         <item name="android:letterSpacing">-0.01665734</item>
     </style>
     <style name="Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.SimpleDay" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:fontFamily">@font/simpleday</item>
-        <item name="android:textSize">30.0dip</item>
+        <item name="android:textSize">30.0sp</item>
         <item name="android:letterSpacing">-0.021954114</item>
     </style>
 
@@ -255,12 +255,12 @@
     </style>
     <style name="Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.Fucek" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:fontFamily">@font/fucek</item>
-        <item name="android:textSize">20.0dip</item>
+        <item name="android:textSize">20.0sp</item>
         <item name="android:letterSpacing">-0.01665734</item>
     </style>
     <style name="Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.Fucek" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:fontFamily">@font/fucek</item>
-        <item name="android:textSize">30.0dip</item>
+        <item name="android:textSize">30.0sp</item>
         <item name="android:letterSpacing">-0.021954114</item>
     </style>
 
@@ -299,12 +299,12 @@
     </style>
     <style name="Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.SFProDisplay" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:fontFamily">@font/sfprodisplay</item>
-        <item name="android:textSize">20.0dip</item>
+        <item name="android:textSize">20.0sp</item>
         <item name="android:letterSpacing">-0.01665734</item>
     </style>
     <style name="Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.SFProDisplay" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:fontFamily">@font/sfprodisplay</item>
-        <item name="android:textSize">30.0dip</item>
+        <item name="android:textSize">30.0sp</item>
         <item name="android:letterSpacing">-0.021954114</item>
     </style>
 
@@ -343,12 +343,12 @@
     </style>
     <style name="Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.DancingScript" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:fontFamily">@font/dancingscript</item>
-        <item name="android:textSize">20.0dip</item>
+        <item name="android:textSize">20.0sp</item>
         <item name="android:letterSpacing">-0.01665734</item>
     </style>
     <style name="Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.DancingScript" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:fontFamily">@font/dancingscript</item>
-        <item name="android:textSize">30.0dip</item>
+        <item name="android:textSize">30.0sp</item>
         <item name="android:letterSpacing">-0.021954114</item>
     </style>
 
@@ -387,12 +387,12 @@
     </style>
     <style name="Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.Cream" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:fontFamily">@font/cream</item>
-        <item name="android:textSize">20.0dip</item>
+        <item name="android:textSize">20.0sp</item>
         <item name="android:letterSpacing">-0.01665734</item>
     </style>
     <style name="Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.Cream" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:fontFamily">@font/cream</item>
-        <item name="android:textSize">30.0dip</item>
+        <item name="android:textSize">30.0sp</item>
         <item name="android:letterSpacing">-0.021954114</item>
     </style>
 
@@ -431,12 +431,12 @@
     </style>
     <style name="Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.OneUI" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:fontFamily">@font/oneui</item>
-        <item name="android:textSize">20.0dip</item>
+        <item name="android:textSize">20.0sp</item>
         <item name="android:letterSpacing">-0.01665734</item>
     </style>
     <style name="Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.OneUI" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:fontFamily">@font/oneui</item>
-        <item name="android:textSize">30.0dip</item>
+        <item name="android:textSize">30.0sp</item>
         <item name="android:letterSpacing">-0.021954114</item>
     </style>
 
@@ -475,12 +475,12 @@
     </style>
     <style name="Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.Inconsolata" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:fontFamily">@font/incosolata</item>
-        <item name="android:textSize">20.0dip</item>
+        <item name="android:textSize">20.0sp</item>
         <item name="android:letterSpacing">-0.01665734</item>
     </style>
     <style name="Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.Inconsolata" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:fontFamily">@font/incosolata</item>
-        <item name="android:textSize">30.0dip</item>
+        <item name="android:textSize">30.0sp</item>
         <item name="android:letterSpacing">-0.021954114</item>
     </style>
 
@@ -519,12 +519,12 @@
     </style>
     <style name="Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.EmilysCandy" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:fontFamily">@font/emilyscandy</item>
-        <item name="android:textSize">20.0dip</item>
+        <item name="android:textSize">20.0sp</item>
         <item name="android:letterSpacing">-0.01665734</item>
     </style>
     <style name="Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.EmilysCandy" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:fontFamily">@font/emilyscandy</item>
-        <item name="android:textSize">30.0dip</item>
+        <item name="android:textSize">30.0sp</item>
         <item name="android:letterSpacing">-0.021954114</item>
     </style>
 
@@ -563,12 +563,12 @@
     </style>
     <style name="Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.SummerDream" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:fontFamily">@font/summerdream</item>
-        <item name="android:textSize">20.0dip</item>
+        <item name="android:textSize">20.0sp</item>
         <item name="android:letterSpacing">-0.01665734</item>
     </style>
     <style name="Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.SummerDream" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:fontFamily">@font/summerdream</item>
-        <item name="android:textSize">30.0dip</item>
+        <item name="android:textSize">30.0sp</item>
         <item name="android:letterSpacing">-0.021954114</item>
     </style>
 
@@ -607,12 +607,12 @@
     </style>
     <style name="Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.Rine" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:fontFamily">@font/rine</item>
-        <item name="android:textSize">20.0dip</item>
+        <item name="android:textSize">20.0sp</item>
         <item name="android:letterSpacing">-0.01665734</item>
     </style>
     <style name="Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.Rine" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:fontFamily">@font/rine</item>
-        <item name="android:textSize">30.0dip</item>
+        <item name="android:textSize">30.0sp</item>
         <item name="android:letterSpacing">-0.021954114</item>
     </style>
     
@@ -646,12 +646,12 @@
     </style>
     <style name="Theme.SagerNet.CollapsingToolbarTitle.Collapsed.Font.BoldText" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">20.0dip</item>
+        <item name="android:textSize">20.0sp</item>
         <item name="android:letterSpacing">-0.01665734</item>
     </style>
     <style name="Theme.SagerNet.CollapsingToolbarTitle.Expanded.Font.BoldText" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">30.0dip</item>
+        <item name="android:textSize">30.0sp</item>
         <item name="android:letterSpacing">-0.021954114</item>
     </style>
 	
@@ -797,11 +797,11 @@
     </style>
     
     <style name="Theme.SagerNet.CollapsingToolbarTitle.Collapsed" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
-        <item name="android:textSize">20.0dip</item>
+        <item name="android:textSize">20.0sp</item>
         <item name="android:letterSpacing">-0.01665734</item>
     </style>
     <style name="Theme.SagerNet.CollapsingToolbarTitle.Expanded" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
-        <item name="android:textSize">30.0dip</item>
+        <item name="android:textSize">30.0sp</item>
         <item name="android:letterSpacing">-0.021954114</item>
     </style>
 

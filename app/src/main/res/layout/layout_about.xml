@@ -234,8 +234,10 @@
                             android:id="@+id/expandable_view"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            app:expandable_visibilityDuration="900"
-                            app:expandable_visibilityMode="vertical">
+                            app:el_duration="900"
+                            app:el_expanded="false"
+                            app:el_orientation="vertical"
+                            app:el_parallax="1">
                             <LinearLayout
                                 android:orientation="vertical"
                                 android:layout_width="fill_parent"

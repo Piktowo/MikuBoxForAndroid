@@ -114,6 +114,7 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var hideWeatherCity by configurationStore.boolean("hide_weather_city") { false }
     var customProfileName by configurationStore.string("custom_profile_name") { "" }
     var appFont by configurationStore.string("app_font_pref") { "default" }
+    var fontSize by configurationStore.int("app_font_scale") { 100 }
 
     var appTLSVersion by configurationStore.string(Key.APP_TLS_VERSION)
     var enableClashAPI by configurationStore.boolean(Key.ENABLE_CLASH_API)

@@ -794,6 +794,13 @@ Please grant this permission in System Settings."</string>
     <string name="title_show_banner_preference">Show Preference Banner</string>
     <string name="summary_show_banner_preference">Show or hide the banner on the preference page</string>
     <string name="pref_font_style_title">Change Font Style</string>
+    <string name="pref_font_scale_title">Change Font Size</string>
+    <string name="pref_font_scale_summary">Tap to reset to default font size</string>
+    <string name="reset_font_scale_title">Reset Font Scale Size</string>
+    <string name="reset_font_scale_message">Reset font size to default (100)?</string>
+    <string name="display_category">Display</string>
+    <string name="summary_speed_test">Check how fast your internet is right now!</string>
+    <string name="summary_free_config">Customize your config freely, for free!</string>
 
     <!-- uwu -->
     <string name="uwu_miku_ui">"Miku's Wardrobe"</string>

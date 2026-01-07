@@ -693,6 +693,13 @@
     <string name="title_show_banner_preference">显示偏好设置横幅</string>
     <string name="summary_show_banner_preference">在偏好设置页面显示或隐藏横幅</string>
     <string name="pref_font_style_title">更改字体样式</string>
+    <string name="pref_font_scale_title">更改字体大小</string>
+    <string name="pref_font_scale_summary">点击以重置为默认字体大小</string>
+    <string name="reset_font_scale_title">重置字体缩放大小</string>
+    <string name="reset_font_scale_message">将字体大小重置为默认值 (100)？</string>
+    <string name="display_category">显示</string>
+    <string name="summary_speed_test">测测现在的网速有多快！</string>
+    <string name="summary_free_config">随心配置，完全免费！</string>
     
     <!-- uwu -->
     <string name="uwu_miku_ui">Miku 的衣橱</string>

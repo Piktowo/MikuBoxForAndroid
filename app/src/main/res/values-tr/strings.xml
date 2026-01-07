@@ -730,6 +730,13 @@ Lütfen Sistem Ayarlarından bu izni verin."</string>
     <string name="title_show_banner_preference">"Tercih Banner'ını Göster"</string>
     <string name="summary_show_banner_preference">"Tercihler sayfasında banner'ı göster veya gizle"</string>
     <string name="pref_font_style_title">Yazı Tipini Değiştir</string>
+    <string name="pref_font_scale_title">Yazı Tipi Boyutunu Değiştir</string>
+    <string name="pref_font_scale_summary">Varsayılan boyuta sıfırlamak için dokunun</string>
+    <string name="reset_font_scale_title">Yazı Tipi Ölçeğini Sıfırla</string>
+    <string name="reset_font_scale_message">Yazı tipi boyutu varsayılana (100) sıfırlansın mı?</string>
+    <string name="display_category">Ekran</string>
+    <string name="summary_speed_test">İnternetinin ne kadar hızlı olduğunu hemen gör!</string>
+    <string name="summary_free_config">Ayarları kafana göre yap, tamamen ücretsiz!</string>
     
     <string name="uwu_miku_ui">"Miku\'nun Gardırobu"</string>
     <string name="uwu_miku_ui_summary">"Haydi Miku'yu giydirip daha da güzelleştirelim!"</string>

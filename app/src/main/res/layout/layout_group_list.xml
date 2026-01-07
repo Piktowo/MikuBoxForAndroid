@@ -142,185 +142,199 @@
                 android:id="@+id/expandable_view"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                app:expandable_visibilityDuration="900"
-                app:expandable_visibilityMode="vertical">
+                app:el_duration="900"
+                app:el_expanded="false"
+                app:el_orientation="horizontal"
+                app:el_parallax="0">
+           <HorizontalScrollView
+                android:scrollbars="none"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
                 <LinearLayout
-                    android:orientation="vertical"
+                    android:orientation="horizontal"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content">
-                    <LinearLayout
-                        android:gravity="center_vertical"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0.0dip"
+                    android:layout_marginBottom="16.0dip"
+                    android:paddingStart="16.0dip"
+                    android:paddingEnd="16.0dip">
+                    <com.google.android.material.card.MaterialCardView
                         android:id="@+id/speedTest"
-                        android:background="@drawable/uwu_bg_top"
-                        android:focusable="true"
                         android:clickable="true"
-                        android:clipToPadding="false"
-                        android:layout_width="fill_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="0.0dip"
-                        android:layout_marginBottom="4.0dip"
-                        android:baselineAligned="false"
-                        android:minHeight="?android:listPreferredItemHeightSmall"
-                        android:layout_marginStart="16.0dip"
-                        android:layout_marginEnd="16.0dip"
-                        xmlns:android="http://schemas.android.com/apk/res/android"
-                        xmlns:app="http://schemas.android.com/apk/res-auto">
+                        android:foreground="?android:selectableItemBackground"
+                        android:layout_marginEnd="8.0dip"
+                        app:cardBackgroundColor="?colorCard"
+                        app:cardCornerRadius="28.0dip"
+                        app:cardElevation="0.0dip">
                         <LinearLayout
-                            android:gravity="center"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="16.0dip"
-                            android:layout_marginBottom="16.0dip"
-                            android:layout_marginStart="8.0dip"
-                            android:layout_marginEnd="8.0dip">
+                            android:gravity="start|center"
+                            android:orientation="horizontal"
+                            android:padding="?android:listPreferredItemPaddingEnd"
+                            android:scrollbars="horizontal"
+                            android:layout_width="250.0dip"
+                            android:layout_height="100.0dip">
                             <LinearLayout
-                                android:background="@drawable/uwu_bg_icon"
-                                android:layout_width="45.0dip"
-                                android:layout_height="45.0dip"
-                                android:layout_marginStart="8.0dip"
-                                android:backgroundTint="?colorPrimary">
-                                <ImageView
-                                    android:gravity="center"
-                                    android:layout_width="25.0dip"
-                                    android:layout_height="25.0dip"
-                                    android:layout_marginTop="10.0dip"
-                                    android:src="@drawable/ic_speedometer"
-                                    android:tint="?colorIcon"
-                                    android:layout_marginStart="10.0dip" />
+                                android:gravity="bottom|center"
+                                android:layout_gravity="bottom|center"
+                                android:orientation="vertical"
+                                android:background="@drawable/uwu_bg_icon_2"
+                                android:paddingBottom="3.0dip"
+                                android:scrollbars="horizontal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="fill_parent"
+                                android:paddingStart="3.0dip"
+                                android:paddingEnd="3.0dip"
+                                android:backgroundTint="?colorSecondaryContainer">
+                                <com.google.android.material.card.MaterialCardView
+                                    android:gravity="center|top"
+                                    android:layout_gravity="bottom|center"
+                                    android:orientation="vertical"
+                                    android:scrollbars="horizontal"
+                                    android:layout_width="38.0dip"
+                                    android:layout_height="48.0dip"
+                                    app:cardBackgroundColor="?colorPrimary"
+                                    app:cardCornerRadius="8.0dip"
+                                    app:cardElevation="0.0dip">
+                                    <ImageView
+                                        android:gravity="center|top"
+                                        android:layout_gravity="center|top"
+                                        android:layout_width="24.0dip"
+                                        android:layout_height="24.0dip"
+                                        android:layout_marginTop="7.0dip"
+                                        android:src="@drawable/ic_speedometer"
+                                        android:scaleType="centerInside"
+                                        android:tint="?android:textColorPrimaryInverse" />
+                                    <com.google.android.material.card.MaterialCardView
+                                        android:gravity="bottom|center"
+                                        android:layout_gravity="bottom|center"
+                                        android:layout_width="20.0dip"
+                                        android:layout_height="3.0dip"
+                                        android:layout_marginBottom="7.0dip"
+                                        android:elevation="0.0dip"
+                                        app:cardBackgroundColor="?android:textColorPrimaryInverse"
+                                        app:cardCornerRadius="2.0dip"
+                                        app:cardElevation="0.0dip" />
+                                </com.google.android.material.card.MaterialCardView>
                             </LinearLayout>
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_gravity="center_vertical"
-                            android:orientation="vertical"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="20.0dip"
-                            android:layout_marginBottom="20.0dip"
-                            android:layout_weight="1.0"
-                            android:layout_marginStart="8.0dip"
-                            android:layout_marginEnd="16.0dip">
-                            <TextView
-                                android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleMedium"
-                                android:textSize="17.0sp"
-                                android:textColor="?colorOnSurface"
-                                android:ellipsize="marquee"
+                            <LinearLayout
+                                android:gravity="start|center"
+                                android:orientation="vertical"
+                                android:scrollbars="horizontal"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/speedtest"
-                                android:singleLine="false" />
+                                android:layout_marginStart="16.0dip">
+                                <TextView
+                                    android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleMedium"
+                                    android:textSize="17.0sp"
+                                    android:textColor="?colorOnSurface"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/speedtest" />
+                                <com.neko.marquee.text.AutoMarqueeTextView
+                                    android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleSmall"
+                                    android:textSize="14.0sp"
+                                    android:textColor="?colorOnSurfaceVariant"
+                                    android:ellipsize="marquee"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/summary_speed_test"
+                                    android:singleLine="true"
+                                    android:marqueeRepeatLimit="marquee_forever" />
+                            </LinearLayout>
                         </LinearLayout>
-                        <LinearLayout
-                            android:gravity="center"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="16.0dip"
-                            android:layout_marginBottom="16.0dip"
-                            android:layout_marginStart="8.0dip"
-                            android:layout_marginEnd="16.0dip">
-                            <com.google.android.material.card.MaterialCardView
-                                android:layout_width="28.0dip"
-                                android:layout_height="28.0dip"
-                                app:cardBackgroundColor="?colorSurfaceContainerHighest"
-                                app:cardCornerRadius="99.0dip"
-                                app:cardElevation="0.0dip"
-                                app:strokeWidth="0.0dip">
-                                <ImageView
-                                    android:layout_width="25.0dip"
-                                    android:layout_height="25.0dip"
-                                    android:layout_marginTop="1.0dip"
-                                    android:src="@drawable/uwu_arrow"
-                                    android:tint="?colorOnSurfaceVariant"
-                                    android:layout_marginStart="2.0dip" />
-                            </com.google.android.material.card.MaterialCardView>
-                        </LinearLayout>
-                    </LinearLayout>
-                    <LinearLayout
-                        android:gravity="center_vertical"
+                    </com.google.android.material.card.MaterialCardView>
+                    <com.google.android.material.card.MaterialCardView
                         android:id="@+id/freeConfig"
-                        android:background="@drawable/uwu_bg_bot"
-                        android:focusable="true"
                         android:clickable="true"
-                        android:clipToPadding="false"
-                        android:layout_width="fill_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="0.0dip"
-                        android:layout_marginBottom="16.0dip"
-                        android:baselineAligned="false"
-                        android:minHeight="?android:listPreferredItemHeightSmall"
-                        android:layout_marginStart="16.0dip"
-                        android:layout_marginEnd="16.0dip"
-                        xmlns:android="http://schemas.android.com/apk/res/android"
-                        xmlns:app="http://schemas.android.com/apk/res-auto">
+                        android:foreground="?android:selectableItemBackground"
+                        android:layout_marginStart="8.0dip"
+                        android:layout_marginEnd="0.0dip"
+                        app:cardBackgroundColor="?colorCard"
+                        app:cardCornerRadius="28.0dip"
+                        app:cardElevation="0.0dip">
                         <LinearLayout
-                            android:gravity="center"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="16.0dip"
-                            android:layout_marginBottom="16.0dip"
-                            android:layout_marginStart="8.0dip"
-                            android:layout_marginEnd="8.0dip">
+                            android:gravity="start|center"
+                            android:orientation="horizontal"
+                            android:padding="?android:listPreferredItemPaddingEnd"
+                            android:scrollbars="horizontal"
+                            android:layout_width="250.0dip"
+                            android:layout_height="100.0dip">
                             <LinearLayout
-                                android:background="@drawable/uwu_bg_icon"
-                                android:layout_width="45.0dip"
-                                android:layout_height="45.0dip"
-                                android:layout_marginStart="8.0dip"
-                                android:backgroundTint="?colorPrimary">
-                                <ImageView
-                                    android:gravity="center"
-                                    android:layout_width="25.0dip"
-                                    android:layout_height="25.0dip"
-                                    android:layout_marginTop="10.0dip"
-                                    android:src="@drawable/ic_social_emoji_symbols"
-                                    android:tint="?colorIcon"
-                                    android:layout_marginStart="10.0dip" />
+                                android:gravity="bottom|center"
+                                android:layout_gravity="bottom|center"
+                                android:orientation="vertical"
+                                android:background="@drawable/uwu_bg_icon_2"
+                                android:paddingBottom="3.0dip"
+                                android:scrollbars="horizontal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="fill_parent"
+                                android:paddingStart="3.0dip"
+                                android:paddingEnd="3.0dip"
+                                android:backgroundTint="?colorSecondaryContainer">
+                                <com.google.android.material.card.MaterialCardView
+                                    android:gravity="center|top"
+                                    android:layout_gravity="bottom|center"
+                                    android:orientation="vertical"
+                                    android:scrollbars="horizontal"
+                                    android:layout_width="38.0dip"
+                                    android:layout_height="48.0dip"
+                                    app:cardBackgroundColor="?colorPrimary"
+                                    app:cardCornerRadius="8.0dip"
+                                    app:cardElevation="0.0dip">
+                                    <ImageView
+                                        android:gravity="center|top"
+                                        android:layout_gravity="center|top"
+                                        android:layout_width="24.0dip"
+                                        android:layout_height="24.0dip"
+                                        android:layout_marginTop="7.0dip"
+                                        android:src="@drawable/ic_social_emoji_symbols"
+                                        android:scaleType="centerInside"
+                                        android:tint="?android:textColorPrimaryInverse" />
+                                    <com.google.android.material.card.MaterialCardView
+                                        android:gravity="bottom|center"
+                                        android:layout_gravity="bottom|center"
+                                        android:layout_width="20.0dip"
+                                        android:layout_height="3.0dip"
+                                        android:layout_marginBottom="7.0dip"
+                                        android:elevation="0.0dip"
+                                        app:cardBackgroundColor="?android:textColorPrimaryInverse"
+                                        app:cardCornerRadius="2.0dip"
+                                        app:cardElevation="0.0dip" />
+                                </com.google.android.material.card.MaterialCardView>
                             </LinearLayout>
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_gravity="center_vertical"
-                            android:orientation="vertical"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="20.0dip"
-                            android:layout_marginBottom="20.0dip"
-                            android:layout_weight="1.0"
-                            android:layout_marginStart="8.0dip"
-                            android:layout_marginEnd="16.0dip">
-                            <TextView
-                                android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleMedium"
-                                android:textSize="17.0sp"
-                                android:textColor="?colorOnSurface"
-                                android:ellipsize="marquee"
+                            <LinearLayout
+                                android:gravity="start|center"
+                                android:orientation="vertical"
+                                android:scrollbars="horizontal"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/freeconfig"
-                                android:singleLine="false" />
+                                android:layout_marginStart="16.0dip">
+                                <TextView
+                                    android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleMedium"
+                                    android:textSize="17.0sp"
+                                    android:textColor="?colorOnSurface"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/freeconfig" />
+                                <com.neko.marquee.text.AutoMarqueeTextView
+                                    android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleSmall"
+                                    android:textSize="14.0sp"
+                                    android:textColor="?colorOnSurfaceVariant"
+                                    android:ellipsize="marquee"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/summary_free_config"
+                                    android:singleLine="true"
+                                    android:marqueeRepeatLimit="marquee_forever" />
+                            </LinearLayout>
                         </LinearLayout>
-                        <LinearLayout
-                            android:gravity="center"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="16.0dip"
-                            android:layout_marginBottom="16.0dip"
-                            android:layout_marginStart="8.0dip"
-                            android:layout_marginEnd="16.0dip">
-                            <com.google.android.material.card.MaterialCardView
-                                android:layout_width="28.0dip"
-                                android:layout_height="28.0dip"
-                                app:cardBackgroundColor="?colorSurfaceContainerHighest"
-                                app:cardCornerRadius="99.0dip"
-                                app:cardElevation="0.0dip"
-                                app:strokeWidth="0.0dip">
-                                <ImageView
-                                    android:layout_width="25.0dip"
-                                    android:layout_height="25.0dip"
-                                    android:layout_marginTop="1.0dip"
-                                    android:src="@drawable/uwu_arrow"
-                                    android:tint="?colorOnSurfaceVariant"
-                                    android:layout_marginStart="2.0dip" />
-                            </com.google.android.material.card.MaterialCardView>
-                        </LinearLayout>
-                    </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
+            </HorizontalScrollView>
             </com.neko.expandable.layout.ExpandableView>
         </com.neko.expandable.layout.ExpandableLayout>
     </LinearLayout>

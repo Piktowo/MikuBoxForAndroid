@@ -3,12 +3,15 @@ package io.nekohasekai.sagernet.ui
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
@@ -16,6 +19,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.snackbar.Snackbar
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.database.DataStore
@@ -28,8 +32,34 @@ abstract class ThemedActivity : AppCompatActivity {
 
     override fun attachBaseContext(newBase: Context) {
         val dpi = DataStore.dpiValue
-        val wrapped = if (dpi > 0) DPIController.wrapWithDpi(newBase, dpi) else newBase
-        super.attachBaseContext(wrapped)
+        val baseScale = DataStore.fontSize.toFloat() / 100f
+        val fontScale = if (DataStore.boldFontEnabled) baseScale + 0.05f else baseScale
+        val context = if (dpi > 0) DPIController.wrapWithDpi(newBase, dpi) else newBase
+        val res = context.resources
+        val configuration = Configuration(res.configuration)
+        val metrics = res.displayMetrics
+        configuration.fontScale = fontScale
+        
+        if (dpi > 0) {
+            val targetDensity = dpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT
+            configuration.densityDpi = dpi
+            metrics.density = targetDensity
+            metrics.scaledDensity = targetDensity * fontScale
+        } else {
+            metrics.scaledDensity = metrics.density * fontScale
+        }
+        val finalContext = context.createConfigurationContext(configuration)
+        finalContext.resources.displayMetrics.setTo(metrics)
+        super.attachBaseContext(finalContext)
+    }
+
+    override fun applyOverrideConfiguration(overrideConfiguration: Configuration?) {
+        if (overrideConfiguration != null) {
+            val uiMode = overrideConfiguration.uiMode
+            overrideConfiguration.setTo(baseContext.resources.configuration)
+            overrideConfiguration.uiMode = uiMode
+        }
+        super.applyOverrideConfiguration(overrideConfiguration)
     }
 
     var themeResId = 0
@@ -37,32 +67,19 @@ abstract class ThemedActivity : AppCompatActivity {
     open val isDialog = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        
         if (!isDialog) {
             Theme.apply(this)
         } else {
             Theme.applyDialog(this)
-            
             Theme.applyWindowBlur(window)
         }
         
-        val fontOverlayId = when (DataStore.appFont) { 
-            "google" -> R.style.StyleFontGoogle
-            "chococooky" -> R.style.StyleFontChocoCooky
-            "roboto" -> R.style.StyleFontRoboto
-            "poppins" -> R.style.StyleFontPoppins
-            "simpleday" -> R.style.StyleFontSimpleDay
-            "fucek" -> R.style.StyleFontFucek
-            "sfprodisplay" -> R.style.StyleFontSFProDisplay
-            "dancingscript" -> R.style.StyleFontDancingScript
-            "cream" -> R.style.StyleFontCream
-            "oneui" -> R.style.StyleFontOneUI
-            "inconsolata" -> R.style.StyleFontInconsolata
-            "emilyscandy" -> R.style.StyleFontEmilysCandy
-            "summerdream" -> R.style.StyleFontSummerDream
-            "rine" -> R.style.StyleFontRine
-            else -> 0 
+        if (DataStore.boldFontEnabled) {
+            theme.applyStyle(R.style.BoldTextThemeOverlay, true)
         }
 
+        val fontOverlayId = getFontResId(DataStore.appFont)
         if (fontOverlayId != 0) {
             theme.applyStyle(fontOverlayId, true)
         }
@@ -95,6 +112,19 @@ abstract class ThemedActivity : AppCompatActivity {
                     }
                     insets
                 }
+            }
+        }
+    }
+
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+        
+        if (DataStore.boldFontEnabled) {
+            findViewById<CollapsingToolbarLayout>(R.id.collapsing_toolbar)?.apply {
+                val customTypeface = getCustomTypeface(this@ThemedActivity, DataStore.appFont)
+                val boldTypeface = Typeface.create(customTypeface, Typeface.BOLD)
+                setCollapsedTitleTypeface(boldTypeface)
+                setExpandedTitleTypeface(boldTypeface)
             }
         }
     }
@@ -136,4 +166,50 @@ abstract class ThemedActivity : AppCompatActivity {
     }
 
     internal open fun snackbarInternal(text: CharSequence): Snackbar = throw NotImplementedError()
+
+    private fun getFontResId(fontName: String?): Int {
+        return when (fontName) { 
+            "google" -> R.style.StyleFontGoogle
+            "chococooky" -> R.style.StyleFontChocoCooky
+            "roboto" -> R.style.StyleFontRoboto
+            "poppins" -> R.style.StyleFontPoppins
+            "simpleday" -> R.style.StyleFontSimpleDay
+            "fucek" -> R.style.StyleFontFucek
+            "sfprodisplay" -> R.style.StyleFontSFProDisplay
+            "dancingscript" -> R.style.StyleFontDancingScript
+            "cream" -> R.style.StyleFontCream
+            "oneui" -> R.style.StyleFontOneUI
+            "inconsolata" -> R.style.StyleFontInconsolata
+            "emilyscandy" -> R.style.StyleFontEmilysCandy
+            "summerdream" -> R.style.StyleFontSummerDream
+            "rine" -> R.style.StyleFontRine
+            else -> 0 
+        }
+    }
+
+    private fun getCustomTypeface(context: Context, fontName: String?): Typeface {
+        val fontId = when (fontName) {
+            "google" -> R.font.googlesansregular 
+            "chococooky" -> R.font.chococookyregular
+            "roboto" -> R.font.robotoregular
+            "poppins" -> R.font.poppinsregular
+            "simpleday" -> R.font.simpleday
+            "fucek" -> R.font.fucek
+            "sfprodisplay" -> R.font.sfprodisplay
+            "dancingscript" -> R.font.dancingscript
+            "cream" -> R.font.cream
+            "oneui" -> R.font.oneui
+            "inconsolata" -> R.font.incosolata
+            "emilyscandy" -> R.font.emilyscandy
+            "summerdream" -> R.font.summerdream
+            "rine" -> R.font.rine
+            else -> return Typeface.DEFAULT
+        }
+        
+        return try {
+            ResourcesCompat.getFont(context, fontId) ?: Typeface.DEFAULT
+        } catch (e: Exception) {
+            Typeface.DEFAULT
+        }
+    }
 }

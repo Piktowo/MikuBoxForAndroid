@@ -39,29 +39,13 @@ object Theme {
 
     fun apply(context: Context) {
         context.setTheme(getTheme())
-
-        if (DataStore.boldFontEnabled) {
-            context.setTheme(R.style.BoldTextThemeOverlay)
-        }
-
         if (usingNightMode() && DataStore.trueBlackEnabled) {
             context.setTheme(R.style.Theme_SagerNet_True_Black)
         }
-
-        val resources = context.resources
-        val configuration = Configuration(resources.configuration)
-        configuration.fontScale = if (DataStore.boldFontEnabled) 1.05f else 1.0f
-        @Suppress("DEPRECATION")
-        resources.updateConfiguration(configuration, resources.displayMetrics)
     }
 
     fun applyDialog(context: Context) {
         context.setTheme(getDialogTheme())
-
-        if (DataStore.boldFontEnabled) {
-            context.setTheme(R.style.BoldTextThemeOverlay)
-        }
-
         if (usingNightMode() && DataStore.trueBlackEnabled) {
             context.setTheme(R.style.Theme_SagerNet_True_Black)
         }

@@ -25,6 +25,7 @@ import androidx.preference.PreferenceGroup
 import androidx.preference.SwitchPreference
 import com.takisoft.preferencex.PreferenceFragmentCompat
 import com.takisoft.preferencex.SimpleMenuPreference
+import androidx.preference.SeekBarPreference
 import com.yalantis.ucrop.UCrop
 import io.nekohasekai.sagernet.Key
 import io.nekohasekai.sagernet.R
@@ -351,6 +352,39 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
             DataStore.appFont = newValue as String
             requireActivity().recreate()
             true
+        }
+        
+        val fontScalePref = findPreference<SeekBarPreference>("app_font_scale")
+        fontScalePref?.apply {
+            min = 50
+            max = 150
+            seekBarIncrement = 5
+            value = DataStore.fontSize
+            showSeekBarValue = true 
+   
+            setOnPreferenceChangeListener { _, newValue ->
+                val newSize = newValue as Int
+                DataStore.fontSize = newSize
+                requireActivity().recreate()
+                true
+            }
+            
+            setOnPreferenceClickListener {
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(R.string.reset_font_scale_title)
+                    .setMessage(R.string.reset_font_scale_message)
+                    .setPositiveButton(R.string.yes) { _, _ ->
+                        val defaultSize = 100
+                        if (DataStore.fontSize != defaultSize) {
+                            DataStore.fontSize = defaultSize
+                            value = defaultSize
+                            requireActivity().recreate()
+                        }
+                    }
+                    .setNegativeButton(R.string.no, null)
+                    .showBlur()
+                true
+            }
         }
 
         val boldFontSwitch = findPreference<SwitchPreference>("bold_font_switch")

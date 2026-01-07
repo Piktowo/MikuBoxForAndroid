@@ -47,12 +47,12 @@
             android:summary="@string/pref_true_black_summary"
             android:defaultValue="false"
             app:icon="@drawable/ic_toggle_switch" />
-
+            
     </PreferenceCategory>
 
     <PreferenceCategory
-        app:title="@string/opsional_category">
-
+        app:title="@string/display_category">
+        
         <com.takisoft.preferencex.SimpleMenuPreference
             android:layout="@layout/uwu_top"
             android:key="app_font_pref"
@@ -61,7 +61,7 @@
             android:entries="@array/app_font_entries"
             android:entryValues="@array/app_font_values"
             app:useSimpleSummaryProvider="true"
-            android:icon="@drawable/ic_format_size" />
+            android:icon="@drawable/ic_format_font" />
 
         <SwitchPreference
             android:layout="@layout/uwu_mid_switch"
@@ -70,10 +70,36 @@
             android:title="@string/pref_font_bold_title"
             android:summary="@string/pref_font_bold_summary"
             android:defaultValue="false"
-            app:icon="@drawable/ic_format_font" />
+            app:icon="@drawable/ic_format_bold" />
+            
+       <SeekBarPreference
+            android:layout="@layout/uwu_mid_seekbar"
+            app:key="app_font_scale"
+            android:title="@string/pref_font_scale_title"
+            android:summary="@string/pref_font_scale_summary"
+            app:defaultValue="100"
+            app:min="50"
+            android:max="150"
+            app:showSeekBarValue="true" 
+            android:icon="@drawable/ic_format_size" />
+            
+        <moe.matsuri.nb4a.ui.DpiEditTextPreference
+            android:layout="@layout/uwu_bot"
+            app:key="custom_dpi"
+            app:title="@string/pref_custom_dpi"
+            android:inputType="number"
+            app:defaultValue="0"
+            app:dialogMessage="@string/pref_custom_dpi_dialog_massage"
+            app:useSimpleSummaryProvider="true"
+            app:icon="@drawable/ic_cellphone_screenshot" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="@string/opsional_category">
 
         <SwitchPreference
-            android:layout="@layout/uwu_mid_switch"
+            android:layout="@layout/uwu_top_switch"
             android:widgetLayout="@layout/uwu_switch"
             android:key="sound_connect"
             android:title="@string/sound_connect_title"
@@ -101,33 +127,13 @@
             app:icon="@drawable/ic_toggle_switch" />
 
         <SwitchPreference
-            android:layout="@layout/uwu_mid_switch"
+            android:layout="@layout/uwu_bot_switch"
             android:widgetLayout="@layout/uwu_switch"
             android:key="key_show_welcome_anim"
             android:title="@string/title_show_welcome_anim"
             android:summary="@string/summary_show_welcome_anim"
             android:defaultValue="true"
             app:icon="@drawable/ic_heart" />
-
-        <moe.matsuri.nb4a.ui.DpiEditTextPreference
-            android:layout="@layout/uwu_mid"
-            app:key="custom_dpi"
-            app:title="@string/pref_custom_dpi"
-            android:inputType="number"
-            app:defaultValue="0"
-            app:dialogMessage="@string/pref_custom_dpi_dialog_massage"
-            app:useSimpleSummaryProvider="true"
-            app:icon="@drawable/ic_cellphone_screenshot" />
-
-        <com.takisoft.preferencex.SimpleMenuPreference
-            android:layout="@layout/uwu_bot"
-            android:key="key_category_style_menu"
-            android:title="@string/category_style_title"
-            android:defaultValue="style1"
-            app:entries="@array/style_category_entries"
-            app:entryValues="@array/style_category_values"
-            app:useSimpleSummaryProvider="true"
-            app:icon="@drawable/ic_shape_outline" />
 
     </PreferenceCategory>
 
@@ -278,13 +284,23 @@
             app:icon="@drawable/ic_toggle_switch" />
 
         <SwitchPreference
-            android:layout="@layout/uwu_bot_switch"
+            android:layout="@layout/uwu_mid_switch"
             android:widgetLayout="@layout/uwu_switch"
             app:key="uwu_arrow"
             app:title="@string/cardview_arrow_title"
             app:summary="@string/cardview_arrow_summary"
             app:defaultValue="false"
             app:icon="@drawable/ic_toggle_switch" />
+            
+       <com.takisoft.preferencex.SimpleMenuPreference
+            android:layout="@layout/uwu_bot"
+            android:key="key_category_style_menu"
+            android:title="@string/category_style_title"
+            android:defaultValue="style1"
+            app:entries="@array/style_category_entries"
+            app:entryValues="@array/style_category_values"
+            app:useSimpleSummaryProvider="true"
+            app:icon="@drawable/ic_shape_outline" />
 
     </PreferenceCategory>
 
