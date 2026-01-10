@@ -700,6 +700,8 @@
     <string name="display_category">显示</string>
     <string name="summary_speed_test">测测现在的网速有多快！</string>
     <string name="summary_free_config">随心配置，完全免费！</string>
+    <string name="profile_shape_title">个人资料横幅形状</string>
+    <string name="preference_shape_title">图标形状</string>
     
     <!-- uwu -->
     <string name="uwu_miku_ui">Miku 的衣橱</string>

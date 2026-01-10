@@ -9,7 +9,7 @@
     android:layout_marginTop="16.0dip"
     android:layout_marginRight="16.0dip"
     android:layout_marginBottom="0.0dip"
-    app:cardBackgroundColor="?attr/colorCard"
+    app:cardBackgroundColor="?colorCard"
     app:cardCornerRadius="14.0dip"
     app:cardElevation="0.0dip"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -32,22 +32,22 @@
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             key="uwu_icon_profile_server">
-            <LinearLayout
-                android:background="@drawable/uwu_bg_icon"
-                android:layout_width="45.0dip"
-                android:layout_height="45.0dip"
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="10.0dip"
-                android:layout_marginEnd="5.0dip"
-                android:backgroundTint="?colorPrimary">
-                <ImageView
-                    android:gravity="center"
+                android:layout_marginEnd="5.0dip">
+                <com.neko.widget.DynamicShapeImageView
+                    android:layout_width="45.0dip"
+                    android:layout_height="45.0dip"
+                    android:scaleType="centerCrop" />
+                <androidx.preference.internal.PreferenceImageView
+                    android:layout_gravity="center"
                     android:layout_width="25.0dip"
                     android:layout_height="25.0dip"
-                    android:layout_marginTop="10.0dip"
                     android:src="@drawable/ic_social_emoji_symbols"
-                    android:tint="?android:textColorPrimaryInverse"
-                    android:layout_marginStart="10.0dip" />
-            </LinearLayout>
+                    android:tint="?colorIcon" />
+            </FrameLayout>
         </com.neko.widget.LayoutOff>
         <LinearLayout
             android:orientation="vertical"
@@ -71,7 +71,7 @@
                     <TextView
                         android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleMedium"
                         android:textSize="17.0sp"
-                        android:textColor="?attr/colorOnSurface"
+                        android:textColor="?colorOnSurface"
                         android:id="@+id/profile_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
@@ -79,18 +79,18 @@
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_gravity="top"
                     android:id="@+id/edit"
-                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:background="?selectableItemBackgroundBorderless"
                     android:padding="12.0dip"
                     android:focusable="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/edit"
                     app:srcCompat="@drawable/ic_image_edit"
-                    app:tint="?attr/colorOnSurface" />
+                    app:tint="?colorOnSurface" />
                 <LinearLayout
                     android:layout_gravity="top"
                     android:id="@+id/share"
-                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:background="?selectableItemBackgroundBorderless"
                     android:focusable="true"
                     android:nextFocusLeft="@+id/container"
                     android:layout_width="wrap_content"
@@ -106,20 +106,20 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:srcCompat="@drawable/ic_social_share"
-                            app:tint="?attr/colorOnSurface" />
+                            app:tint="?colorOnSurface" />
                     </LinearLayout>
                 </LinearLayout>
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_gravity="top"
                     android:id="@+id/remove"
-                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:background="?selectableItemBackgroundBorderless"
                     android:padding="12.0dip"
                     android:focusable="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/delete"
                     app:srcCompat="@drawable/ic_action_delete"
-                    app:tint="?attr/colorOnSurface" />
+                    app:tint="?colorOnSurface" />
             </LinearLayout>
             <LinearLayout
                 android:orientation="horizontal"
@@ -132,7 +132,7 @@
                 <TextView
                     android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleMedium"
                     android:textSize="14.0sp"
-                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:textColor="?colorOnSurfaceVariant"
                     android:id="@+id/profile_address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -144,7 +144,7 @@
                 <TextView
                     android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleSmall"
                     android:textSize="12.0sp"
-                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:textColor="?colorOnSurfaceVariant"
                     android:id="@+id/traffic_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -160,7 +160,7 @@
                 <TextView
                     android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleSmall"
                     android:textSize="12.0sp"
-                    android:textColor="?attr/colorPrimary"
+                    android:textColor="?colorPrimary"
                     android:id="@+id/profile_type"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
@@ -171,7 +171,7 @@
                 <TextView
                     android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleSmall"
                     android:textSize="12.0sp"
-                    android:textColor="?attr/colorPrimary"
+                    android:textColor="?colorPrimary"
                     android:id="@+id/profile_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

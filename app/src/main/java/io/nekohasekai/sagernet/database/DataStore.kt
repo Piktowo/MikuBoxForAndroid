@@ -115,6 +115,8 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var customProfileName by configurationStore.string("custom_profile_name") { "" }
     var appFont by configurationStore.string("app_font_pref") { "default" }
     var fontSize by configurationStore.int("app_font_scale") { 100 }
+    var profileBannerShape by configurationStore.string("profile_banner_shape") { "uwu_shape_cookie" }
+    var preferenceIconShape by configurationStore.string("preference_icon_shape") { "uwu_shape_cookie" }
 
     var appTLSVersion by configurationStore.string(Key.APP_TLS_VERSION)
     var enableClashAPI by configurationStore.boolean(Key.ENABLE_CLASH_API)

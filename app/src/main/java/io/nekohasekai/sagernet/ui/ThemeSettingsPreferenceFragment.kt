@@ -640,6 +640,17 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
             pickProfileBannerImage.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
             true
         }
+        
+        val profileShapeController = findPreference<SimpleMenuPreference>("profile_banner_shape")
+        profileShapeController?.apply {
+            summary = "%s"
+            value = DataStore.profileBannerShape
+            setOnPreferenceChangeListener { _, newValue ->
+                val newShape = newValue as String
+                DataStore.profileBannerShape = newShape
+                true
+            }
+        }
 
         val deleteProfileBannerPref = findPreference<Preference>("action_delete_profile_banner_image")
         deleteProfileBannerPref?.setOnPreferenceClickListener {
@@ -807,6 +818,17 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
                 listView.adapter?.notifyDataSetChanged()
             }
             true
+        }
+        
+        val iconShapeController = findPreference<SimpleMenuPreference>("preference_icon_shape")
+        iconShapeController?.apply {
+            summary = "%s"
+            value = DataStore.preferenceIconShape
+            setOnPreferenceChangeListener { _, newValue ->
+                val newShape = newValue as String
+                DataStore.preferenceIconShape = newShape
+                true
+            }
         }
 
         val layoutOffSwitchIcon = findPreference<SwitchPreference>("uwu_icon")

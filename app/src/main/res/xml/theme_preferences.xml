@@ -236,7 +236,17 @@
             app:defaultValue="@string/uwu_banner_title"
             app:dialogMessage="@string/profile_name_custom_dialog"
             app:icon="@drawable/ic_image_edit" />
-
+        
+        <com.takisoft.preferencex.SimpleMenuPreference
+             android:layout="@layout/uwu_mid"
+             app:key="profile_banner_shape"
+             app:title="@string/profile_shape_title"
+             app:summary="%s"
+             app:defaultValue="uwu_shape_cookie"
+             app:entries="@array/shape_entries"
+             app:entryValues="@array/shape_values"
+             app:icon="@drawable/ic_shape_outline" />
+             
         <Preference
             android:layout="@layout/uwu_mid"
             android:key="action_change_profile_banner_image"
@@ -291,6 +301,16 @@
             app:summary="@string/cardview_arrow_summary"
             app:defaultValue="false"
             app:icon="@drawable/ic_toggle_switch" />
+            
+       <com.takisoft.preferencex.SimpleMenuPreference
+             android:layout="@layout/uwu_mid"
+             app:key="preference_icon_shape"
+             app:title="@string/preference_shape_title"
+             app:summary="%s"
+             app:defaultValue="uwu_shape_cookie"
+             app:entries="@array/shape_entries"
+             app:entryValues="@array/shape_values"
+             app:icon="@drawable/ic_shape_outline" />
             
        <com.takisoft.preferencex.SimpleMenuPreference
             android:layout="@layout/uwu_bot"
