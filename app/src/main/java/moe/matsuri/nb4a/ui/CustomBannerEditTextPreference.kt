@@ -18,6 +18,8 @@ class CustomBannerEditTextPreference @JvmOverloads constructor(
     defStyleRes: Int = 0
 ) : EditTextPreference(context, attrs, defStyleAttr, defStyleRes) {
 
+    private val TAG_PREFERENCE_DEFAULT = "DEFAULT_BANNER_PREFERENCE"
+
     init {
         layoutResource = R.layout.uwu_banner_profile
     }
@@ -38,21 +40,25 @@ class CustomBannerEditTextPreference @JvmOverloads constructor(
             if (bannerImageView != null) {
                 val savedUriString = DataStore.configurationStore.getString("custom_preference_banner_uri", null)
 
-                if (savedUriString != bannerImageView.tag || savedUriString.isNullOrBlank()) {
+                val targetTag = if (savedUriString.isNullOrBlank()) TAG_PREFERENCE_DEFAULT else savedUriString
+                val currentTag = bannerImageView.tag
+
+                if (currentTag != targetTag) {
                     
                     if (!savedUriString.isNullOrBlank()) {
                         Glide.with(context)
                             .load(savedUriString)
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .dontAnimate()
+                            .error(R.drawable.uwu_banner_image)
                             .skipMemoryCache(false)
                             .into(bannerImageView)
-                        
-                        bannerImageView.tag = savedUriString
                     } else {
+                        Glide.with(context).clear(bannerImageView)
                         bannerImageView.setImageResource(R.drawable.uwu_banner_image)
-                        bannerImageView.tag = null
                     }
+
+                    bannerImageView.tag = targetTag
                 }
             }
 

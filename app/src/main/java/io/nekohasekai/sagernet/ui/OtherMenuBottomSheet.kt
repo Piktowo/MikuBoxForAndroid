@@ -37,6 +37,8 @@ class OtherMenuBottomSheet : BottomSheetDialogFragment() {
     interface OnOtherOptionClickListener {
         fun onOtherOptionClicked(viewId: Int)
     }
+    
+    private val TAG_SHEET_DEFAULT = "DEFAULT_BANNER_SHEET"
 
     private var mListener: OnOtherOptionClickListener? = null
     private var currentOrder: Int = GroupOrder.ORIGIN
@@ -82,16 +84,26 @@ class OtherMenuBottomSheet : BottomSheetDialogFragment() {
         val bannerImageView = view.findViewById<ImageView>(R.id.img_banner_sheet)
 
         if (bannerImageView != null) {
-            bannerImageView.setImageResource(R.drawable.uwu_banner_image_about)
-
             val savedUriString = DataStore.configurationStore.getString("custom_sheet_banner_uri", null)
 
-            if (!savedUriString.isNullOrBlank()) {
-                Glide.with(this)
-                    .load(savedUriString)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .dontAnimate()
-                    .into(bannerImageView)
+            val targetTag = if (savedUriString.isNullOrBlank()) TAG_SHEET_DEFAULT else savedUriString
+            val currentTag = bannerImageView.tag
+
+            if (currentTag != targetTag) {
+                
+                if (!savedUriString.isNullOrBlank()) {
+                    Glide.with(this)
+                        .load(savedUriString)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .dontAnimate()
+                        .error(R.drawable.uwu_banner_image_about)
+                        .into(bannerImageView)
+                } else {
+                    Glide.with(this).clear(bannerImageView)
+                    bannerImageView.setImageResource(R.drawable.uwu_banner_image_about)
+                }
+                
+                bannerImageView.tag = targetTag
             }
         }
 

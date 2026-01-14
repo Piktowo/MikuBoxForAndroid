@@ -21,31 +21,27 @@ class ProfileBannerImageView @JvmOverloads constructor(
 
     private val KEY_URI = "profile_banner_uri"
     private val KEY_SHAPE = "profile_banner_shape"
+    private val TAG_PROFILE_DEFAULT = "DEFAULT_BANNER_PROFILE"
 
     private var currentShapeId: Int = R.raw.uwu_shape_cookie
 
     override fun createImageViewHelper(): ShaderHelper {
-        val safeId = if (currentShapeId == 0) {
-            R.raw.uwu_shape_cookie
-        } else {
-            currentShapeId
-        }
-        return SvgShader(safeId)
+        val shapeId = resolveShapeId()
+        currentShapeId = shapeId
+        return SvgShader(shapeId)
     }
 
     init {
         scaleType = ScaleType.CENTER_CROP
+        loadImage()
     }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         if (!isInEditMode) {
             DataStore.configurationStore.registerChangeListener(this)
-            
-            post {
-                updateShapeFromStore()
-                loadImage()
-            }
+            checkAndUpdateShape()
+            loadImage() 
         }
     }
 
@@ -59,15 +55,14 @@ class ProfileBannerImageView @JvmOverloads constructor(
     override fun onPreferenceDataStoreChanged(store: PreferenceDataStore, key: String) {
         when (key) {
             KEY_URI -> post { loadImage() }
-            KEY_SHAPE -> post { updateShapeFromStore() }
+            KEY_SHAPE -> post { checkAndUpdateShape() }
         }
     }
 
-    private fun updateShapeFromStore() {
-        try {
+    private fun resolveShapeId(): Int {
+        return try {
             val shapeKey = DataStore.profileBannerShape
-
-            val newShapeId = when (shapeKey) {
+            when (shapeKey) {
                 "uwu_shape_clover" -> R.raw.uwu_shape_clover
                 "uwu_shape_circle" -> R.raw.uwu_shape_circle
                 "uwu_shape_diamond" -> R.raw.uwu_shape_diamond
@@ -79,10 +74,18 @@ class ProfileBannerImageView @JvmOverloads constructor(
                 "uwu_shape_heart" -> R.raw.uwu_shape_heart
                 else -> R.raw.uwu_shape_cookie
             }
+        } catch (e: Exception) {
+            R.raw.uwu_shape_cookie
+        }
+    }
 
+    private fun checkAndUpdateShape() {
+        try {
+            val newShapeId = resolveShapeId()
             if (currentShapeId != newShapeId) {
                 currentShapeId = newShapeId
                 reloadShape()
+                invalidate()
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -92,28 +95,40 @@ class ProfileBannerImageView @JvmOverloads constructor(
     private fun loadImage() {
         try {
             val savedUriString = DataStore.configurationStore.getString(KEY_URI, null)
+            
+            val targetTag = if (savedUriString.isNullOrEmpty()) TAG_PROFILE_DEFAULT else savedUriString
+            val currentTag = this.tag
 
-            if (!savedUriString.isNullOrEmpty()) {
-                val savedUri = Uri.parse(savedUriString)
+            if (currentTag != targetTag) {
+                
+                if (!savedUriString.isNullOrEmpty()) {
+                    val savedUri = Uri.parse(savedUriString)
 
-                Glide.with(this)
-                    .asBitmap()
-                    .load(savedUri)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .skipMemoryCache(false)
-                    .dontAnimate()
-                    .into(this)
+                    Glide.with(this)
+                        .load(savedUri)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .skipMemoryCache(false)
+                        .dontAnimate()
+                        .error(R.drawable.uwu_banner_profile)
+                        .into(this)
+                } else {
+                    loadDefault()
+                }
 
-            } else {
-                loadDefault()
+                this.tag = targetTag
             }
+
         } catch (e: Exception) {
             e.printStackTrace()
-            loadDefault()
+            if (this.tag != TAG_PROFILE_DEFAULT) {
+                loadDefault()
+                this.tag = TAG_PROFILE_DEFAULT
+            }
         }
     }
 
     private fun loadDefault() {
+        Glide.with(this).clear(this)
         setImageResource(R.drawable.uwu_banner_profile)
     }
 }

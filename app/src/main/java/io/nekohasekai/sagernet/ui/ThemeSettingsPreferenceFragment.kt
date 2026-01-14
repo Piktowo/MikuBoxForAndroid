@@ -2,14 +2,12 @@ package io.nekohasekai.sagernet.ui
 
 import android.Manifest
 import android.app.Activity
-import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.activity.result.PickVisualMediaRequest
@@ -23,10 +21,12 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceGroup
 import androidx.preference.SwitchPreference
+import androidx.preference.SeekBarPreference
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.takisoft.preferencex.PreferenceFragmentCompat
 import com.takisoft.preferencex.SimpleMenuPreference
-import androidx.preference.SeekBarPreference
 import com.yalantis.ucrop.UCrop
+import io.nekohasekai.sagernet.BuildConfig
 import io.nekohasekai.sagernet.Key
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.SagerNet
@@ -34,20 +34,16 @@ import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.ktx.*
 import io.nekohasekai.sagernet.utils.DPIController
 import io.nekohasekai.sagernet.utils.Theme
+import io.nekohasekai.sagernet.utils.showBlur
 import moe.matsuri.nb4a.ui.ColorPickerPreference
+import moe.matsuri.nb4a.ui.CustomBannerPreference
 import moe.matsuri.nb4a.ui.DpiEditTextPreference
+import org.json.JSONObject
 import java.io.File
 import java.io.IOException
-import java.text.SimpleDateFormat
-import java.util.*
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import io.nekohasekai.sagernet.BuildConfig
-import io.nekohasekai.sagernet.utils.showBlur
-import org.json.JSONObject
 import java.net.URL
 import kotlin.concurrent.thread
-import moe.matsuri.nb4a.ui.CustomBannerPreference
+import java.util.Locale
 
 class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
 
@@ -67,21 +63,14 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
                 if (cacheUri != null) {
                     try {
                         val oldUriString = DataStore.configurationStore.getString("custom_banner_uri", null)
-                        if (!oldUriString.isNullOrEmpty()) {
-                            try {
-                                val oldUri = Uri.parse(oldUriString)
-                                requireContext().contentResolver.delete(oldUri, null, null)
-                            } catch (e: Exception) {
-                                Logs.w("Failed to delete old custom banner", e)
-                            }
-                        }
+                        deleteOldFile(oldUriString)
 
-                        val publicMediaUri = saveBannerToMediaStore(cacheUri, "uwu_home_banner_")
-                        DataStore.configurationStore.putString("custom_banner_uri", publicMediaUri.toString())
+                        val savedUri = saveToCache(cacheUri, "home_banner_")
+                        DataStore.configurationStore.putString("custom_banner_uri", savedUri.toString())
                         snackbar(R.string.custom_banner_set).show()
 
                     } catch (e: Exception) {
-                        Logs.e("Failed to save banner to MediaStore", e)
+                        Logs.e("Failed to save banner", e)
                         snackbar("Failed to save: ${e.message}").show()
                     }
                 }
@@ -105,18 +94,10 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
                 if (cacheUri != null) {
                     try {
                         val oldUriString = DataStore.configurationStore.getString("profile_banner_uri", null)
-                        if (!oldUriString.isNullOrEmpty()) {
-                            try {
-                                val oldUri = Uri.parse(oldUriString)
-                                requireContext().contentResolver.delete(oldUri, null, null)
-                            } catch (e: Exception) {
-                                Logs.w("Failed to delete old profile banner", e)
-                            }
-                        }
+                        deleteOldFile(oldUriString)
 
-                        val publicMediaUri = saveBannerToMediaStore(cacheUri, "uwu_profile_banner_")
-                        
-                        DataStore.configurationStore.putString("profile_banner_uri", publicMediaUri.toString())
+                        val savedUri = saveToCache(cacheUri, "profile_banner_")
+                        DataStore.configurationStore.putString("profile_banner_uri", savedUri.toString())
                         snackbar(R.string.custom_banner_profile_set).show()
 
                     } catch (e: Exception) {
@@ -144,18 +125,10 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
                 if (cacheUri != null) {
                     try {
                         val oldUriString = DataStore.configurationStore.getString("custom_sheet_banner_uri", null)
-                        if (!oldUriString.isNullOrEmpty()) {
-                            try {
-                                val oldUri = Uri.parse(oldUriString)
-                                requireContext().contentResolver.delete(oldUri, null, null)
-                            } catch (e: Exception) {
-                                Logs.w("Failed to delete old sheet banner", e)
-                            }
-                        }
+                        deleteOldFile(oldUriString)
 
-                        val publicMediaUri = saveBannerToMediaStore(cacheUri, "uwu_sheet_banner_")
-                        
-                        DataStore.configurationStore.putString("custom_sheet_banner_uri", publicMediaUri.toString())
+                        val savedUri = saveToCache(cacheUri, "sheet_banner_")
+                        DataStore.configurationStore.putString("custom_sheet_banner_uri", savedUri.toString())
                         snackbar(R.string.custom_banner_set).show()
 
                     } catch (e: Exception) {
@@ -183,19 +156,11 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
                 if (cacheUri != null) {
                     try {
                         val oldUriString = DataStore.configurationStore.getString("custom_preference_banner_uri", null)
-                        if (!oldUriString.isNullOrEmpty()) {
-                            try {
-                                val oldUri = Uri.parse(oldUriString)
-                                requireContext().contentResolver.delete(oldUri, null, null)
-                            } catch (e: Exception) {
-                                Logs.w("Failed to delete old preference banner", e)
-                            }
-                        }
+                        deleteOldFile(oldUriString)
 
-                        val publicMediaUri = saveBannerToMediaStore(cacheUri, "uwu_preference_banner_")
-                        
-                        DataStore.configurationStore.putString("custom_preference_banner_uri", publicMediaUri.toString())
-                        snackbar(R.string.custom_banner_set).show() 
+                        val savedUri = saveToCache(cacheUri, "preference_banner_")
+                        DataStore.configurationStore.putString("custom_preference_banner_uri", savedUri.toString())
+                        snackbar(R.string.custom_banner_set).show()
 
                     } catch (e: Exception) {
                         Logs.e("Failed to save preference banner", e)
@@ -228,19 +193,21 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
                     val jsonStr = URL(jsonUrl).readText()
                     val jsonObject = JSONObject(jsonStr)
                     
-                    val remoteVersion = jsonObject.optString("latestVersion")
-                    val remotePreVersion = jsonObject.optString("latestPreVersion") 
-                    val downloadUrl = jsonObject.optString("url")
+                    val remoteVersion = jsonObject.optString("latestVersion", "")
+                    val remotePreVersion = jsonObject.optString("latestPreVersion", "") 
+                    val downloadUrl = jsonObject.optString("url", "")
                     
                     val localVersion = BuildConfig.VERSION_NAME
-                    val localPreVersion = BuildConfig.PRE_VERSION_NAME
+                    val localPreVersion = runCatching { BuildConfig.PRE_VERSION_NAME }.getOrDefault("") ?: ""
                     
                     var hasUpdate = false
 
                     if (remoteVersion.isNotEmpty() && remoteVersion != localVersion) {
                         hasUpdate = true
-                    } else if (remotePreVersion.isNotEmpty() && remotePreVersion != localPreVersion) {
-                        hasUpdate = true
+                    } else {
+                        if (remotePreVersion.isNotEmpty() && remotePreVersion != localPreVersion) {
+                            hasUpdate = true
+                        }
                     }
                     
                     val displayRemote = if (remotePreVersion.isNotEmpty()) "$remoteVersion-$remotePreVersion" else remoteVersion
@@ -262,11 +229,7 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
                                 .setNegativeButton(R.string.action_later, null)
                                 .showBlur()
                         } else {
-                            MaterialAlertDialogBuilder(requireContext())
-                                .setTitle(R.string.update_not_available_title)
-                                .setMessage(getString(R.string.update_not_available_message, displayLocal))
-                                .setPositiveButton(R.string.action_ok, null)
-                                .showBlur()
+                            snackbar(getString(R.string.update_not_available_message, displayLocal)).show()
                         }
                     }
                 } catch (e: Exception) {
@@ -596,19 +559,7 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
                     .setTitle(R.string.delete_custom_banner_title)
                     .setMessage(R.string.delete_custom_banner_message)
                     .setPositiveButton(R.string.yes) { _, _ ->
-                        try {
-                            val savedUri = Uri.parse(savedUriString)
-                            val rowsDeleted = requireContext().contentResolver.delete(savedUri, null, null)
-                            if (rowsDeleted <= 0) {
-                                Logs.w("Banner file not found or failed to delete.")
-                            }
-                        } catch (e: SecurityException) {
-                            Logs.e("Failed to delete custom banner (SecurityException)", e)
-                            snackbar("Failed to delete file. Manually delete from Gallery.").show()
-                        } catch (e: Exception) {
-                            Logs.e("Failed to delete custom banner", e)
-                        }
-
+                        deleteOldFile(savedUriString)
                         DataStore.configurationStore.putString("custom_banner_uri", null)
                         snackbar(R.string.custom_banner_removed).show()
                     }
@@ -660,19 +611,7 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
                     .setTitle(R.string.delete_custom_banner_title)
                     .setMessage(R.string.delete_custom_banner_message)
                     .setPositiveButton(R.string.yes) { _, _ ->
-                        try {
-                            val savedUri = Uri.parse(savedUriString)
-                            val rowsDeleted = requireContext().contentResolver.delete(savedUri, null, null)
-                            if (rowsDeleted <= 0) {
-                                Logs.w("Profile banner file not found or failed to delete.")
-                            }
-                        } catch (e: SecurityException) {
-                            Logs.e("Failed to delete custom profile banner (SecurityException)", e)
-                            snackbar("Failed to delete file. Manually delete from Gallery.").show()
-                        } catch (e: Exception) {
-                            Logs.e("Failed to delete custom profile banner", e)
-                        }
-
+                        deleteOldFile(savedUriString)
                         DataStore.configurationStore.putString("profile_banner_uri", null)
                         snackbar(R.string.custom_banner_removed).show()
                     }
@@ -698,19 +637,7 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
                     .setTitle(R.string.delete_custom_banner_title)
                     .setMessage(R.string.delete_custom_banner_message)
                     .setPositiveButton(R.string.yes) { _, _ ->
-                        try {
-                            val savedUri = Uri.parse(savedUriString)
-                            val rowsDeleted = requireContext().contentResolver.delete(savedUri, null, null)
-                            if (rowsDeleted <= 0) {
-                                Logs.w("Sheet banner file not found or failed to delete.")
-                            }
-                        } catch (e: SecurityException) {
-                            Logs.e("Failed to delete custom sheet banner (SecurityException)", e)
-                            snackbar("Failed to delete file. Manually delete from Gallery.").show()
-                        } catch (e: Exception) {
-                            Logs.e("Failed to delete custom sheet banner", e)
-                        }
-
+                        deleteOldFile(savedUriString)
                         DataStore.configurationStore.putString("custom_sheet_banner_uri", null)
                         snackbar(R.string.custom_banner_removed).show()
                     }
@@ -746,19 +673,7 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
                     .setTitle(R.string.delete_custom_banner_title)
                     .setMessage(R.string.delete_custom_banner_message)
                     .setPositiveButton(R.string.yes) { _, _ ->
-                        try {
-                            val savedUri = Uri.parse(savedUriString)
-                            val rowsDeleted = requireContext().contentResolver.delete(savedUri, null, null)
-                            if (rowsDeleted <= 0) {
-                                Logs.w("Preference banner file not found or failed to delete.")
-                            }
-                        } catch (e: SecurityException) {
-                            Logs.e("Failed to delete custom preference banner (SecurityException)", e)
-                            snackbar("Failed to delete file. Manually delete from Gallery.").show()
-                        } catch (e: Exception) {
-                            Logs.e("Failed to delete custom preference banner", e)
-                        }
-
+                        deleteOldFile(savedUriString)
                         DataStore.configurationStore.putString("custom_preference_banner_uri", null)
                         snackbar(R.string.custom_banner_removed).show()
                     }
@@ -1025,43 +940,43 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
         cropPreferenceBannerImage.launch(uCrop.getIntent(requireContext()))
     }
 
-    @Throws(IOException::class)
-    private fun saveBannerToMediaStore(sourceCacheUri: Uri, fileNamePrefix: String = "uwu_custom_banner_"): Uri {
-        val resolver = requireContext().contentResolver
-        val timeStamp = SimpleDateFormat("yyyy-MM-dd_HH:mm", Locale.US).format(Date())
-        val fileName = "${fileNamePrefix}$timeStamp.jpg"
-
-        val values = ContentValues().apply {
-            put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
-            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
-            put(MediaStore.MediaColumns.RELATIVE_PATH, "Pictures/MikuBox")
-            put(MediaStore.MediaColumns.IS_PENDING, 1)
-        }
-
-        val collection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
-        val newImageUri = resolver.insert(collection, values)
-            ?: throw IOException("Failed to create new MediaStore record")
-
-        try {
-            resolver.openOutputStream(newImageUri).use { outputStream ->
-                if (outputStream == null) throw IOException("Failed to get output stream")
-                resolver.openInputStream(sourceCacheUri).use { inputStream ->
-                    if (inputStream == null) throw IOException("Failed to get input stream from cache")
-                    inputStream.copyTo(outputStream)
+    private fun deleteOldFile(uriString: String?) {
+        if (!uriString.isNullOrEmpty()) {
+            try {
+                val uri = Uri.parse(uriString)
+                if (uri.scheme == "file") {
+                    val file = File(uri.path!!)
+                    if (file.exists()) file.delete()
+                } else {
+                    try {
+                        requireContext().contentResolver.delete(uri, null, null)
+                    } catch (ignored: Exception) {}
                 }
-            }
-            values.clear()
-            values.put(MediaStore.MediaColumns.IS_PENDING, 0)
-            resolver.update(newImageUri, values, null, null)
-            return newImageUri
-        } catch (e: Exception) {
-            resolver.delete(newImageUri, null, null)
-            throw e
-        } finally {
-            val cacheFile = File(sourceCacheUri.path!!)
-            if (cacheFile.exists()) {
-                cacheFile.delete()
+            } catch (e: Exception) {
+                Logs.w("Failed to delete old banner: $uriString")
             }
         }
+    }
+
+    @Throws(IOException::class)
+    private fun saveToCache(sourceCacheUri: Uri, fileNamePrefix: String): Uri {
+        val context = requireContext()
+        val timeStamp = System.currentTimeMillis()
+        val fileName = "${fileNamePrefix}$timeStamp.jpg"
+        
+        val destFile = File(context.cacheDir, fileName)
+
+        context.contentResolver.openInputStream(sourceCacheUri)?.use { input ->
+            destFile.outputStream().use { output ->
+                input.copyTo(output)
+            }
+        }
+        
+        try {
+            val tempFile = File(sourceCacheUri.path!!)
+            if (tempFile.exists()) tempFile.delete()
+        } catch (ignored: Exception) {}
+
+        return Uri.fromFile(destFile)
     }
 }

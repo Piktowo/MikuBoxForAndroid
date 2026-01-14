@@ -20,11 +20,13 @@ class DynamicShapeImageView2 @JvmOverloads constructor(
 ) : ShaderImageView(context, attrs, defStyleAttr), OnPreferenceDataStoreChangeListener {
 
     private val KEY_SHAPE = "preference_icon_shape"
+    
     private var currentShapeId: Int = R.raw.uwu_shape_cookie
 
     override fun createImageViewHelper(): ShaderHelper {
-        val safeId = if (currentShapeId == 0) R.raw.uwu_shape_cookie else currentShapeId
-        return SvgShader(safeId)
+        val shapeId = resolveShapeId()
+        currentShapeId = shapeId
+        return SvgShader(shapeId)
     }
 
     init {
@@ -35,9 +37,11 @@ class DynamicShapeImageView2 @JvmOverloads constructor(
     private fun loadColorBitmap() {
         try {
             val color = context.getColorAttr(R.attr.colorIcon)
-            val bitmap = Bitmap.createBitmap(10, 10, Bitmap.Config.ARGB_8888)
+            
+            val bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
             val canvas = Canvas(bitmap)
             canvas.drawColor(color)
+            
             setImageBitmap(bitmap)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -48,7 +52,7 @@ class DynamicShapeImageView2 @JvmOverloads constructor(
         super.onAttachedToWindow()
         if (!isInEditMode) {
             DataStore.configurationStore.registerChangeListener(this)
-            post { updateShapeFromStore() }
+            checkAndUpdateShape()
         }
     }
 
@@ -61,15 +65,14 @@ class DynamicShapeImageView2 @JvmOverloads constructor(
 
     override fun onPreferenceDataStoreChanged(store: PreferenceDataStore, key: String) {
         if (key == KEY_SHAPE) {
-            post { updateShapeFromStore() }
+            post { checkAndUpdateShape() }
         }
     }
 
-    private fun updateShapeFromStore() {
-        try {
+    private fun resolveShapeId(): Int {
+        return try {
             val shapeKey = DataStore.preferenceIconShape
-            
-            val newShapeId = when (shapeKey) {
+            when (shapeKey) {
                 "uwu_shape_clover" -> R.raw.uwu_shape_clover
                 "uwu_shape_circle" -> R.raw.uwu_shape_circle
                 "uwu_shape_diamond" -> R.raw.uwu_shape_diamond
@@ -81,10 +84,18 @@ class DynamicShapeImageView2 @JvmOverloads constructor(
                 "uwu_shape_heart" -> R.raw.uwu_shape_heart
                 else -> R.raw.uwu_shape_cookie
             }
+        } catch (e: Exception) {
+            R.raw.uwu_shape_cookie
+        }
+    }
 
-            if (currentShapeId != newShapeId || currentShapeId == 0) {
+    private fun checkAndUpdateShape() {
+        try {
+            val newShapeId = resolveShapeId()
+            if (currentShapeId != newShapeId) {
                 currentShapeId = newShapeId
                 reloadShape()
+                invalidate()
             }
         } catch (e: Exception) {
             e.printStackTrace()

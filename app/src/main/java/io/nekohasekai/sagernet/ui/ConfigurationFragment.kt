@@ -135,6 +135,8 @@ class ConfigurationFragment @JvmOverloads constructor(
     lateinit var tabLayout: TabLayout
     lateinit var groupPager: ViewPager2
 
+    private val TAG_HOME_BANNER_DEFAULT = "DEFAULT_BANNER_HOME"
+
     private var bannerLayoutListener: OnPreferenceDataStoreChangeListener? = null
 
     val alwaysShowAddress by lazy { DataStore.alwaysShowAddress }
@@ -389,7 +391,7 @@ class ConfigurationFragment @JvmOverloads constructor(
 
     private fun updateGroupOrder(order: Int) {
         val fragment = getCurrentGroupFragment() ?: return
-        if (fragment.proxyGroup.order == order) return // Tidak ada perubahan
+        if (fragment.proxyGroup.order == order) return
 
         runOnDefaultDispatcher {
             fragment.proxyGroup.order = order
@@ -1510,9 +1512,7 @@ class ConfigurationFragment @JvmOverloads constructor(
             val trafficText: TextView = view.findViewById(R.id.traffic_text)
             val selectedView: LinearLayout = view.findViewById(R.id.selected_view)
             val editButton: ImageView = view.findViewById(R.id.edit)
-            val shareLayout: LinearLayout = view.findViewById(R.id.share)
-            val shareLayer: LinearLayout = view.findViewById(R.id.share_layer)
-            val shareButton: ImageView = view.findViewById(R.id.shareIcon)
+            val shareButton: ImageView = view.findViewById(R.id.share)
             val removeButton: ImageView = view.findViewById(R.id.remove)
 
             fun bind(proxyEntity: ProxyEntity, trafficData: TrafficData? = null) {
@@ -1649,12 +1649,12 @@ class ConfigurationFragment @JvmOverloads constructor(
                 }
 
                 val selectOrChain = select || proxyEntity.type == ProxyEntity.TYPE_CHAIN
-                shareLayout.isGone = selectOrChain
+                shareButton.isGone = selectOrChain
                 editButton.isGone = select
                 removeButton.isGone = select
 
                 proxyEntity.nekoBean?.apply {
-                    shareLayout.isGone = true
+                    shareButton.isGone = true
                 }
 
                 runOnDefaultDispatcher {
@@ -1695,12 +1695,8 @@ class ConfigurationFragment @JvmOverloads constructor(
 
                     if (!(select || proxyEntity.type == ProxyEntity.TYPE_CHAIN)) {
                         onMainDispatcher {
-                            shareLayer.setBackgroundColor(Color.TRANSPARENT)
-                            shareButton.setImageResource(R.drawable.ic_social_share)
-                            shareButton.setColorFilter(shareButton.context.getColorAttr(R.attr.colorOnSurface))
-                            shareButton.isVisible = true
-
-                            shareLayout.setOnClickListener {
+                            shareButton.isVisible = true                            
+                            shareButton.setOnClickListener {
                                 showShare(it)
                             }
                         }
@@ -1780,20 +1776,9 @@ class ConfigurationFragment @JvmOverloads constructor(
         searchView.clearFocus()
     }
 
-    private fun loadBannerImage(uri: Uri) {
-        val bannerImageView = view?.findViewById<ImageView>(R.id.img_banner_home)
-        bannerImageView?.let {
-            Glide.with(this)
-                .load(uri)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .dontAnimate()
-                .into(it)
-        }
-    }
-
     private fun setupBannerLayoutController() {
-        val linear = requireView().findViewById<View>(R.id.card_expandable) // Ini Card Header/Trigger
-        val expandableView = requireView().findViewById<ExpandableView>(R.id.expandable_view) // Ini Konten (Speedtest/Config)
+        val linear = requireView().findViewById<View>(R.id.card_expandable) 
+        val expandableView = requireView().findViewById<ExpandableView>(R.id.expandable_view) 
         val bannerImageView = requireView().findViewById<ImageView>(R.id.img_banner_home)
 
         fun updateBannerSize() {
@@ -1810,18 +1795,27 @@ class ConfigurationFragment @JvmOverloads constructor(
 
         fun loadSavedBanner() {
             val savedUriString = DataStore.configurationStore.getString("custom_banner_uri", null)
-            if (!savedUriString.isNullOrEmpty()) {
-                try {
-                    val savedUri = Uri.parse(savedUriString)
-                    requireContext().contentResolver.openInputStream(savedUri).use {}
-                    loadBannerImage(savedUri)
-                } catch (e: Exception) {
-                    Logs.w("Failed to load banner URI", e)
-                    DataStore.configurationStore.putString("custom_banner_uri", null)
-                    bannerImageView?.setImageResource(R.drawable.uwu_banner_home)
+            
+            val targetTag = if (savedUriString.isNullOrBlank()) TAG_HOME_BANNER_DEFAULT else savedUriString
+            val currentTag = bannerImageView?.tag
+
+            if (currentTag != targetTag) {
+                if (!savedUriString.isNullOrBlank()) {
+                    bannerImageView?.let {
+                        Glide.with(this)
+                            .load(savedUriString)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .dontAnimate()
+                            .error(R.drawable.uwu_banner_home)
+                            .into(it)
+                    }
+                } else {
+                    bannerImageView?.let {
+                        Glide.with(this).clear(it)
+                        it.setImageResource(R.drawable.uwu_banner_home)
+                    }
                 }
-            } else {
-                bannerImageView?.setImageResource(R.drawable.uwu_banner_home)
+                bannerImageView?.tag = targetTag
             }
         }
 
