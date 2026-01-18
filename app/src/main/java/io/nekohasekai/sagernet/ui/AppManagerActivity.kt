@@ -175,6 +175,8 @@ class AppManagerActivity : ThemedActivity(),
     private var loader: Job? = null
     private var apps = emptyList<ProxiedApp>()
     private val appsAdapter = AppsAdapter()
+    
+    private lateinit var menuController: AppManagerMenuController
 
     private fun initProxiedUids(str: String = DataStore.individual) {
         proxiedUids.clear()
@@ -222,12 +224,11 @@ class AppManagerActivity : ThemedActivity(),
         binding.toolbar.setNavigationIcon(R.drawable.ic_navigation_close)
         binding.toolbar.setNavigationOnClickListener { finish() }
         
-        binding.toolbar.inflateMenu(R.menu.per_app_proxy_menu)
-        
-        binding.toolbar.setOnMenuItemClickListener {
-            AppManagerMenuBottomSheet().show(supportFragmentManager, AppManagerMenuBottomSheet.TAG)
-            true
-        }
+        menuController = AppManagerMenuController(
+            toolbar = binding.toolbar,
+            fragmentManager = supportFragmentManager,
+            listener = this
+        )
         
         binding.collapsingToolbar.title = getString(R.string.proxied_apps)
 
@@ -268,6 +269,13 @@ class AppManagerActivity : ThemedActivity(),
 
         instance = this
         loadApps()
+    }
+    
+    override fun onResume() {
+        super.onResume()
+        if (::menuController.isInitialized) {
+            menuController.refresh()
+        }
     }
 
     private var sysApps = true

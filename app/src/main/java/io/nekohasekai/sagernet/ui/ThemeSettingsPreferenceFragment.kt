@@ -183,6 +183,15 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
         DataStore.initGlobal()
         addPreferencesFromResource(R.xml.theme_preferences)
 
+        val disableBottomSheetSwitch = findPreference<SwitchPreference>("disable_bottom_sheet")
+        disableBottomSheetSwitch?.apply {
+            isChecked = DataStore.disableBottomSheet
+            setOnPreferenceChangeListener { _, newValue ->
+                DataStore.disableBottomSheet = newValue as Boolean
+                true
+            }
+        }
+
         findPreference<CustomBannerPreference>("key_check_update")?.setOnPreferenceClickListener {
             val jsonUrl = "https://raw.githubusercontent.com/HatsuneMikuUwU/MikuBoxForAndroid/refs/heads/UwU/update/update.json"
             

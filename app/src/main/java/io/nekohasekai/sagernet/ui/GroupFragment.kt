@@ -1,10 +1,8 @@
 package io.nekohasekai.sagernet.ui
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.format.Formatter
-import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -46,6 +44,8 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
     lateinit var layoutManager: LinearLayoutManager
     lateinit var groupAdapter: GroupAdapter
     lateinit var undoManager: UndoSnackbarManager<ProxyGroup>
+    
+    private lateinit var menuController: GroupMenuController
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -59,12 +59,11 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
 
         toolbar = toolbarView
         
-        toolbar.inflateMenu(R.menu.add_group_menu)
-
-        toolbar.setOnMenuItemClickListener {
-            GroupMenuBottomSheet().show(childFragmentManager, GroupMenuBottomSheet.TAG)
-            true
-        }
+        menuController = GroupMenuController(
+            toolbar = toolbar, 
+            fragmentManager = childFragmentManager,
+            listener = this
+        )
 
         groupListView = view.findViewById(R.id.group_list)
         layoutManager = FixedLinearLayoutManager(groupListView)
@@ -158,7 +157,13 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
                 groupAdapter.commitMove()
             }
         }).attachToRecyclerView(groupListView)
+    }
 
+    override fun onResume() {
+        super.onResume()
+        if (::menuController.isInitialized) {
+            menuController.refresh()
+        }
     }
 
     override fun onOptionClicked(viewId: Int) {
@@ -352,7 +357,6 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
                 notifyItemChanged(index)
             }
         }
-
     }
 
     override fun onDestroy() {

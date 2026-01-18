@@ -8,7 +8,7 @@
         app:key="key_check_update"
         android:title="@string/update"
         android:summary="@string/update_summary"
-        app:icon="@drawable/ic_update" />
+        app:icon="@drawable/ic_update" />    
 
     <PreferenceCategory
         app:title="@string/theme_category">
@@ -127,13 +127,22 @@
             app:icon="@drawable/ic_toggle_switch" />
 
         <SwitchPreference
-            android:layout="@layout/uwu_bot_switch"
+            android:layout="@layout/uwu_mid_switch"
             android:widgetLayout="@layout/uwu_switch"
             android:key="key_show_welcome_anim"
             android:title="@string/title_show_welcome_anim"
             android:summary="@string/summary_show_welcome_anim"
             android:defaultValue="true"
             app:icon="@drawable/ic_heart" />
+            
+        <SwitchPreference
+            android:layout="@layout/uwu_bot_switch"
+            android:widgetLayout="@layout/uwu_switch"
+            android:key="disable_bottom_sheet"
+            android:title="@string/pref_disable_bottom_sheet_title"
+            android:summary="@string/pref_disable_bottom_sheet_summary"
+            android:defaultValue="false"
+            app:icon="@drawable/ic_toggle_switch" />
 
     </PreferenceCategory>
 

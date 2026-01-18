@@ -739,6 +739,8 @@ Lütfen Sistem Ayarlarından bu izni verin."</string>
     <string name="summary_free_config">Ayarları kafana göre yap, tamamen ücretsiz!</string>
     <string name="profile_shape_title">Profil banner şekli</string>
     <string name="preference_shape_title">Simge şekli</string>
+    <string name="pref_disable_bottom_sheet_title">Alt Menüyü Devre Dışı Bırak</string>
+    <string name="pref_disable_bottom_sheet_summary">Alt menü yerine standart araç çubuğu menüsünü kullan</string>
     
     <string name="uwu_miku_ui">"Miku\'nun Gardırobu"</string>
     <string name="uwu_miku_ui_summary">"Haydi Miku'yu giydirip daha da güzelleştirelim!"</string>

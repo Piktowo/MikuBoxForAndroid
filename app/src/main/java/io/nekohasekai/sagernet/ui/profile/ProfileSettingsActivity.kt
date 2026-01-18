@@ -58,6 +58,8 @@ abstract class ProfileSettingsActivity<T : AbstractBean>(
     @LayoutRes resId: Int = R.layout.uwu_collapse_layout,
 ) : ThemedActivity(resId), OnPreferenceDataStoreChangeListener,
     ProfileMenuBottomSheet.OnOptionClickListener {
+    
+    private lateinit var menuController: ProfileMenuController
 
     class UnsavedChangesDialogFragment : AlertDialogFragment<Empty, Empty>() {
         override fun AlertDialog.Builder.prepare(listener: DialogInterface.OnClickListener) {
@@ -113,12 +115,11 @@ abstract class ProfileSettingsActivity<T : AbstractBean>(
             finish()
         }
 
-        toolbar.inflateMenu(R.menu.profile_config_menu)
-
-        toolbar.setOnMenuItemClickListener {
-            ProfileMenuBottomSheet().show(supportFragmentManager, ProfileMenuBottomSheet.TAG)
-            true
-        }
+        menuController = ProfileMenuController(
+            toolbar = toolbar,
+            fragmentManager = supportFragmentManager,
+            listener = this
+        )
 
         if (savedInstanceState == null) {
             val editingId = intent.getLongExtra(EXTRA_PROFILE_ID, 0L)
@@ -145,6 +146,13 @@ abstract class ProfileSettingsActivity<T : AbstractBean>(
                         .commit()
                 }
             }
+        }
+    }
+    
+    override fun onResume() {
+        super.onResume()
+        if (::menuController.isInitialized) {
+            menuController.refresh()
         }
     }
 

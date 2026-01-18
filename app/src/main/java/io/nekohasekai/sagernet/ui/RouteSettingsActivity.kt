@@ -59,6 +59,8 @@ class RouteSettingsActivity(
     OnPreferenceDataStoreChangeListener,
     RouteSettingsMenuBottomSheet.OnOptionClickListener {
 
+    private lateinit var menuController: RouteSettingsMenuController
+
     fun init(packageName: String?) {
         RuleEntity().apply {
             if (!packageName.isNullOrBlank()) {
@@ -136,6 +138,10 @@ class RouteSettingsActivity(
 
         if (::editConfigPreference.isInitialized) {
             editConfigPreference.notifyChanged()
+        }
+        
+        if (::menuController.isInitialized) {
+            menuController.refresh()
         }
     }
 
@@ -245,12 +251,11 @@ class RouteSettingsActivity(
             finish()
         }
 
-        toolbar.inflateMenu(R.menu.profile_config_menu)
-
-        toolbar.setOnMenuItemClickListener {
-            RouteSettingsMenuBottomSheet().show(supportFragmentManager, RouteSettingsMenuBottomSheet.TAG)
-            true
-        }
+        menuController = RouteSettingsMenuController(
+            toolbar = toolbar,
+            fragmentManager = supportFragmentManager,
+            listener = this
+        )
 
         if (savedInstanceState == null) {
             val editingId = intent.getLongExtra(EXTRA_ROUTE_ID, 0L)

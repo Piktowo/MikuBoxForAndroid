@@ -53,6 +53,8 @@ class GroupSettingsActivity(
 
     private lateinit var frontProxyPreference: OutboundPreference
     private lateinit var landingProxyPreference: OutboundPreference
+    
+    private lateinit var menuController: GroupSettingsMenuController
 
     fun ProxyGroup.init() {
         DataStore.groupName = name ?: ""
@@ -227,12 +229,11 @@ class GroupSettingsActivity(
             finish()
         }
 
-        toolbar.inflateMenu(R.menu.profile_config_menu)
-
-        toolbar.setOnMenuItemClickListener {
-            GroupSettingsMenuBottomSheet().show(supportFragmentManager, GroupSettingsMenuBottomSheet.TAG)
-            true
-        }
+        menuController = GroupSettingsMenuController(
+            toolbar = toolbar,
+            fragmentManager = supportFragmentManager,
+            listener = this
+        )
 
         if (savedInstanceState == null) {
             val editingId = intent.getLongExtra(EXTRA_GROUP_ID, 0L)
@@ -260,6 +261,13 @@ class GroupSettingsActivity(
                     DataStore.profileCacheStore.registerChangeListener(this@GroupSettingsActivity)
                 }
             }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (::menuController.isInitialized) {
+            menuController.refresh()
         }
     }
 

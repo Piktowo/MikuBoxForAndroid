@@ -170,6 +170,8 @@ class AppListActivity : ThemedActivity(),
     private var loader: Job? = null
     private var apps = emptyList<ProxiedApp>()
     private val appsAdapter = AppsAdapter()
+    
+    private lateinit var menuController: AppListMenuController
 
     private fun initProxiedUids(str: String = DataStore.routePackages) {
         proxiedUids.clear()
@@ -217,12 +219,11 @@ class AppListActivity : ThemedActivity(),
         binding.toolbar.setNavigationIcon(R.drawable.ic_navigation_close)
         binding.toolbar.setNavigationOnClickListener { finish() }
 
-        binding.toolbar.inflateMenu(R.menu.app_list_menu)
-
-        binding.toolbar.setOnMenuItemClickListener {
-            AppListMenuBottomSheet().show(supportFragmentManager, AppListMenuBottomSheet.TAG)
-            true
-        }
+        menuController = AppListMenuController(
+            toolbar = binding.toolbar,
+            fragmentManager = supportFragmentManager,
+            listener = this
+        )
         
         binding.collapsingToolbar.title = getString(R.string.select_apps)
 
@@ -244,6 +245,13 @@ class AppListActivity : ThemedActivity(),
         }
 
         loadApps()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (::menuController.isInitialized) {
+            menuController.refresh()
+        }
     }
 
     private var sysApps = false
