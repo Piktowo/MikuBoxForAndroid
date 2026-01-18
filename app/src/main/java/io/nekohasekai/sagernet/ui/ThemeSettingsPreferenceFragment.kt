@@ -182,15 +182,28 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
         preferenceManager.preferenceDataStore = DataStore.configurationStore
         DataStore.initGlobal()
         addPreferencesFromResource(R.xml.theme_preferences)
-
+        
         val disableBottomSheetSwitch = findPreference<SwitchPreference>("disable_bottom_sheet")
         disableBottomSheetSwitch?.apply {
             isChecked = DataStore.disableBottomSheet
             setOnPreferenceChangeListener { _, newValue ->
                 DataStore.disableBottomSheet = newValue as Boolean
+                updateSheetBannerState()
                 true
             }
         }
+
+        val disableBottomSheetHomeSwitch = findPreference<SwitchPreference>("disable_bottom_sheet_home")
+        disableBottomSheetHomeSwitch?.apply {
+            isChecked = DataStore.disableBottomSheetHome
+            setOnPreferenceChangeListener { _, newValue ->
+                DataStore.disableBottomSheetHome = newValue as Boolean
+                updateSheetBannerState()
+                true
+            }
+        }
+        
+        updateSheetBannerState()
 
         findPreference<CustomBannerPreference>("key_check_update")?.setOnPreferenceClickListener {
             val jsonUrl = "https://raw.githubusercontent.com/HatsuneMikuUwU/MikuBoxForAndroid/refs/heads/UwU/update/update.json"
@@ -807,6 +820,14 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
             }
         }
     } 
+    
+    private fun updateSheetBannerState() {
+        val isBottomSheetDisabled = DataStore.disableBottomSheet
+        val isBottomSheetHomeDisabled = DataStore.disableBottomSheetHome
+        val shouldEnableActions = !(isBottomSheetDisabled && isBottomSheetHomeDisabled)
+        findPreference<Preference>("action_change_sheet_banner_image")?.isEnabled = shouldEnableActions
+        findPreference<Preference>("action_delete_sheet_banner_image")?.isEnabled = shouldEnableActions
+    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,

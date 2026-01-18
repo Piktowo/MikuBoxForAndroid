@@ -69,20 +69,7 @@ import io.nekohasekai.sagernet.group.GroupUpdater
 import io.nekohasekai.sagernet.group.RawUpdater
 import io.nekohasekai.sagernet.ktx.*
 import io.nekohasekai.sagernet.plugin.PluginManager
-import io.nekohasekai.sagernet.ui.profile.ChainSettingsActivity
-import io.nekohasekai.sagernet.ui.profile.HttpSettingsActivity
-import io.nekohasekai.sagernet.ui.profile.HysteriaSettingsActivity
-import io.nekohasekai.sagernet.ui.profile.JuicitySettingsActivity
-import io.nekohasekai.sagernet.ui.profile.MieruSettingsActivity
-import io.nekohasekai.sagernet.ui.profile.NaiveSettingsActivity
-import io.nekohasekai.sagernet.ui.profile.SSHSettingsActivity
-import io.nekohasekai.sagernet.ui.profile.ShadowsocksSettingsActivity
-import io.nekohasekai.sagernet.ui.profile.SocksSettingsActivity
-import io.nekohasekai.sagernet.ui.profile.TrojanGoSettingsActivity
-import io.nekohasekai.sagernet.ui.profile.TrojanSettingsActivity
-import io.nekohasekai.sagernet.ui.profile.TuicSettingsActivity
-import io.nekohasekai.sagernet.ui.profile.VMessSettingsActivity
-import io.nekohasekai.sagernet.ui.profile.WireGuardSettingsActivity
+import io.nekohasekai.sagernet.ui.profile.*
 import io.nekohasekai.sagernet.widget.QRCodeDialog
 import io.nekohasekai.sagernet.widget.UndoSnackbarManager
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -134,6 +121,8 @@ class ConfigurationFragment @JvmOverloads constructor(
     lateinit var adapter: GroupPagerAdapter
     lateinit var tabLayout: TabLayout
     lateinit var groupPager: ViewPager2
+    
+    private lateinit var menuController: ConfigurationMenuController
 
     private val TAG_HOME_BANNER_DEFAULT = "DEFAULT_BANNER_HOME"
 
@@ -196,25 +185,16 @@ class ConfigurationFragment @JvmOverloads constructor(
          }
          
         if (!select) {
-            toolbar.inflateMenu(R.menu.add_profile_menu)
-            toolbar.setOnMenuItemClickListener(this)
+            menuController = ConfigurationMenuController(
+                toolbar = toolbar,
+                fragmentManager = childFragmentManager,
+                fragment = this
+            )
         } else {
             toolbar.setTitle(titleRes)
             toolbar.setNavigationIcon(R.drawable.ic_navigation_close)
             toolbar.setNavigationOnClickListener {
                 requireActivity().finish()
-            }
-        }
-
-        val searchView = toolbar.findViewById<SearchView>(R.id.action_search)
-        if (searchView != null) {
-            searchView.setOnQueryTextListener(this)
-            searchView.maxWidth = Int.MAX_VALUE
-
-            searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
-                if (!hasFocus) {
-                    cancelSearch(searchView)
-                }
             }
         }
 
@@ -261,6 +241,27 @@ class ConfigurationFragment @JvmOverloads constructor(
         }
 
         DataStore.profileCacheStore.registerChangeListener(this)
+    }
+
+    fun setupSearchView() {
+        val searchView = toolbar.findViewById<SearchView>(R.id.action_search)
+        if (searchView != null) {
+            searchView.setOnQueryTextListener(this)
+            searchView.maxWidth = Int.MAX_VALUE
+
+            searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
+                if (!hasFocus) {
+                    cancelSearch(searchView)
+                }
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (::menuController.isInitialized) {
+            menuController.refresh()
+        }
     }
 
     override fun onPreferenceDataStoreChanged(store: PreferenceDataStore, key: String) {

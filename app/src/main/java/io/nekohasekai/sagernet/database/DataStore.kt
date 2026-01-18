@@ -117,6 +117,8 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var fontSize by configurationStore.int("app_font_scale") { 100 }
     var profileBannerShape by configurationStore.string("profile_banner_shape") { "uwu_shape_cookie" }
     var preferenceIconShape by configurationStore.string("preference_icon_shape") { "uwu_shape_cookie" }
+    var disableBottomSheet by configurationStore.boolean("disable_bottom_sheet") {false}
+    var disableBottomSheetHome by configurationStore.boolean("disable_bottom_sheet_home") {false}
 
     var appTLSVersion by configurationStore.string(Key.APP_TLS_VERSION)
     var enableClashAPI by configurationStore.boolean(Key.ENABLE_CLASH_API)

@@ -9,6 +9,13 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
+import android.graphics.Paint
+import android.graphics.Typeface
+import android.text.TextPaint
+import android.text.style.TypefaceSpan
+import android.view.MenuItem
 import android.os.RemoteException
 import android.view.KeyEvent
 import android.view.View
@@ -17,6 +24,8 @@ import androidx.activity.addCallback
 import androidx.annotation.IdRes
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.preference.PreferenceDataStore
 import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
@@ -26,6 +35,7 @@ import com.google.android.material.bottomappbar.BottomAppBar.FAB_ALIGNMENT_MODE_
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.navigation.NavigationView
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.snackbar.Snackbar
@@ -59,15 +69,19 @@ import moe.matsuri.nb4a.utils.Util
 
 class MainActivity : ThemedActivity(),
     SagerConnection.Callback,
-    OnPreferenceDataStoreChangeListener {
+    OnPreferenceDataStoreChangeListener,
+    NavigationHost { 
 
     lateinit var binding: LayoutMainBinding
+    private lateinit var navMenuController: NavMenuController
 
     private val TAG_SHEET_DEFAULT = "DEFAULT_BANNER_SHEET"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = LayoutMainBinding.inflate(layoutInflater)
+        
+        navMenuController = NavMenuController(this)
 
         when (DataStore.fabStyle) {
             FabStyle.End -> {
@@ -102,7 +116,9 @@ class MainActivity : ThemedActivity(),
         }
         
         onBackPressedDispatcher.addCallback {
-            if (supportFragmentManager.findFragmentById(R.id.fragment_holder) is ConfigurationFragment) {
+            if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                binding.drawerLayout.closeDrawer(GravityCompat.START)
+            } else if (supportFragmentManager.findFragmentById(R.id.fragment_holder) is ConfigurationFragment) {
                 moveTaskToBack(true)
             } else {
                 displayFragmentWithId(R.id.nav_configuration, reverseAnim = true)
@@ -113,8 +129,16 @@ class MainActivity : ThemedActivity(),
             if (DataStore.serviceState.canStop) SagerNet.stopService() else connect.launch(null)
         }
         binding.stats.setOnClickListener { if (DataStore.serviceState.connected) binding.stats.testConnection() }
+        
+        binding.stats.setNavigationOnClickListener {
+            navMenuController.showMenu()
+        }
 
         setContentView(binding.root)
+        
+        setupNavigationView()
+        
+        updateDrawerLockMode()
 
         val lottieView: LottieAnimationView = binding.lottieWelcome
 
@@ -172,8 +196,82 @@ class MainActivity : ThemedActivity(),
                 .showBlur()
         }
     }
+    
+    private fun updateDrawerLockMode() {
+        if (::binding.isInitialized) {
+            val lockMode = if (DataStore.disableBottomSheetHome) {
+                DrawerLayout.LOCK_MODE_UNLOCKED
+            } else {
+                DrawerLayout.LOCK_MODE_LOCKED_CLOSED
+            }
+            binding.drawerLayout.setDrawerLockMode(lockMode)
+        }
+    }
+    
+    fun refreshNavMenu(clashApi: Boolean) {
+        if (::binding.isInitialized) {
+            binding.navView.menu.findItem(R.id.nav_traffic)?.isVisible = clashApi
+        }
+    }
 
-    fun showNavigationSheet() {
+    override fun showNavigationSheet() {
+        if (::navMenuController.isInitialized) {
+            navMenuController.showMenu()
+        }
+    }
+
+    private fun setupNavigationView() {
+        val navView = binding.navView
+        
+        refreshNavMenu(DataStore.enableClashAPI)
+        
+        applyFontToNavigation()
+
+        navView.setNavigationItemSelectedListener { item ->
+            displayFragmentWithId(item.itemId)
+            binding.drawerLayout.closeDrawer(GravityCompat.START)
+            true
+        }
+    }
+    
+    private fun applyFontToNavigation() {
+        val navView = binding.navView
+        val menu = navView.menu
+        val appFont = DataStore.appFont
+
+        val typeface = getCustomTypeface(this, appFont)
+
+        if (typeface != null) {
+            for (i in 0 until menu.size()) {
+                val menuItem = menu.getItem(i)
+                val subMenu = menuItem.subMenu
+                
+                applyFontToMenuItem(menuItem, typeface)
+
+                if (subMenu != null && subMenu.size() > 0) {
+                    for (j in 0 until subMenu.size()) {
+                        val subMenuItem = subMenu.getItem(j)
+                        applyFontToMenuItem(subMenuItem, typeface)
+                    }
+                }
+            }
+        }
+    }
+    
+    private fun applyFontToMenuItem(menuItem: MenuItem, typeface: Typeface) {
+        val title = menuItem.title.toString()
+        val spannableString = SpannableString(title)
+        
+        spannableString.setSpan(
+            CustomTypefaceSpan(typeface),
+            0,
+            spannableString.length,
+            Spanned.SPAN_INCLUSIVE_INCLUSIVE
+        )
+        menuItem.title = spannableString
+    }
+    
+    fun showOriginalNavigationSheet() {
         val dialog = BottomSheetDialog(this)
         
         Theme.applyWindowBlur(dialog.window)
@@ -257,6 +355,22 @@ class MainActivity : ThemedActivity(),
 
         transaction.replace(R.id.fragment_holder, fragment)
             .commitAllowingStateLoss()
+            
+        val id = when(fragment) {
+            is ConfigurationFragment -> R.id.nav_configuration
+            is GroupFragment -> R.id.nav_group
+            is RouteFragment -> R.id.nav_route
+            is SettingsFragment -> R.id.nav_settings
+            is WebviewFragment -> R.id.nav_traffic
+            is ToolsFragment -> R.id.nav_tools
+            is ThemeSettingsFragment -> R.id.nav_theme
+            is LogcatFragment -> R.id.nav_logcat
+            is AboutFragment -> R.id.nav_about
+            else -> null
+        }
+        if (id != null) {
+            binding.navView.setCheckedItem(id)
+        }
     }
 
     fun displayFragmentWithId(@IdRes id: Int, reverseAnim: Boolean = false): Boolean {
@@ -514,6 +628,8 @@ class MainActivity : ThemedActivity(),
     override fun onPreferenceDataStoreChanged(store: PreferenceDataStore, key: String) {
         runOnUiThread {
             when (key) {
+            	"disable_bottom_sheet_home" -> updateDrawerLockMode()
+            	Key.ENABLE_CLASH_API -> refreshNavMenu(DataStore.enableClashAPI)
                 Key.SERVICE_MODE -> onBinderDied()
                 Key.PROXY_APPS, Key.BYPASS_MODE, Key.INDIVIDUAL -> {
                     if (DataStore.serviceState.canStop) {

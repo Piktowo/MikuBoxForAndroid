@@ -127,22 +127,13 @@
             app:icon="@drawable/ic_toggle_switch" />
 
         <SwitchPreference
-            android:layout="@layout/uwu_mid_switch"
+            android:layout="@layout/uwu_bot_switch"
             android:widgetLayout="@layout/uwu_switch"
             android:key="key_show_welcome_anim"
             android:title="@string/title_show_welcome_anim"
             android:summary="@string/summary_show_welcome_anim"
             android:defaultValue="true"
             app:icon="@drawable/ic_heart" />
-            
-        <SwitchPreference
-            android:layout="@layout/uwu_bot_switch"
-            android:widgetLayout="@layout/uwu_switch"
-            android:key="disable_bottom_sheet"
-            android:title="@string/pref_disable_bottom_sheet_title"
-            android:summary="@string/pref_disable_bottom_sheet_summary"
-            android:defaultValue="false"
-            app:icon="@drawable/ic_toggle_switch" />
 
     </PreferenceCategory>
 
@@ -188,9 +179,27 @@
 
     <PreferenceCategory
         app:title="@string/banner_sheet_category">
+        
+        <SwitchPreference
+            android:layout="@layout/uwu_top_switch"
+            android:widgetLayout="@layout/uwu_switch"
+            android:key="disable_bottom_sheet"
+            android:title="@string/pref_disable_bottom_sheet_fragment_title"
+            android:summary="@string/pref_disable_bottom_sheet_summary"
+            android:defaultValue="false"
+            app:icon="@drawable/ic_toggle_switch" />
+            
+        <SwitchPreference
+            android:layout="@layout/uwu_mid_switch"
+            android:widgetLayout="@layout/uwu_switch"
+            android:key="disable_bottom_sheet_home"
+            android:title="@string/pref_disable_bottom_sheet_home_title"
+            android:summary="@string/pref_disable_bottom_sheet_summary"
+            android:defaultValue="false"
+            app:icon="@drawable/ic_toggle_switch" />
 
         <Preference
-            android:layout="@layout/uwu_top"
+            android:layout="@layout/uwu_mid"
             android:key="action_change_sheet_banner_image"
             android:title="@string/banner_custom_sheet_title"
             android:summary="@string/banner_custom_sheet_summary"

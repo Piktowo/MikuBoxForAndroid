@@ -808,7 +808,8 @@ Please grant this permission in System Settings."</string>
     <string name="mal_close">Close</string>
     <string name="mal_send_email">Send email</string>
     <string name="mal_activity_exception">No apps to handle action</string>
-    <string name="pref_disable_bottom_sheet_title">Disable bottomsheet</string>
+    <string name="pref_disable_bottom_sheet_fragment_title">Disable bottomsheet in fragment</string>
+    <string name="pref_disable_bottom_sheet_home_title">Disable bottomsheet in homepage</string>
     <string name="pref_disable_bottom_sheet_summary">Use standard toolbar menu instead of bottomsheet</string>
 
     <!-- uwu -->

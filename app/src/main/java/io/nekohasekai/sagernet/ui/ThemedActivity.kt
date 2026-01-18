@@ -202,7 +202,7 @@ abstract class ThemedActivity : AppCompatActivity {
         }
     }
 
-    private fun getCustomTypeface(context: Context, fontName: String?): Typeface {
+    fun getCustomTypeface(context: Context, fontName: String?): Typeface {
         val fontId = when (fontName) {
             "google" -> R.font.googlesansregular 
             "chococooky" -> R.font.chococookyregular
