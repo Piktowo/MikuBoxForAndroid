@@ -1,14 +1,15 @@
-package io.nekohasekai.sagernet.ui
+package io.nekohasekai.sagernet.ui.toolbar
 
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentManager
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.database.DataStore
+import io.nekohasekai.sagernet.ui.bottomsheet.RouteMenuBottomSheet
 
-class GroupSettingsMenuController(
+class RouteMenuController(
     private val toolbar: Toolbar,
     private val fragmentManager: FragmentManager,
-    private val listener: GroupSettingsMenuBottomSheet.OnOptionClickListener
+    private val listener: RouteMenuBottomSheet.OnOptionClickListener
 ) {
 
     private var lastStateWasDirect: Boolean? = null
@@ -31,18 +32,16 @@ class GroupSettingsMenuController(
         toolbar.setOnMenuItemClickListener(null)
 
         if (useDirectMenu) {
-            toolbar.inflateMenu(R.menu.apply_delete_menu)
-            
+            toolbar.inflateMenu(R.menu.add_route_menu)
             toolbar.setOnMenuItemClickListener { item ->
                 listener.onOptionClicked(item.itemId)
                 true
             }
         } else {
             toolbar.inflateMenu(R.menu.uwu_menu_sheet)
-            
             toolbar.setOnMenuItemClickListener { item ->
                 if (item.itemId == R.id.action_open_sheet) {
-                    GroupSettingsMenuBottomSheet().show(fragmentManager, GroupSettingsMenuBottomSheet.TAG)
+                    RouteMenuBottomSheet().show(fragmentManager, RouteMenuBottomSheet.TAG)
                 }
                 true
             }

@@ -30,6 +30,7 @@ import androidx.preference.PreferenceDataStore
 import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.target.Target
 import com.google.android.material.bottomappbar.BottomAppBar.FAB_ALIGNMENT_MODE_CENTER
 import com.google.android.material.bottomappbar.BottomAppBar.FAB_ALIGNMENT_MODE_END
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -66,6 +67,7 @@ import io.nekohasekai.sagernet.utils.Theme
 import io.nekohasekai.sagernet.utils.showBlur
 import io.nekohasekai.sagernet.widget.FabStyle
 import moe.matsuri.nb4a.utils.Util
+import io.nekohasekai.sagernet.ui.toolbar.NavMenuController
 
 class MainActivity : ThemedActivity(),
     SagerConnection.Callback,
@@ -227,6 +229,41 @@ class MainActivity : ThemedActivity(),
         
         applyFontToNavigation()
 
+        val dimAlpha = if (Build.VERSION.SDK_INT >= 31) {
+            77
+        } else {
+            153
+        }
+        val dimColor = android.graphics.Color.argb(dimAlpha, 0, 0, 0)
+        binding.drawerLayout.setScrimColor(dimColor)
+
+        if (Build.VERSION.SDK_INT >= 31) {
+            binding.drawerLayout.addDrawerListener(object : DrawerLayout.SimpleDrawerListener() {
+                override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+                    super.onDrawerSlide(drawerView, slideOffset)
+                    
+                    val radius = slideOffset * 30f 
+                    
+                    if (radius > 1f) {
+                        binding.coordinator.setRenderEffect(
+                            android.graphics.RenderEffect.createBlurEffect(
+                                radius,
+                                radius,
+                                android.graphics.Shader.TileMode.CLAMP
+                            )
+                        )
+                    } else {
+                        binding.coordinator.setRenderEffect(null)
+                    }
+                }
+
+                override fun onDrawerClosed(drawerView: View) {
+                    super.onDrawerClosed(drawerView)
+                    binding.coordinator.setRenderEffect(null)
+                }
+            })
+        }
+
         navView.setNavigationItemSelectedListener { item ->
             displayFragmentWithId(item.itemId)
             binding.drawerLayout.closeDrawer(GravityCompat.START)
@@ -285,15 +322,18 @@ class MainActivity : ThemedActivity(),
         val bannerImageView = view.findViewById<ImageView>(R.id.img_banner_sheet)
 
         if (bannerImageView != null) {
-            val savedUriString = DataStore.configurationStore.getString("custom_sheet_banner_uri", null)
+        	bannerImageView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
+        
+            val bannerUriString = DataStore.configurationStore.getString("custom_sheet_banner_uri", null)
             
-            val targetTag = if (savedUriString.isNullOrBlank()) TAG_SHEET_DEFAULT else savedUriString
+            val targetTag = if (bannerUriString.isNullOrBlank()) TAG_SHEET_DEFAULT else bannerUriString
             val currentTag = bannerImageView.tag
 
             if (currentTag != targetTag) {
-                if (!savedUriString.isNullOrBlank()) {
+                if (!bannerUriString.isNullOrBlank()) {
                     Glide.with(this)
-                        .load(savedUriString)
+                        .load(bannerUriString)
+                        .override(Target.SIZE_ORIGINAL)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .dontAnimate()
                         .error(R.drawable.uwu_banner_image_about)

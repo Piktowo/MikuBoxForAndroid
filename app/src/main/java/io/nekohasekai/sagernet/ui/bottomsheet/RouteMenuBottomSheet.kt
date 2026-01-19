@@ -1,4 +1,4 @@
-package io.nekohasekai.sagernet.ui
+package io.nekohasekai.sagernet.ui.bottomsheet
 
 import android.content.Context
 import android.os.Bundle
@@ -8,13 +8,14 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.target.Target
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.database.DataStore
 
-class GroupMenuBottomSheet : BottomSheetDialogFragment() {
+class RouteMenuBottomSheet : BottomSheetDialogFragment() {
 
     interface OnOptionClickListener {
         fun onOptionClicked(viewId: Int)
@@ -29,11 +30,7 @@ class GroupMenuBottomSheet : BottomSheetDialogFragment() {
         if (parentFragment is OnOptionClickListener) {
             mListener = parentFragment as OnOptionClickListener
         } else {
-            if (context is OnOptionClickListener) {
-                mListener = context
-            } else {
-                throw RuntimeException("$parentFragment or $context must implement OnOptionClickListener")
-            }
+            throw RuntimeException("$parentFragment must implement OnOptionClickListener")
         }
     }
 
@@ -42,7 +39,7 @@ class GroupMenuBottomSheet : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.uwu_bottom_sheet_group_menu, container, false)
+        return inflater.inflate(R.layout.uwu_bottom_sheet_route_menu, container, false)
     }
     
     override fun onStart() {
@@ -60,16 +57,19 @@ class GroupMenuBottomSheet : BottomSheetDialogFragment() {
         val bannerImageView = view.findViewById<ImageView>(R.id.img_banner_sheet)
 
         if (bannerImageView != null) {
-            val savedUriString = DataStore.configurationStore.getString("custom_sheet_banner_uri", null)
+        	bannerImageView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
+        
+            val bannerUriString = DataStore.configurationStore.getString("custom_sheet_banner_uri", null)
 
-            val targetTag = if (savedUriString.isNullOrBlank()) TAG_SHEET_DEFAULT else savedUriString
+            val targetTag = if (bannerUriString.isNullOrBlank()) TAG_SHEET_DEFAULT else bannerUriString
             val currentTag = bannerImageView.tag
 
             if (currentTag != targetTag) {
                 
-                if (!savedUriString.isNullOrBlank()) {
+                if (!bannerUriString.isNullOrBlank()) {
                     Glide.with(this)
-                        .load(savedUriString)
+                        .load(bannerUriString)
+                        .override(Target.SIZE_ORIGINAL)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .dontAnimate()
                         .error(R.drawable.uwu_banner_image_about)
@@ -89,8 +89,9 @@ class GroupMenuBottomSheet : BottomSheetDialogFragment() {
         }
 
         val actionIds = listOf(
-            R.id.action_new_group,
-            R.id.action_update_all
+            R.id.action_new_route,
+            R.id.action_reset_route,
+            R.id.action_manage_assets
         )
 
         actionIds.forEach { id ->
@@ -104,6 +105,6 @@ class GroupMenuBottomSheet : BottomSheetDialogFragment() {
     }
 
     companion object {
-        const val TAG = "GroupMenuBottomSheet"
+        const val TAG = "RouteMenuBottomSheet"
     }
 }

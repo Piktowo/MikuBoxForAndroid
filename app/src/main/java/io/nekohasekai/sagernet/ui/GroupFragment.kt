@@ -35,6 +35,8 @@ import java.util.*
 import io.nekohasekai.sagernet.bg.BaseService
 import io.nekohasekai.sagernet.widget.StatsBar
 import io.nekohasekai.sagernet.utils.showBlur
+import io.nekohasekai.sagernet.ui.bottomsheet.GroupMenuBottomSheet
+import io.nekohasekai.sagernet.ui.toolbar.GroupMenuController
 
 class GroupFragment : ToolbarFragment(R.layout.layout_group), 
     GroupMenuBottomSheet.OnOptionClickListener {

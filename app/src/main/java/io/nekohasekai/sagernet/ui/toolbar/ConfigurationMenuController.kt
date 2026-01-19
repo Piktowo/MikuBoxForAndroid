@@ -1,4 +1,4 @@
-package io.nekohasekai.sagernet.ui
+package io.nekohasekai.sagernet.ui.toolbar
 
 import android.view.View
 import androidx.appcompat.widget.PopupMenu
@@ -7,6 +7,9 @@ import androidx.fragment.app.FragmentManager
 import io.nekohasekai.sagernet.GroupOrder
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.database.DataStore
+import io.nekohasekai.sagernet.ui.bottomsheet.ProfileMenuBottomSheet
+import io.nekohasekai.sagernet.ui.bottomsheet.OtherMenuBottomSheet
+import io.nekohasekai.sagernet.ui.ConfigurationFragment
 
 class ConfigurationMenuController(
     private val toolbar: Toolbar,

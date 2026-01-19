@@ -42,6 +42,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.target.Target
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -103,6 +104,9 @@ import io.nekohasekai.sagernet.utils.showBlur
 import com.neko.speedtest.SpeedTestBottomSheet
 import com.neko.config.V2rayConfigBottomSheet
 import com.neko.expandable.layout.ExpandableView
+import io.nekohasekai.sagernet.ui.bottomsheet.ProfileMenuBottomSheet
+import io.nekohasekai.sagernet.ui.bottomsheet.OtherMenuBottomSheet
+import io.nekohasekai.sagernet.ui.toolbar.ConfigurationMenuController
 
 class ConfigurationFragment @JvmOverloads constructor(
     val select: Boolean = false, val selectedItem: ProxyEntity? = null, val titleRes: Int = 0
@@ -1781,6 +1785,8 @@ class ConfigurationFragment @JvmOverloads constructor(
         val linear = requireView().findViewById<View>(R.id.card_expandable) 
         val expandableView = requireView().findViewById<ExpandableView>(R.id.expandable_view) 
         val bannerImageView = requireView().findViewById<ImageView>(R.id.img_banner_home)
+        
+        bannerImageView?.setLayerType(View.LAYER_TYPE_HARDWARE, null)
 
         fun updateBannerSize() {
             bannerImageView?.apply {
@@ -1795,25 +1801,26 @@ class ConfigurationFragment @JvmOverloads constructor(
         updateBannerSize()
 
         fun loadSavedBanner() {
-            val savedUriString = DataStore.configurationStore.getString("custom_banner_uri", null)
+            val bannerUriString = DataStore.configurationStore.getString("custom_banner_uri", null)
             
-            val targetTag = if (savedUriString.isNullOrBlank()) TAG_HOME_BANNER_DEFAULT else savedUriString
+            val targetTag = if (bannerUriString.isNullOrBlank()) TAG_HOME_BANNER_DEFAULT else bannerUriString
             val currentTag = bannerImageView?.tag
 
             if (currentTag != targetTag) {
-                if (!savedUriString.isNullOrBlank()) {
+                if (!bannerUriString.isNullOrBlank()) {
                     bannerImageView?.let {
                         Glide.with(this)
-                            .load(savedUriString)
+                            .load(bannerUriString)
+                            .override(Target.SIZE_ORIGINAL)
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .dontAnimate()
                             .error(R.drawable.uwu_banner_home)
-                            .into(it)
+                            .into(bannerImageView)
                     }
                 } else {
                     bannerImageView?.let {
-                        Glide.with(this).clear(it)
-                        it.setImageResource(R.drawable.uwu_banner_home)
+                        Glide.with(this).clear(bannerImageView)
+                        bannerImageView.setImageResource(R.drawable.uwu_banner_home)
                     }
                 }
                 bannerImageView?.tag = targetTag

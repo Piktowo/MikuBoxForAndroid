@@ -23,6 +23,8 @@ import io.nekohasekai.sagernet.ktx.*
 import io.nekohasekai.sagernet.widget.ListListener
 import libcore.Libcore
 import moe.matsuri.nb4a.utils.SendLog
+import io.nekohasekai.sagernet.ui.bottomsheet.LogcatMenuBottomSheet
+import io.nekohasekai.sagernet.ui.toolbar.LogcatMenuController
 
 class LogcatFragment : ToolbarFragment(R.layout.layout_logcat),
     LogcatMenuBottomSheet.OnOptionClickListener {
@@ -37,7 +39,7 @@ class LogcatFragment : ToolbarFragment(R.layout.layout_logcat),
         binding = LayoutLogcatBinding.bind(view)
 
         val collapsingToolbar = binding.collapsingToolbar
-        val toolbarView = binding.toolbar // Ubah nama variabel agar tidak ambigu dengan property toolbar parent
+        val toolbarView = binding.toolbar
         val appBarLayout = binding.appbar
 
         collapsingToolbar.title = getString(R.string.menu_log)

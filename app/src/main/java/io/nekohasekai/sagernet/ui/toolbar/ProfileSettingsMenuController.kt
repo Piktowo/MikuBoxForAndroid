@@ -1,4 +1,4 @@
-package io.nekohasekai.sagernet.ui.profile
+package io.nekohasekai.sagernet.ui.toolbar
 
 import android.os.Build
 import androidx.appcompat.widget.Toolbar
@@ -9,11 +9,12 @@ import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.database.SagerDatabase
 import io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher
 import io.nekohasekai.sagernet.ktx.onMainDispatcher
+import io.nekohasekai.sagernet.ui.bottomsheet.ProfileSettingsMenuBottomSheet
 
-class ProfileMenuController(
+class ProfileSettingsMenuController(
     private val toolbar: Toolbar,
     private val fragmentManager: FragmentManager,
-    private val listener: ProfileMenuBottomSheet.OnOptionClickListener
+    private val listener: ProfileSettingsMenuBottomSheet.OnOptionClickListener
 ) {
 
     private var lastStateWasDirect: Boolean? = null
@@ -49,7 +50,7 @@ class ProfileMenuController(
             
             toolbar.setOnMenuItemClickListener { item ->
                 if (item.itemId == R.id.action_open_sheet) {
-                    ProfileMenuBottomSheet().show(fragmentManager, ProfileMenuBottomSheet.TAG)
+                    ProfileSettingsMenuBottomSheet().show(fragmentManager, ProfileSettingsMenuBottomSheet.TAG)
                 }
                 true
             }

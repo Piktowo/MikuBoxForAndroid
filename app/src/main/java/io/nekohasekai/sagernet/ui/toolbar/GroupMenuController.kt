@@ -1,9 +1,10 @@
-package io.nekohasekai.sagernet.ui
+package io.nekohasekai.sagernet.ui.toolbar
 
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentManager
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.database.DataStore
+import io.nekohasekai.sagernet.ui.bottomsheet.GroupMenuBottomSheet
 
 class GroupMenuController(
     private val toolbar: Toolbar,

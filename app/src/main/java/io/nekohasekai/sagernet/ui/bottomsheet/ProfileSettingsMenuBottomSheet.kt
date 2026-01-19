@@ -1,35 +1,40 @@
-package io.nekohasekai.sagernet.ui
+package io.nekohasekai.sagernet.ui.bottomsheet
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.target.Target
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.bottomsheet.BottomSheetBehavior
+import io.nekohasekai.sagernet.GroupType
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.database.DataStore
+import io.nekohasekai.sagernet.database.SagerDatabase
 
-class LogcatMenuBottomSheet : BottomSheetDialogFragment() {
+class ProfileSettingsMenuBottomSheet : BottomSheetDialogFragment() {
 
     interface OnOptionClickListener {
         fun onOptionClicked(viewId: Int)
     }
+
+    private var mListener: OnOptionClickListener? = null
     
     private val TAG_SHEET_DEFAULT = "DEFAULT_BANNER_SHEET"
 
-    private var mListener: OnOptionClickListener? = null
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (parentFragment is OnOptionClickListener) {
-            mListener = parentFragment as OnOptionClickListener
+        if (context is OnOptionClickListener) {
+            mListener = context
         } else {
-            throw RuntimeException("$parentFragment must implement OnOptionClickListener")
+            throw RuntimeException("$context must implement OnOptionClickListener")
         }
     }
 
@@ -38,9 +43,9 @@ class LogcatMenuBottomSheet : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.uwu_bottom_sheet_logcat_menu, container, false)
+        return inflater.inflate(R.layout.uwu_bottom_sheet_profile_config_menu, container, false)
     }
-    
+
     override fun onStart() {
         super.onStart()
         val sheetDialog = dialog as? BottomSheetDialog
@@ -52,20 +57,23 @@ class LogcatMenuBottomSheet : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         val bannerImageView = view.findViewById<ImageView>(R.id.img_banner_sheet)
 
         if (bannerImageView != null) {
-            val savedUriString = DataStore.configurationStore.getString("custom_sheet_banner_uri", null)
+        	bannerImageView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
+        
+            val bannerUriString = DataStore.configurationStore.getString("custom_sheet_banner_uri", null)
 
-            val targetTag = if (savedUriString.isNullOrBlank()) TAG_SHEET_DEFAULT else savedUriString
+            val targetTag = if (bannerUriString.isNullOrBlank()) TAG_SHEET_DEFAULT else bannerUriString
             val currentTag = bannerImageView.tag
 
             if (currentTag != targetTag) {
-                
-                if (!savedUriString.isNullOrBlank()) {
+
+                if (!bannerUriString.isNullOrBlank()) {
                     Glide.with(this)
-                        .load(savedUriString)
+                        .load(bannerUriString)
+                        .override(Target.SIZE_ORIGINAL)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .dontAnimate()
                         .error(R.drawable.uwu_banner_image_about)
@@ -74,20 +82,39 @@ class LogcatMenuBottomSheet : BottomSheetDialogFragment() {
                     Glide.with(this).clear(bannerImageView)
                     bannerImageView.setImageResource(R.drawable.uwu_banner_image_about)
                 }
-                
+
                 bannerImageView.tag = targetTag
             }
         }
-        
+
         val clickListener = View.OnClickListener {
             mListener?.onOptionClicked(it.id)
             dismiss()
         }
 
+        val btnMove = view.findViewById<View>(R.id.action_move)
+        val btnShortcut = view.findViewById<View>(R.id.action_create_shortcut)
+        
+        btnMove?.isVisible = false
+        if (DataStore.editingId != 0L
+            && SagerDatabase.groupDao.getById(DataStore.editingGroup)?.type == GroupType.BASIC // not in subscription group
+            && SagerDatabase.groupDao.allGroups().filter { it.type == GroupType.BASIC }.size > 1 // have other basic group
+        ) {
+            btnMove?.isVisible = true
+        }
+
+        btnShortcut?.isVisible = false
+        if (Build.VERSION.SDK_INT >= 26 && DataStore.editingId != 0L) {
+            btnShortcut?.isVisible = true
+        }
+
         val actionIds = listOf(
-            R.id.action_clear_logcat,
-            R.id.action_send_logcat,
-            R.id.action_refresh
+            R.id.action_apply,
+            R.id.action_delete,
+            R.id.action_move,
+            R.id.action_create_shortcut,
+            R.id.action_custom_outbound_json,
+            R.id.action_custom_config_json
         )
 
         actionIds.forEach { id ->
@@ -101,6 +128,6 @@ class LogcatMenuBottomSheet : BottomSheetDialogFragment() {
     }
 
     companion object {
-        const val TAG = "LogcatMenuBottomSheet"
+        const val TAG = "ProfileSettingsMenuBottomSheet"
     }
 }

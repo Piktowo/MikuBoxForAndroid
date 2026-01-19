@@ -24,6 +24,7 @@ import io.nekohasekai.sagernet.group.RawUpdater
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.target.Target
 import androidx.fragment.app.FragmentActivity
 
 class V2rayConfigBottomSheet : BottomSheetDialogFragment() {
@@ -81,16 +82,19 @@ class V2rayConfigBottomSheet : BottomSheetDialogFragment() {
         val bannerImageView = view.findViewById<ImageView>(R.id.img_banner_sheet)
         
         if (bannerImageView != null) {
-            val savedUriString = DataStore.configurationStore.getString("custom_sheet_banner_uri", null)
+        	bannerImageView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
+        
+            val bannerUriString = DataStore.configurationStore.getString("custom_sheet_banner_uri", null)
 
-            val targetTag = if (savedUriString.isNullOrBlank()) TAG_SHEET_DEFAULT else savedUriString
+            val targetTag = if (bannerUriString.isNullOrBlank()) TAG_SHEET_DEFAULT else bannerUriString
             val currentTag = bannerImageView.tag
 
             if (currentTag != targetTag) {
                 
-                if (!savedUriString.isNullOrBlank()) {
+                if (!bannerUriString.isNullOrBlank()) {
                     Glide.with(this)
-                        .load(savedUriString)
+                        .load(bannerUriString)
+                        .override(Target.SIZE_ORIGINAL)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .dontAnimate()
                         .error(R.drawable.uwu_banner_image_about)

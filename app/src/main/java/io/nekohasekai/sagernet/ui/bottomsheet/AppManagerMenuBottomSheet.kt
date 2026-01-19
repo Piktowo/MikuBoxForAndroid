@@ -1,4 +1,4 @@
-package io.nekohasekai.sagernet.ui
+package io.nekohasekai.sagernet.ui.bottomsheet
 
 import android.content.Context
 import android.os.Bundle
@@ -8,28 +8,29 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.target.Target
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.database.DataStore
 
-class ProfileMenuBottomSheet : BottomSheetDialogFragment() {
+class AppManagerMenuBottomSheet : BottomSheetDialogFragment() {
 
     interface OnOptionClickListener {
         fun onOptionClicked(viewId: Int)
     }
+
+    private var mListener: OnOptionClickListener? = null
     
     private val TAG_SHEET_DEFAULT = "DEFAULT_BANNER_SHEET"
 
-    private var mListener: OnOptionClickListener? = null
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (parentFragment is OnOptionClickListener) {
-            mListener = parentFragment as OnOptionClickListener
+        if (context is OnOptionClickListener) {
+            mListener = context
         } else {
-            throw RuntimeException("$parentFragment must implement OnOptionClickListener")
+            throw RuntimeException("$context must implement OnOptionClickListener")
         }
     }
 
@@ -38,9 +39,9 @@ class ProfileMenuBottomSheet : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.uwu_bottom_sheet_import_menu, container, false)
+        return inflater.inflate(R.layout.uwu_bottom_sheet_app_manager_menu, container, false)
     }
-    
+
     override fun onStart() {
         super.onStart()
         val sheetDialog = dialog as? BottomSheetDialog
@@ -56,16 +57,19 @@ class ProfileMenuBottomSheet : BottomSheetDialogFragment() {
         val bannerImageView = view.findViewById<ImageView>(R.id.img_banner_sheet)
 
         if (bannerImageView != null) {
-            val savedUriString = DataStore.configurationStore.getString("custom_sheet_banner_uri", null)
+        	bannerImageView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
+        
+            val bannerUriString = DataStore.configurationStore.getString("custom_sheet_banner_uri", null)
 
-            val targetTag = if (savedUriString.isNullOrBlank()) TAG_SHEET_DEFAULT else savedUriString
+            val targetTag = if (bannerUriString.isNullOrBlank()) TAG_SHEET_DEFAULT else bannerUriString
             val currentTag = bannerImageView.tag
 
             if (currentTag != targetTag) {
-                
-                if (!savedUriString.isNullOrBlank()) {
+
+                if (!bannerUriString.isNullOrBlank()) {
                     Glide.with(this)
-                        .load(savedUriString)
+                        .load(bannerUriString)
+                        .override(Target.SIZE_ORIGINAL)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .dontAnimate()
                         .error(R.drawable.uwu_banner_image_about)
@@ -74,38 +78,21 @@ class ProfileMenuBottomSheet : BottomSheetDialogFragment() {
                     Glide.with(this).clear(bannerImageView)
                     bannerImageView.setImageResource(R.drawable.uwu_banner_image_about)
                 }
-                
+
                 bannerImageView.tag = targetTag
             }
         }
-        
+
         val clickListener = View.OnClickListener {
             mListener?.onOptionClicked(it.id)
             dismiss()
         }
 
         val actionIds = listOf(
-            R.id.action_scan_qr_code,
-            R.id.action_import_clipboard,
-            R.id.action_import_file,
-            R.id.action_new_socks,
-            R.id.action_new_http,
-            R.id.action_new_ss,
-            R.id.action_new_vmess,
-            R.id.action_new_vless,
-            R.id.action_new_trojan,
-            R.id.action_new_trojan_go,
-            R.id.action_new_mieru,
-            R.id.action_new_naive,
-            R.id.action_new_hysteria,
-            R.id.action_new_tuic,
-            R.id.action_new_juicity,
-            R.id.action_new_ssh,
-            R.id.action_new_wg,
-            R.id.action_new_shadowtls,
-            R.id.action_new_anytls,
-            R.id.action_new_config,
-            R.id.action_new_chain
+            R.id.action_invert_selections,
+            R.id.action_clear_selections,
+            R.id.action_export_clipboard,
+            R.id.action_import_clipboard
         )
 
         actionIds.forEach { id ->
@@ -119,6 +106,6 @@ class ProfileMenuBottomSheet : BottomSheetDialogFragment() {
     }
 
     companion object {
-        const val TAG = "ProfileMenuBottomSheet"
+        const val TAG = "AppManagerMenuBottomSheet"
     }
 }

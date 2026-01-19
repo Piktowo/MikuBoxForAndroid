@@ -3,10 +3,12 @@ package moe.matsuri.nb4a.ui
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.TextView
+import android.view.View
 import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.target.Target
 import com.flaviofaria.kenburnsview.KenBurnsView
 import io.nekohasekai.sagernet.BuildConfig
 import io.nekohasekai.sagernet.R
@@ -27,6 +29,8 @@ class CustomBannerPreference @JvmOverloads constructor(
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
+        
+        holder.setIsRecyclable(false)
 
         holder.itemView.isClickable = false
         holder.itemView.isFocusable = false
@@ -34,16 +38,19 @@ class CustomBannerPreference @JvmOverloads constructor(
         val bannerImageView = holder.findViewById(R.id.img_banner_preference) as? KenBurnsView
         
         if (bannerImageView != null) {
-            val savedUriString = DataStore.configurationStore.getString("custom_preference_banner_uri", null)
+        	bannerImageView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
+        
+            val bannerUriString = DataStore.configurationStore.getString("custom_preference_banner_uri", null)
 
-            val targetTag = if (savedUriString.isNullOrBlank()) TAG_PREFERENCE_DEFAULT else savedUriString
+            val targetTag = if (bannerUriString.isNullOrBlank()) TAG_PREFERENCE_DEFAULT else bannerUriString
             val currentTag = bannerImageView.tag
 
             if (currentTag != targetTag) {
                 
-                if (!savedUriString.isNullOrBlank()) {
+                if (!bannerUriString.isNullOrBlank()) {
                     Glide.with(context)
-                        .load(savedUriString)
+                        .load(bannerUriString)
+                        .override(Target.SIZE_ORIGINAL)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .dontAnimate()
                         .error(R.drawable.uwu_banner_image)
