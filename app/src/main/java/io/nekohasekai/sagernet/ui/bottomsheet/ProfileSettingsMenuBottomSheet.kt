@@ -7,8 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.net.Uri
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.gif.GifOptions
+import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy
+import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.Target
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -62,28 +66,36 @@ class ProfileSettingsMenuBottomSheet : BottomSheetDialogFragment() {
 
         if (bannerImageView != null) {
         	bannerImageView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
-        
             val bannerUriString = DataStore.configurationStore.getString("custom_sheet_banner_uri", null)
-
             val targetTag = if (bannerUriString.isNullOrBlank()) TAG_SHEET_DEFAULT else bannerUriString
             val currentTag = bannerImageView.tag
-
             if (currentTag != targetTag) {
-
                 if (!bannerUriString.isNullOrBlank()) {
+                	val bannerSavedUriString = Uri.parse(bannerUriString)
                     Glide.with(this)
-                        .load(bannerUriString)
+                        .load(bannerSavedUriString)
+                        .downsample(DownsampleStrategy.NONE)
+                        .set(GifOptions.DECODE_FORMAT, DecodeFormat.PREFER_ARGB_8888)
+                        .format(DecodeFormat.PREFER_ARGB_8888)
                         .override(Target.SIZE_ORIGINAL)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .dontAnimate()
+                        .diskCacheStrategy(DiskCacheStrategy.DATA)
+                        .skipMemoryCache(false)
                         .error(R.drawable.uwu_banner_image_about)
                         .into(bannerImageView)
                 } else {
                     Glide.with(this).clear(bannerImageView)
                     bannerImageView.setImageResource(R.drawable.uwu_banner_image_about)
-                }
-
+                }   
                 bannerImageView.tag = targetTag
+            }
+        }
+        
+        val particlesView = view.findViewById<View>(R.id.ParticlesView)
+        if (particlesView != null) {
+            if (DataStore.disableParticlesSheet) {
+                particlesView.visibility = View.GONE
+            } else {
+                particlesView.visibility = View.VISIBLE
             }
         }
 

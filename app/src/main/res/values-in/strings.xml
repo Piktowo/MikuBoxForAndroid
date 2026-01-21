@@ -709,6 +709,9 @@ Tolong kasih izinnya di Settingan Sistem."</string>
     <string name="pref_disable_bottom_sheet_fragment_title">Matiin bottomsheet di fragment</string>
     <string name="pref_disable_bottom_sheet_home_title">Matiin bottomsheet di beranda</string>
     <string name="pref_disable_bottom_sheet_summary">Pake menu toolbar biasa aja daripada bottomsheet</string>
+    <string name="disable_particles_title">Matikan animasi partikel</string>
+    <string name="disable_particles_sheet_summary">Sembunyikan efek partikel di bottomsheet</string>
+    <string name="disable_particles_pref_summary">Sembunyikan efek partikel di preferensi</string>
     
     <string name="uwu_miku_ui">Lemari Baju Miku</string>
     <string name="uwu_miku_ui_summary">Yuk, makeover Miku biar makin glowing!</string>

@@ -811,6 +811,9 @@ Please grant this permission in System Settings."</string>
     <string name="pref_disable_bottom_sheet_fragment_title">Disable bottomsheet in fragment</string>
     <string name="pref_disable_bottom_sheet_home_title">Disable bottomsheet in homepage</string>
     <string name="pref_disable_bottom_sheet_summary">Use standard toolbar menu instead of bottomsheet</string>
+    <string name="disable_particles_title">Disable particles animation</string>
+    <string name="disable_particles_sheet_summary">Hide particle effects in the bottomsheet</string>
+    <string name="disable_particles_pref_summary">Hide particle effects in the preference</string>
 
     <!-- uwu -->
     <string name="uwu_miku_ui">"Miku's Wardrobe"</string>

@@ -741,6 +741,9 @@
     <string name="pref_disable_bottom_sheet_fragment_title">フラグメントでボトムシートを無効化</string>
     <string name="pref_disable_bottom_sheet_home_title">ホームでボトムシートを無効化</string>
     <string name="pref_disable_bottom_sheet_summary">ボトムシートの代わりに標準のツールバーメニューを使用します</string>
+    <string name="disable_particles_title">パーティクルアニメーションを無効化</string>
+    <string name="disable_particles_sheet_summary">ボトムシートのパーティクル効果を非表示にする</string>
+    <string name="disable_particles_pref_summary">設定画面のパーティクル効果を非表示にする</string>
 
     <string name="uwu_miku_ui">"ミクのクローゼット"</string>
     <string name="uwu_miku_ui_summary">"ミクをもっと可愛く着せ替えよう！"</string>

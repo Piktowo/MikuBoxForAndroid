@@ -52,7 +52,11 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
     private val pickBannerImage =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
-                startCropActivity(uri)
+                if (isGif(uri)) {
+                    processGifSelection(uri, "home_banner_", "custom_banner_uri", R.string.custom_banner_set)
+                } else {
+                    startCropActivity(uri)
+                }
             }
         }
 
@@ -114,7 +118,11 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
     private val pickSheetBannerImage =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
-                startCropSheetActivity(uri)
+                if (isGif(uri)) {
+                    processGifSelection(uri, "sheet_banner_", "custom_sheet_banner_uri", R.string.custom_banner_set)
+                } else {
+                    startCropSheetActivity(uri)
+                }
             }
         }
 
@@ -145,7 +153,11 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
     private val pickPreferenceBannerImage =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
-                startCropPreferenceActivity(uri)
+                if (isGif(uri)) {
+                    processGifSelection(uri, "preference_banner_", "custom_preference_banner_uri", R.string.custom_banner_set)
+                } else {
+                    startCropPreferenceActivity(uri)
+                }
             }
         }
 
@@ -199,6 +211,15 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
             setOnPreferenceChangeListener { _, newValue ->
                 DataStore.disableBottomSheetHome = newValue as Boolean
                 updateSheetBannerState()
+                true
+            }
+        }
+        
+        val disableParticlesSheetSwitch = findPreference<SwitchPreference>("disable_particles_sheet")
+        disableParticlesSheetSwitch?.apply {
+            isChecked = DataStore.disableParticlesSheet
+            setOnPreferenceChangeListener { _, newValue ->
+                DataStore.disableParticlesSheet = newValue as Boolean
                 true
             }
         }
@@ -680,6 +701,15 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
                 true
             }
         }
+        
+        val disableParticlesPrefSwitch = findPreference<SwitchPreference>("disable_particles_pref")
+        disableParticlesPrefSwitch?.apply {
+            isChecked = DataStore.disableParticlesPref
+            setOnPreferenceChangeListener { _, newValue ->
+                DataStore.disableParticlesPref = newValue as Boolean
+                true
+            }
+        }
 
         val changePreferenceBannerPref = findPreference<Preference>("action_change_preference_banner_image")
         changePreferenceBannerPref?.setOnPreferenceClickListener {
@@ -827,6 +857,7 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
         val shouldEnableActions = !(isBottomSheetDisabled && isBottomSheetHomeDisabled)
         findPreference<Preference>("action_change_sheet_banner_image")?.isEnabled = shouldEnableActions
         findPreference<Preference>("action_delete_sheet_banner_image")?.isEnabled = shouldEnableActions
+        findPreference<Preference>("disable_particles_sheet")?.isEnabled = shouldEnableActions
     }
 
     override fun onRequestPermissionsResult(
@@ -905,7 +936,7 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
         
         val uCrop = UCrop.of(sourceUri, destinationUri)
             .withAspectRatio(1f, 1f)
-            .withMaxResultSize(1024, 1024)
+            .withMaxResultSize(512, 512)
 
         try {
             val options = UCrop.Options()
@@ -987,12 +1018,36 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
             }
         }
     }
+    
+    private fun isGif(uri: Uri): Boolean {
+        return try {
+            val mimeType = requireContext().contentResolver.getType(uri)
+            mimeType?.contains("gif", ignoreCase = true) == true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    private fun processGifSelection(uri: Uri, prefix: String, prefKey: String, successMessageRes: Int) {
+        try {
+            val oldUriString = DataStore.configurationStore.getString(prefKey, null)
+            deleteOldFile(oldUriString)
+
+            val savedUri = saveToCache(uri, prefix, ".gif")
+            DataStore.configurationStore.putString(prefKey, savedUri.toString())
+            snackbar(successMessageRes).show()
+
+        } catch (e: Exception) {
+            Logs.e("Failed to save GIF banner", e)
+            snackbar("Failed to save: ${e.message}").show()
+        }
+    }
 
     @Throws(IOException::class)
-    private fun saveToCache(sourceCacheUri: Uri, fileNamePrefix: String): Uri {
+    private fun saveToCache(sourceCacheUri: Uri, fileNamePrefix: String, extension: String = ".jpg"): Uri {
         val context = requireContext()
         val timeStamp = System.currentTimeMillis()
-        val fileName = "${fileNamePrefix}$timeStamp.jpg"
+        val fileName = "${fileNamePrefix}$timeStamp$extension"
         
         val destFile = File(context.cacheDir, fileName)
 
@@ -1003,8 +1058,12 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
         }
         
         try {
-            val tempFile = File(sourceCacheUri.path!!)
-            if (tempFile.exists()) tempFile.delete()
+            if (sourceCacheUri.scheme == "file") {
+                val tempFile = File(sourceCacheUri.path!!)
+                if (tempFile.exists() && tempFile.absolutePath.contains(context.cacheDir.absolutePath)) {
+                    tempFile.delete()
+                }
+            }
         } catch (ignored: Exception) {}
 
         return Uri.fromFile(destFile)

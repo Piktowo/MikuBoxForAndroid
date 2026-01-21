@@ -705,6 +705,9 @@
     <string name="pref_disable_bottom_sheet_fragment_title">在 fragment 中禁用 bottomsheet</string>
     <string name="pref_disable_bottom_sheet_home_title">在主页禁用 bottomsheet</string>
     <string name="pref_disable_bottom_sheet_summary">使用标准工具栏菜单代替 bottomsheet</string>
+    <string name="disable_particles_title">禁用粒子动画</string>
+    <string name="disable_particles_sheet_summary">隐藏 bottomsheet 中的粒子特效</string>
+    <string name="disable_particles_pref_summary">隐藏偏好设置中的粒子特效</string>
     
     <!-- uwu -->
     <string name="uwu_miku_ui">Miku 的衣橱</string>

@@ -197,6 +197,15 @@
             android:summary="@string/pref_disable_bottom_sheet_summary"
             android:defaultValue="false"
             app:icon="@drawable/ic_toggle_switch" />
+            
+       <SwitchPreference
+            android:layout="@layout/uwu_mid_switch"
+            android:widgetLayout="@layout/uwu_switch"
+            android:key="disable_particles_sheet"
+            android:title="@string/disable_particles_title"
+            android:summary="@string/disable_particles_sheet_summary"
+            android:defaultValue="false"
+            app:icon="@drawable/ic_toggle_switch" />
 
         <Preference
             android:layout="@layout/uwu_mid"
@@ -224,6 +233,16 @@
             android:title="@string/title_show_banner_preference"
             android:summary="@string/summary_show_banner_preference"
             android:defaultValue="true"
+            app:icon="@drawable/ic_toggle_switch" />
+            
+       <SwitchPreference
+            android:layout="@layout/uwu_mid_switch"
+            android:widgetLayout="@layout/uwu_switch"
+            android:key="disable_particles_pref"
+            android:title="@string/disable_particles_title"
+            android:summary="@string/disable_particles_pref_summary"
+            android:defaultValue="false"
+            app:dependency="show_banner_preference"
             app:icon="@drawable/ic_toggle_switch" />
 
         <Preference

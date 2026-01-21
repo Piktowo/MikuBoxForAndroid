@@ -1802,18 +1802,17 @@ class ConfigurationFragment @JvmOverloads constructor(
 
         fun loadSavedBanner() {
             val bannerUriString = DataStore.configurationStore.getString("custom_banner_uri", null)
-            
             val targetTag = if (bannerUriString.isNullOrBlank()) TAG_HOME_BANNER_DEFAULT else bannerUriString
             val currentTag = bannerImageView?.tag
-
             if (currentTag != targetTag) {
                 if (!bannerUriString.isNullOrBlank()) {
+                	val bannerSavedUriString = Uri.parse(bannerUriString)
                     bannerImageView?.let {
                         Glide.with(this)
-                            .load(bannerUriString)
+                            .load(bannerSavedUriString)
                             .override(Target.SIZE_ORIGINAL)
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .dontAnimate()
+                            .diskCacheStrategy(DiskCacheStrategy.DATA)
+                            .skipMemoryCache(false)
                             .error(R.drawable.uwu_banner_home)
                             .into(bannerImageView)
                     }
