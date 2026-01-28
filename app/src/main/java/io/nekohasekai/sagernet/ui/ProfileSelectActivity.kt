@@ -3,7 +3,6 @@ package io.nekohasekai.sagernet.ui
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import androidx.annotation.RequiresApi
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.database.ProxyEntity
 
@@ -18,8 +17,12 @@ class ProfileSelectActivity : ThemedActivity(R.layout.layout_empty),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // The corrected line using the modern, type-safe method
-        val selected = intent.getParcelableExtra(EXTRA_SELECTED, ProxyEntity::class.java)
+        val selected: ProxyEntity? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra(EXTRA_SELECTED, ProxyEntity::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            intent.getParcelableExtra(EXTRA_SELECTED) as? ProxyEntity
+        }
 
         supportFragmentManager.beginTransaction()
             .replace(
@@ -35,5 +38,4 @@ class ProfileSelectActivity : ThemedActivity(R.layout.layout_empty),
         })
         finish()
     }
-
 }

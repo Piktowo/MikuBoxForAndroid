@@ -41,6 +41,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.gif.GifOptions
+import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy
+import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.Target
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -1810,10 +1813,13 @@ class ConfigurationFragment @JvmOverloads constructor(
                     bannerImageView?.let {
                         Glide.with(this)
                             .load(bannerSavedUriString)
+                            .downsample(DownsampleStrategy.NONE)
+                            .set(GifOptions.DECODE_FORMAT, DecodeFormat.PREFER_ARGB_8888)
+                            .format(DecodeFormat.PREFER_ARGB_8888)
                             .override(Target.SIZE_ORIGINAL)
                             .diskCacheStrategy(DiskCacheStrategy.DATA)
                             .skipMemoryCache(false)
-                            .error(R.drawable.uwu_banner_home)
+                            .error(R.drawable.uwu_banner_image_about)
                             .into(bannerImageView)
                     }
                 } else {

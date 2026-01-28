@@ -43,7 +43,7 @@
                     app:cardBackgroundColor="#00000000"
                     app:cardCornerRadius="18.0dip"
                     app:cardElevation="0.0dip">
-                    <com.flaviofaria.kenburnsview.KenBurnsView
+                    <com.neko.widget.kenburnsview.KenBurnsView
                         android:id="@+id/img_banner_preference"
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
