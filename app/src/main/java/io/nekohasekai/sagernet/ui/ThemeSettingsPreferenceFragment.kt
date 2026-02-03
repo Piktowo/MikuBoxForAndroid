@@ -587,6 +587,16 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
                 true
             }
         }
+        
+        val layoutControllerMenuHorizontal: SwitchPreference? = findPreference("show_horizontal_menu")
+        layoutControllerMenuHorizontal?.apply {
+            isChecked = DataStore.showHorizontalMenu
+            setOnPreferenceChangeListener { _: Preference, newValue: Any ->
+                val show = newValue as Boolean
+                DataStore.showHorizontalMenu = show
+                true
+            }
+        }
 
         val changeBannerPref = findPreference<Preference>("action_change_banner_image")
         changeBannerPref?.setOnPreferenceClickListener {

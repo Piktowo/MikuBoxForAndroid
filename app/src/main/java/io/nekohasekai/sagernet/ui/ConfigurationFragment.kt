@@ -1785,9 +1785,10 @@ class ConfigurationFragment @JvmOverloads constructor(
     }
 
     private fun setupBannerLayoutController() {
-        val linear = requireView().findViewById<View>(R.id.card_expandable) 
+        val bannerHome = requireView().findViewById<View>(R.id.card_expandable) 
         val expandableView = requireView().findViewById<ExpandableView>(R.id.expandable_view) 
         val bannerImageView = requireView().findViewById<ImageView>(R.id.img_banner_home)
+        val horizontalMenu = requireView().findViewById<View>(R.id.horizontal_menu)
         
         bannerImageView?.setLayerType(View.LAYER_TYPE_HARDWARE, null)
 
@@ -1833,11 +1834,17 @@ class ConfigurationFragment @JvmOverloads constructor(
         }
 
         if (DataStore.showBannerLayout) {
-            linear?.visibility = View.VISIBLE
+            bannerHome?.visibility = View.VISIBLE
             loadSavedBanner()
         } else {
-            linear?.visibility = View.GONE
+            bannerHome?.visibility = View.GONE
             expandableView?.setExpanded(true, false)
+        }
+        
+        if (DataStore.showHorizontalMenu) {
+            horizontalMenu?.visibility = View.VISIBLE
+        } else {
+            horizontalMenu?.visibility = View.GONE
         }
 
         if (bannerLayoutListener == null) {
@@ -1849,7 +1856,7 @@ class ConfigurationFragment @JvmOverloads constructor(
                         when (key) {
                             "show_banner_layout" -> {
                                 val show = DataStore.showBannerLayout
-                                linear?.visibility = if (show) View.VISIBLE else View.GONE
+                                bannerHome?.visibility = if (show) View.VISIBLE else View.GONE
                                 
                                 if (show) {
                                     loadSavedBanner()
@@ -1863,6 +1870,10 @@ class ConfigurationFragment @JvmOverloads constructor(
                             }
                             "custom_banner_uri" -> {
                                 loadSavedBanner()
+                            }
+                            "show_horizontal_menu" -> { 
+                                val show = DataStore.showHorizontalMenu
+                                horizontalMenu?.visibility = if (show) View.VISIBLE else View.GONE
                             }
                         }
                     }

@@ -3,11 +3,17 @@ package io.nekohasekai.sagernet.ui
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.core.widget.NestedScrollView
 import io.nekohasekai.sagernet.R
+import io.nekohasekai.sagernet.bg.BaseService
+import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.databinding.LayoutNetworkBinding
 import io.nekohasekai.sagernet.ktx.app
+import io.nekohasekai.sagernet.widget.StatsBar
 import com.neko.hostnamefinder.HostnameFinder
 import com.neko.hosttoip.HostToIP
+import com.neko.hostpotproxy.ui.ProxySettings
+import com.neko.ip.hostchecker.HostChecker
 
 class NetworkFragment : NamedFragment(R.layout.layout_network) {
 
@@ -21,14 +27,53 @@ class NetworkFragment : NamedFragment(R.layout.layout_network) {
         binding.stunTest.setOnClickListener {
             startActivity(Intent(requireContext(), StunActivity::class.java))
         }
-        
+
         binding.hostnameFinder.setOnClickListener {
             startActivity(Intent(requireContext(), HostnameFinder::class.java))
         }
-        
+
         binding.hostToIP.setOnClickListener {
             startActivity(Intent(requireContext(), HostToIP::class.java))
         }
-    }
 
+        binding.hostpotProxy.setOnClickListener {
+            startActivity(Intent(requireContext(), ProxySettings::class.java))
+        }
+        
+        binding.hostChecker.setOnClickListener {
+            startActivity(Intent(requireContext(), HostChecker::class.java))
+        }
+
+        view.post {
+            val bottomAppBar = requireActivity().findViewById<StatsBar>(R.id.stats) ?: return@post
+
+            fun updateBottomBarVisibility() {
+                val isConnected = DataStore.serviceState == BaseService.State.Connected
+                val showController = DataStore.showBottomBar
+
+                if (!isConnected) {
+                    bottomAppBar.performHide()
+                } else {
+                    if (showController) bottomAppBar.performShow()
+                    else bottomAppBar.performHide()
+                }
+            }
+
+            updateBottomBarVisibility()
+
+            val scrollView = binding.root as? NestedScrollView
+            scrollView?.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
+                val dy = scrollY - oldScrollY
+                val isConnected = DataStore.serviceState == BaseService.State.Connected
+                val showController = DataStore.showBottomBar
+
+                if (isConnected && showController) {
+                    if (dy > 6) bottomAppBar.performHide()
+                    else if (dy < -6) bottomAppBar.performShow()
+                } else {
+                    bottomAppBar.performHide()
+                }
+            })
+        }
+    }
 }

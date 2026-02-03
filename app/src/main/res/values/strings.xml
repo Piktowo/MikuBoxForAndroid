@@ -698,9 +698,7 @@ Please grant this permission in System Settings."</string>
     <string name="hf_result_found_subdomains">Results: Found %1$d subdomains</string>
     <string name="hf_result_found_domains">Results: Found %1$d domains</string>
     <string name="hf_error_generic">Error: %1$s</string>
-    <string name="hf_error_crt">Error from crt.sh: %1$s</string>
-    <string name="hf_error_vt">Error from VirusTotal: %1$s</string>
-    <string name="hf_error_ygs">Error from YouGetSignal: %1$s</string>
+    <string name="hf_source">Select source</string>
     <string name="host_to_ip">Host to IP</string>
     <string name="hip_error_empty">Please enter a hostname</string>
     <string name="hip_resolving">Resolving...</string>
@@ -759,7 +757,6 @@ Please grant this permission in System Settings."</string>
    <string name="st_test_upload">Click here to test upload only</string>
    <string name="st_test_ping">Click here to test ping only</string>
    <string name="st_test_jitter">Click here to test jitter only</string>
-    <string name="protocol_all">All</string>
     <string name="protocol_select">Select Protocol</string>
     <string name="generate">Generate</string>
     <string name="speedtest">Speed Test</string>
@@ -767,10 +764,6 @@ Please grant this permission in System Settings."</string>
     <string name="config_count">Count</string>
     <string name="config_hostname">Hostname</string>
     <string name="config_country_code">Country Code</string>
-    <string name="option_tls_true">True (Port 443)</string>
-    <string name="option_tls_false">False (Port 80)</string>
-    <string name="option_sni_true">True</string>
-    <string name="option_sni_false">False</string>
     <string name="msg_generating">Generating &amp; Importing...</string>
     <string name="msg_import_success">Config imported successfully!</string>
     <string name="msg_no_proxies">No valid proxies found in response.</string>
@@ -814,6 +807,55 @@ Please grant this permission in System Settings."</string>
     <string name="disable_particles_title">Disable particles animation</string>
     <string name="disable_particles_sheet_summary">Hide particle effects in the bottomsheet</string>
     <string name="disable_particles_pref_summary">Hide particle effects in the preference</string>
+    <string name="horizontal_menu_home_title">Show horizontal menu</string>
+    <string name="horizontal_menu_home_summary">Hide or show horizontal menu in homepage</string>
+    
+    <string name="hotspot_proxy_title">Hotspot Proxy</string>
+    <string name="hotspot_proxy_summay">Share your vpn over hotspot by a proxy server here.</string>
+    <string name="service_not_connected">Service not connected yet</string>
+    <string name="proxy_started">Proxy Started</string>
+    <string name="proxy_start_failed">Failed to start proxy</string>
+    <string name="proxy_stopped">Proxy Stopped</string>
+    <string name="error_prefix">Error: %1$s</string>
+    <string name="status_running_port">Running on port %1$d</string>
+    <string name="status_stopped">Stopped</string>
+    <string name="btn_start">Start</string>
+    <string name="btn_stop">Stop</string>
+    <string name="proxy_ip_label">Proxy IP</string>
+    <string name="ip_copied_toast">IP Copied to clipboard</string>
+    <string name="channel_name">HTTP Proxy Service</string>
+    <string name="service_active">Service is active</string>
+    <string name="label_local_ip">Local IP Address:</string>
+    <string name="label_service_status">Service Status:</string>
+    <string name="label_guide">Guide:</string>
+    <string name="default_ip">127.0.0.1</string>
+    <string name="btn_copy_ip">Copy IP</string>
+    <string name="guide_step_1">1. Turn on hotspot.</string>
+    <string name="guide_step_2">2. Connect the other device (client) to the hotspot.</string>
+    <string name="guide_step_3">3. On that device, modify the WiFi connection.</string>
+    <string name="guide_step_4">4. Click advanced option.</string>
+    <string name="guide_step_5">5. Set to manual proxy.</string>
+    <string name="guide_step_6">6. Click save, and you are done.</string>
+    <string name="guide_conclusion">You can now enjoy a VPN connection from other devices using the host.</string>
+    
+    <string name="hostchecker_title">Host Checker</string>
+    <string name="hostchecker_summay">Check your hostname here.</string>
+    <string name="hostchecker_url">Please Fill The URL</string>
+    <string name="hostchecker_proxy">Fill the proxy if you want to check or select the direct to check the URL</string>
+    <string name="hostchecker_method">Method</string>
+    <string name="hostchecker_hint_url">Host / URL</string>
+    <string name="hostchecker_hint_ip">Proxy IP:Port</string>
+    <string name="hostchecker_mode">Mode</string>
+    <string name="hostchecker_check">Check</string>
+    <string name="hostchecker_output">Logs Output:</string>
+    <string name="hostchecker_mode_direct">Direct</string>
+    <string name="hostchecker_mode_proxy">Proxy</string>
+    <string name="hostchecker_log_mode_direct">Mode: Direct Request</string>
+    <string name="hostchecker_log_mode_proxy">Mode: Proxy (%1$s:%2$s)</string>
+    <string name="hostchecker_log_error">Error: %1$s</string>
+    <string name="hostchecker_log_stopped">Stopped</string>
+    <string name="hostchecker_success">Success (200 OK)</string>
+    <string name="hostchecker_complete">Check Complete</string>
 
     <!-- uwu -->
     <string name="uwu_miku_ui">"Miku's Wardrobe"</string>
@@ -875,8 +917,6 @@ By HatsuneMikuUwU Development"</string>
     <string name="uwu_mikubox">MikuBox</string>
     <string name="uwu_hatsune">Hatsune</string>
     <string name="uwu_hsskyboy">NPCN</string>
-    <string name="uwu_noir7r">Noir7R</string>
-    <string name="uwu_noir7r_summary">API &amp; server free configuration</string>
     <string name="uwu_big_thanks">Big thanks</string>
 
     <!-- welcome -->

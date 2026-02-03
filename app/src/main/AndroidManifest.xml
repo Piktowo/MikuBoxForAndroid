@@ -13,6 +13,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
@@ -174,6 +176,28 @@
 
         <activity
             android:name="com.neko.hosttoip.HostToIP"
+            android:configChanges="uiMode"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:parentActivityName="io.nekohasekai.sagernet.ui.MainActivity"
+            android:screenOrientation="portrait" />
+            
+        <activity
+            android:name="com.neko.hostpotproxy.ui.ProxySettings"
+            android:configChanges="uiMode"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:parentActivityName="io.nekohasekai.sagernet.ui.MainActivity"
+            android:screenOrientation="portrait" />
+
+        <service
+            android:name="com.neko.hostpotproxy.ui.ProxyService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
+            
+        <activity
+            android:name="com.neko.ip.hostchecker.HostChecker"
             android:configChanges="uiMode"
             android:exported="false"
             android:launchMode="singleTask"

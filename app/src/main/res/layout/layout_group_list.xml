@@ -147,6 +147,7 @@
                 app:el_orientation="horizontal"
                 app:el_parallax="0">
            <HorizontalScrollView
+                android:id="@+id/horizontal_menu"
                 android:scrollbars="none"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">

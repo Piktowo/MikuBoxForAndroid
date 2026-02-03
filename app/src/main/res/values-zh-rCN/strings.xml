@@ -597,9 +597,7 @@
     <string name="hf_result_found_subdomains">结果：找到 %1$d 个子域名</string>
     <string name="hf_result_found_domains">结果：找到 %1$d 个域名</string>
     <string name="hf_error_generic">错误：%1$s</string>
-    <string name="hf_error_crt">来自 crt.sh 的错误：%1$s</string>
-    <string name="hf_error_vt">来自 VirusTotal 的错误：%1$s</string>
-    <string name="hf_error_ygs">来自 YouGetSignal 的错误：%1$s</string>
+    <string name="hf_source">选择来源</string>
     <string name="host_to_ip">主机转 IP</string>
     <string name="hip_error_empty">请输入主机名</string>
     <string name="hip_resolving">解析中...</string>
@@ -658,7 +656,6 @@
    <string name="st_test_upload">点击这里仅测试上传</string>
    <string name="st_test_ping">点击此处仅测试 Ping</string>
    <string name="st_test_jitter">点击此处仅测试 Jitter</string>
-    <string name="protocol_all">全部</string>
     <string name="protocol_select">选择协议</string>
     <string name="generate">生成</string>
     <string name="speedtest">测速</string>
@@ -666,10 +663,6 @@
     <string name="config_count">数量</string>
     <string name="config_hostname">主机名</string>
     <string name="config_country_code">国家代码</string>
-    <string name="option_tls_true">是 (端口 443)</string>
-    <string name="option_tls_false">否 (端口 80)</string>    
-    <string name="option_sni_true">是</string>
-    <string name="option_sni_false">否</string>
     <string name="msg_generating">正在生成并导入...</string>
     <string name="msg_import_success">配置导入成功！</string>
     <string name="msg_no_proxies">响应中未找到有效代理。</string>
@@ -708,6 +701,55 @@
     <string name="disable_particles_title">禁用粒子动画</string>
     <string name="disable_particles_sheet_summary">隐藏 bottomsheet 中的粒子特效</string>
     <string name="disable_particles_pref_summary">隐藏偏好设置中的粒子特效</string>
+    <string name="horizontal_menu_home_title">显示横向菜单</string>
+    <string name="horizontal_menu_home_summary">在主页显示或隐藏横向菜单</string>
+    
+    <string name="hotspot_proxy_title">热点代理</string>
+    <string name="hotspot_proxy_summay">在这里通过代理服务器经由热点共享您的 VPN。</string>
+    <string name="service_not_connected">服务尚未连接</string>
+    <string name="proxy_started">代理已启动</string>
+    <string name="proxy_start_failed">无法启动代理</string>
+    <string name="proxy_stopped">代理已停止</string>
+    <string name="error_prefix">错误: %1$s</string>
+    <string name="status_running_port">运行于端口 %1$d</string>
+    <string name="status_stopped">已停止</string>
+    <string name="btn_start">启动</string>
+    <string name="btn_stop">停止</string>
+    <string name="proxy_ip_label">代理 IP</string>
+    <string name="ip_copied_toast">IP 已复制到剪贴板</string>
+    <string name="channel_name">HTTP 代理服务</string>
+    <string name="service_active">服务处于活动状态</string>
+    <string name="label_local_ip">本地 IP 地址:</string>
+    <string name="label_service_status">服务状态:</string>
+    <string name="label_guide">指南:</string>
+    <string name="default_ip">127.0.0.1</string>
+    <string name="btn_copy_ip">复制 IP</string>
+    <string name="guide_step_1">1. 打开热点。</string>
+    <string name="guide_step_2">2. 将另一台设备（客户端）连接到热点。</string>
+    <string name="guide_step_3">3. 在该设备上，修改 WiFi 设置。</string>
+    <string name="guide_step_4">4. 点击高级选项。</string>
+    <string name="guide_step_5">5. 设置为手动代理。</string>
+    <string name="guide_step_6">6. 点击保存，即可完成。</string>
+    <string name="guide_conclusion">现在您可以利用主机在其他设备上使用 VPN 连接了。</string>
+    
+    <string name="hostchecker_title">主机检测器</string>
+    <string name="hostchecker_summay">在此检查您的主机名。</string>
+    <string name="hostchecker_url">请填写 URL</string>
+    <string name="hostchecker_proxy">若需检查请填写代理，或选择直连以检查 URL</string>
+    <string name="hostchecker_method">方法</string>
+    <string name="hostchecker_hint_url">主机 / URL</string>
+    <string name="hostchecker_hint_ip">代理 IP:端口</string>
+    <string name="hostchecker_mode">模式</string>
+    <string name="hostchecker_check">检查</string>
+    <string name="hostchecker_output">日志输出:</string>
+    <string name="hostchecker_mode_direct">直连</string>
+    <string name="hostchecker_mode_proxy">代理</string>
+    <string name="hostchecker_log_mode_direct">模式: 直连请求</string>
+    <string name="hostchecker_log_mode_proxy">模式: 代理 (%1$s:%2$s)</string>
+    <string name="hostchecker_log_error">错误: %1$s</string>
+    <string name="hostchecker_log_stopped">已停止</string>
+    <string name="hostchecker_success">成功 (200 OK)</string>
+    <string name="hostchecker_complete">检查完成</string>
     
     <!-- uwu -->
     <string name="uwu_miku_ui">Miku 的衣橱</string>
@@ -718,7 +760,6 @@
     <string name="uwu_package_name_title">包名</string>
     <string name="uwu_mikubox_author_title">作者</string>
     <string name="uwu_build_date_title">构建日期</string>
-	<string name="uwu_noir7r_summary">API &amp; 服务器免费配置</string>
     <string name="uwu_big_thanks">特别感谢</string>
     <string name="uwu_about_miku_title">谁是 Hatsune Miku？</string>
     <string name="uwu_about_miku_summary">初音未来(Hatsune Miku) 是 Crypton Future Media 发布的基于 Vocaloid 制作的虚拟歌手, 代号CV01. 以青绿色的长双马尾和清亮嗓音著称, 人设为16岁少女, 是全球知名虚拟偶像, 广泛活跃于音乐、演唱会及动画, 深受粉丝们喜爱.</string>

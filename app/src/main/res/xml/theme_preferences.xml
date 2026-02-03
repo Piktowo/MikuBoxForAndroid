@@ -158,6 +158,15 @@
             app:defaultValue="100"
             app:dependency="show_banner_layout"
             app:icon="@drawable/ic_arrow_up_down_bold_outline" />
+            
+        <SwitchPreference
+            android:layout="@layout/uwu_mid_switch"
+            android:widgetLayout="@layout/uwu_switch"
+            android:key="show_horizontal_menu"
+            android:title="@string/horizontal_menu_home_title"
+            android:summary="@string/horizontal_menu_home_summary"
+            android:defaultValue="true"
+            app:icon="@drawable/ic_toggle_switch" />
 
         <Preference
             android:layout="@layout/uwu_mid"

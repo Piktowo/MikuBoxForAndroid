@@ -45,7 +45,7 @@
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/hip_hint"
-                            style="@style/AppTheme.TextInputLayout">
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
                             <EditText
                                 android:id="@+id/host_input"
                                 android:layout_width="fill_parent"

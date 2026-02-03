@@ -252,17 +252,6 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                                     )
                                 }
                                 .build())
-                        .addItem(
-                            MaterialAboutActionItem.Builder()
-                                .icon(R.drawable.ic_qu_shadowsocks_foreground)
-                                .text(R.string.uwu_noir7r)
-                                .subText(R.string.uwu_noir7r_summary)
-                                .setOnClickAction {
-                                    requireContext().launchCustomTab(
-                                        "https://t.me/Noir7R"
-                                    )
-                                }
-                                .build())
                         .build())
                 .build()
 

@@ -633,9 +633,7 @@
     <string name="hf_result_found_subdomains">結果: %1$d 個のサブドメインが見つかりました</string>
     <string name="hf_result_found_domains">結果: %1$d 個のドメインが見つかりました</string>
     <string name="hf_error_generic">エラー: %1$s</string>
-    <string name="hf_error_crt">crt.sh エラー: %1$s</string>
-    <string name="hf_error_vt">VirusTotal エラー: %1$s</string>
-    <string name="hf_error_ygs">YouGetSignal エラー: %1$s</string>
+    <string name="hf_source">ソースを選択</string>
     <string name="host_to_ip">Host to IP</string>
     <string name="hip_error_empty">ホスト名を入力してください</string>
     <string name="hip_resolving">解決中...</string>
@@ -694,7 +692,6 @@
    <string name="st_test_upload">アップロードのみテストするにはここをクリック</string>
    <string name="st_test_ping">Pingのみテストするにはここをクリック</string>
    <string name="st_test_jitter">Jitterのみテストするにはここをクリック</string>
-    <string name="protocol_all">すべて</string>
     <string name="protocol_select">プロトコルを選択</string>
     <string name="generate">生成</string>
     <string name="speedtest">スピードテスト</string>
@@ -702,10 +699,6 @@
     <string name="config_count">カウント</string>
     <string name="config_hostname">ホスト名</string>
     <string name="config_country_code">国コード</string>
-    <string name="option_tls_true">True (ポート 443)</string>
-    <string name="option_tls_false">False (ポート 80)</string>
-    <string name="option_sni_true">True</string>
-    <string name="option_sni_false">False</string>
     <string name="msg_generating">生成＆インポート中...</string>
     <string name="msg_import_success">設定のインポートに成功しました！</string>
     <string name="msg_no_proxies">応答に有効なプロキシが見つかりませんでした。</string>
@@ -744,6 +737,55 @@
     <string name="disable_particles_title">パーティクルアニメーションを無効化</string>
     <string name="disable_particles_sheet_summary">ボトムシートのパーティクル効果を非表示にする</string>
     <string name="disable_particles_pref_summary">設定画面のパーティクル効果を非表示にする</string>
+    <string name="horizontal_menu_home_title">横メニューを表示</string>
+    <string name="horizontal_menu_home_summary">ホーム画面での横メニューの表示・非表示を切り替えます</string>
+    
+    <string name="hotspot_proxy_title">ホットスポット・プロキシ</string>
+    <string name="hotspot_proxy_summay">ここでプロキシサーバーを使用し、ホットスポット経由でVPNを共有します。</string>
+    <string name="service_not_connected">サービスはまだ接続されていません</string>
+    <string name="proxy_started">プロキシを開始しました</string>
+    <string name="proxy_start_failed">プロキシの開始に失敗しました</string>
+    <string name="proxy_stopped">プロキシを停止しました</string>
+    <string name="error_prefix">エラー: %1$s</string>
+    <string name="status_running_port">ポート %1$d で実行中</string>
+    <string name="status_stopped">停止</string>
+    <string name="btn_start">開始</string>
+    <string name="btn_stop">停止</string>
+    <string name="proxy_ip_label">プロキシ IP</string>
+    <string name="ip_copied_toast">IPをクリップボードにコピーしました</string>
+    <string name="channel_name">HTTP プロキシ・サービス</string>
+    <string name="service_active">サービスはアクティブです</string>
+    <string name="label_local_ip">ローカル IP アドレス:</string>
+    <string name="label_service_status">サービス状態:</string>
+    <string name="label_guide">ガイド:</string>
+    <string name="default_ip">127.0.0.1</string>
+    <string name="btn_copy_ip">IPをコピー</string>
+    <string name="guide_step_1">1. ホットスポットをオンにします。</string>
+    <string name="guide_step_2">2. 別のデバイス（クライアント）をホットスポットに接続します。</string>
+    <string name="guide_step_3">3. そのデバイスで、WiFi設定を変更します。</string>
+    <string name="guide_step_4">4. 詳細オプションをクリックします。</string>
+    <string name="guide_step_5">5. プロキシ設定を「手動」にします。</string>
+    <string name="guide_step_6">6. 保存をクリックして完了です。</string>
+    <string name="guide_conclusion">これで、ホスト経由で他のデバイスからVPN接続を利用できます。</string>
+    
+    <string name="hostchecker_title">ホストチェッカー</string>
+    <string name="hostchecker_summay">ここでホスト名を確認します。</string>
+    <string name="hostchecker_url">URLを入力してください</string>
+    <string name="hostchecker_proxy">プロキシを確認する場合は入力し、URLを直接確認する場合はダイレクトを選択してください</string>
+    <string name="hostchecker_method">メソッド</string>
+    <string name="hostchecker_hint_url">ホスト / URL</string>
+    <string name="hostchecker_hint_ip">プロキシ IP:ポート</string>
+    <string name="hostchecker_mode">モード</string>
+    <string name="hostchecker_check">チェック</string>
+    <string name="hostchecker_output">ログ出力:</string>
+    <string name="hostchecker_mode_direct">ダイレクト</string>
+    <string name="hostchecker_mode_proxy">プロキシ</string>
+    <string name="hostchecker_log_mode_direct">モード: ダイレクト接続</string>
+    <string name="hostchecker_log_mode_proxy">モード: プロキシ (%1$s:%2$s)</string>
+    <string name="hostchecker_log_error">エラー: %1$s</string>
+    <string name="hostchecker_log_stopped">停止しました</string>
+    <string name="hostchecker_success">成功 (200 OK)</string>
+    <string name="hostchecker_complete">チェック完了</string>
 
     <string name="uwu_miku_ui">"ミクのクローゼット"</string>
     <string name="uwu_miku_ui_summary">"ミクをもっと可愛く着せ替えよう！"</string>
@@ -799,8 +841,6 @@
     <string name="uwu_mikubox">MikuBox</string>
     <string name="uwu_hatsune">初音</string>
     <string name="uwu_hsskyboy">NPCN</string>
-    <string name="uwu_noir7r">Noir7R</string>
-    <string name="uwu_noir7r_summary">API &amp; サーバー無料設定</string>
     <string name="uwu_big_thanks">本当にありがとう</string>
 
     <string name="uwu_skip">スキップ</string>

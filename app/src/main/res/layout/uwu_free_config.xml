@@ -172,19 +172,19 @@
                             android:padding="12.0dip"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/protocol_all"
+                            android:text="VLESS"
                             android:inputType="none" />
                     </com.google.android.material.textfield.TextInputLayout>
                     <com.google.android.material.textfield.TextInputLayout
                         android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleMedium"
-                        android:id="@+id/inputLayoutLimit"
+                        android:id="@+id/inputLayoutCount"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16.0dip"
                         android:hint="@string/config_count"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
                         <EditText
-                            android:id="@+id/editLimit"
+                            android:id="@+id/editCount"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:text="1"
@@ -212,45 +212,29 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16.0dip"
                         android:hint="@string/config_country_code"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-                        <EditText
-                            android:id="@+id/editCountry"
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:text="SG"
-                            android:inputType="textCapCharacters" />
-                    </com.google.android.material.textfield.TextInputLayout>
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleMedium"
-                        android:id="@+id/inputLayoutTls"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16.0dip"
-                        android:hint="TLS"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
                         <AutoCompleteTextView
-                            android:id="@+id/autoCompleteTls"
-                            android:padding="12.0dip"
+                            android:id="@+id/autoCompleteCountry"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/option_tls_true"
+                            android:padding="12.0dip"
+                            android:text="SG"
                             android:inputType="none" />
                     </com.google.android.material.textfield.TextInputLayout>
                     <com.google.android.material.textfield.TextInputLayout
                         android:textAppearance="@style/TextAppearance.M3.Sys.Typescale.TitleMedium"
-                        android:id="@+id/inputLayoutSni"
-                        android:visibility="visible"
+                        android:id="@+id/inputLayoutPort"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16.0dip"
-                        android:hint="SNI"
+                        android:hint="Port"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
                         <AutoCompleteTextView
-                            android:id="@+id/autoCompleteSni"
+                            android:id="@+id/autoCompletePort"
                             android:padding="12.0dip"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/option_sni_true"
+                            android:text="443"
                             android:inputType="none" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>

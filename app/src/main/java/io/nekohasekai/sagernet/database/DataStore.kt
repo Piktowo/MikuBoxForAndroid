@@ -99,6 +99,7 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     
     var showBannerLayout by configurationStore.boolean("show_banner_layout") { true }
     var bannerHeight by configurationStore.stringToInt("banner_height") { 100 }
+    var showHorizontalMenu by configurationStore.boolean("show_horizontal_menu") { true }
 
     var showSplashScreen by configurationStore.boolean("show_splash_screen") { true }
     var showWelcomeAnim by configurationStore.boolean("key_show_welcome_anim") { true }

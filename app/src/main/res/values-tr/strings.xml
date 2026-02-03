@@ -634,9 +634,7 @@ Lütfen Sistem Ayarlarından bu izni verin."</string>
     <string name="hf_result_found_subdomains">Sonuçlar: %1$d alt alan adı bulundu</string>
     <string name="hf_result_found_domains">Sonuçlar: %1$d alan adı bulundu</string>
     <string name="hf_error_generic">Hata: %1$s</string>
-    <string name="hf_error_crt">crt.sh\'den hata: %1$s</string>
-    <string name="hf_error_vt">VirusTotal\'den hata: %1$s</string>
-    <string name="hf_error_ygs">YouGetSignal\'den hata: %1$s</string>
+    <string name="hf_source">Kaynak seçin</string>
     <string name="host_to_ip">Host\'tan IP\'ye</string>
     <string name="hip_error_empty">Lütfen bir hostname girin</string>
     <string name="hip_resolving">Çözümleniyor...</string>
@@ -695,7 +693,6 @@ Lütfen Sistem Ayarlarından bu izni verin."</string>
    <string name="st_test_upload">Sadece yüklemeyi test etmek için buraya tıklayın</string>
    <string name="st_test_ping">Sadece pingi test etmek için buraya tıklayın</string>
    <string name="st_test_jitter">Sadece jitter\'ı test etmek için buraya tıklayın</string>
-    <string name="protocol_all">Tümü</string>
     <string name="protocol_select">Protokol Seç</string>
     <string name="generate">Oluştur</string>
     <string name="speedtest">Hız Testi</string>
@@ -703,10 +700,6 @@ Lütfen Sistem Ayarlarından bu izni verin."</string>
     <string name="config_count">Sayı</string>
     <string name="config_hostname">Hostname</string>
     <string name="config_country_code">Ülke Kodu</string>
-    <string name="option_tls_true">Doğru (Port 443)</string>
-    <string name="option_tls_false">Yanlış (Port 80)</string>
-    <string name="option_sni_true">Doğru</string>
-    <string name="option_sni_false">Yanlış</string>
     <string name="msg_generating">Oluşturuluyor ve İçe Aktarılıyor...</string>
     <string name="msg_import_success">Yapılandırma başarıyla içe aktarıldı!</string>
     <string name="msg_no_proxies">Yanıtta geçerli proxy bulunamadı.</string>
@@ -745,6 +738,55 @@ Lütfen Sistem Ayarlarından bu izni verin."</string>
     <string name="disable_particles_title">Parçacık animasyonunu kapat</string>
     <string name="disable_particles_sheet_summary">Alt paneldeki parçacık efektlerini gizle</string>
     <string name="disable_particles_pref_summary">Tercihlerdeki parçacık efektlerini gizle</string>
+    <string name="horizontal_menu_home_title">Yatay menüyü göster</string>
+    <string name="horizontal_menu_home_summary">Ana sayfada yatay menüyü göster veya gizle</string>
+    
+    <string name="hotspot_proxy_title">Hotspot Proxy</string>
+    <string name="hotspot_proxy_summay">VPN\'inizi buradaki bir proxy sunucusuyla hotspot üzerinden paylaşın.</string>
+    <string name="service_not_connected">Hizmet henüz bağlı değil</string>
+    <string name="proxy_started">Proxy Başlatıldı</string>
+    <string name="proxy_start_failed">Proxy başlatılamadı</string>
+    <string name="proxy_stopped">Proxy Durduruldu</string>
+    <string name="error_prefix">Hata: %1$s</string>
+    <string name="status_running_port">%1$d portunda çalışıyor</string>
+    <string name="status_stopped">Durduruldu</string>
+    <string name="btn_start">Başlat</string>
+    <string name="btn_stop">Durdur</string>
+    <string name="proxy_ip_label">Proxy IP</string>
+    <string name="ip_copied_toast">IP panoya kopyalandı</string>
+    <string name="channel_name">HTTP Proxy Hizmeti</string>
+    <string name="service_active">Hizmet aktif</string>
+    <string name="label_local_ip">Yerel IP Adresi:</string>
+    <string name="label_service_status">Hizmet Durumu:</string>
+    <string name="label_guide">Rehber:</string>
+    <string name="default_ip">127.0.0.1</string>
+    <string name="btn_copy_ip">IP Kopyala</string>
+    <string name="guide_step_1">1. Hotspot\'u açın.</string>
+    <string name="guide_step_2">2. Diğer cihazı (istemci) hotspot\'a bağlayın.</string>
+    <string name="guide_step_3">3. O cihazda WiFi bağlantısını düzenleyin.</string>
+    <string name="guide_step_4">4. Gelişmiş seçeneklere tıklayın.</string>
+    <string name="guide_step_5">5. Manuel proxy olarak ayarlayın.</string>
+    <string name="guide_step_6">6. Kaydet\'e tıklayın, işlem tamam.</string>
+    <string name="guide_conclusion">Artık ana cihazı kullanarak diğer cihazlardan VPN bağlantısının keyfini çıkarabilirsiniz.</string>
+    
+    <string name="hostchecker_title">Host Kontrolü</string>
+    <string name="hostchecker_summay">Host adınızı buradan kontrol edin.</string>
+    <string name="hostchecker_url">Lütfen URL\'yi girin</string>
+    <string name="hostchecker_proxy">Kontrol etmek istiyorsanız proxy girin veya URL\'yi kontrol etmek için doğrudan seçin</string>
+    <string name="hostchecker_method">Yöntem</string>
+    <string name="hostchecker_hint_url">Host / URL</string>
+    <string name="hostchecker_hint_ip">Proxy IP:Port</string>
+    <string name="hostchecker_mode">Mod</string>
+    <string name="hostchecker_check">Kontrol Et</string>
+    <string name="hostchecker_output">Log Çıktısı:</string>
+    <string name="hostchecker_mode_direct">Doğrudan</string>
+    <string name="hostchecker_mode_proxy">Proxy</string>
+    <string name="hostchecker_log_mode_direct">Mod: Doğrudan İstek</string>
+    <string name="hostchecker_log_mode_proxy">Mod: Proxy (%1$s:%2$s)</string>
+    <string name="hostchecker_log_error">Hata: %1$s</string>
+    <string name="hostchecker_log_stopped">Durduruldu</string>
+    <string name="hostchecker_success">Başarılı (200 OK)</string>
+    <string name="hostchecker_complete">Kontrol Tamamlandı</string>
     
     <string name="uwu_miku_ui">"Miku\'nun Gardırobu"</string>
     <string name="uwu_miku_ui_summary">"Haydi Miku'yu giydirip daha da güzelleştirelim!"</string>
@@ -804,8 +846,6 @@ seçeneği seç."</string>
     <string name="uwu_mikubox">MikuBox</string>
     <string name="uwu_hatsune">Hatsune</string>
     <string name="uwu_hsskyboy">NPCN</string>
-    <string name="uwu_noir7r">Noir7R</string>
-    <string name="uwu_noir7r_summary">API &amp; sunucu ücretsiz yapılandırma</string>
     <string name="uwu_big_thanks">Çok teşekkürler</string>
 
     <string name="uwu_skip">Atla</string>
