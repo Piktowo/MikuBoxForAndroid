@@ -98,9 +98,8 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     set(value) = configurationStore.putInt("dpi_value", value)
     
     var showBannerLayout by configurationStore.boolean("show_banner_layout") { true }
-    var bannerHeight by configurationStore.stringToInt("banner_height") { 100 }
-    var showHorizontalMenu by configurationStore.boolean("show_horizontal_menu") { true }
-
+    var blurBannerHome by configurationStore.boolean("show_horizontal_menu") { true }
+    
     var showSplashScreen by configurationStore.boolean("show_splash_screen") { true }
     var showWelcomeAnim by configurationStore.boolean("key_show_welcome_anim") { true }
     var showBannerPreference by configurationStore.boolean("show_banner_preference") { true }

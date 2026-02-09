@@ -21,6 +21,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import com.neko.blur.BlurImageViewGlide
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.result.PickVisualMediaRequest
@@ -47,6 +48,9 @@ import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.Target
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.yalantis.ucrop.UCrop
@@ -104,9 +108,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.zip.ZipInputStream
 import io.nekohasekai.sagernet.utils.showBlur
-import com.neko.speedtest.SpeedTestBottomSheet
-import com.neko.config.V2rayConfigBottomSheet
-import com.neko.expandable.layout.ExpandableView
+import io.nekohasekai.sagernet.utils.Theme
 import io.nekohasekai.sagernet.ui.bottomsheet.ProfileMenuBottomSheet
 import io.nekohasekai.sagernet.ui.bottomsheet.OtherMenuBottomSheet
 import io.nekohasekai.sagernet.ui.toolbar.ConfigurationMenuController
@@ -179,17 +181,7 @@ class ConfigurationFragment @JvmOverloads constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupBannerLayoutController()
-        
-        val speedTestTrigger = view.findViewById<View>(R.id.speedTest)
-        speedTestTrigger?.setOnClickListener {
-            SpeedTestBottomSheet().show(childFragmentManager, "SpeedTestBottomSheet")
-         }
-         
-         val V2rayConfigTrigger = view.findViewById<View>(R.id.freeConfig)
-        V2rayConfigTrigger?.setOnClickListener {
-            V2rayConfigBottomSheet().show(childFragmentManager, "V2rayConfigBottomSheet")
-         }
+        setupBannerHome()
          
         if (!select) {
             menuController = ConfigurationMenuController(
@@ -1508,251 +1500,318 @@ class ConfigurationFragment @JvmOverloads constructor(
         val reloadAccess = Mutex()
 
         inner class ConfigurationHolder(val view: View) : RecyclerView.ViewHolder(view),
-            PopupMenu.OnMenuItemClickListener {
+        PopupMenu.OnMenuItemClickListener {
 
-            lateinit var entity: ProxyEntity
+        lateinit var entity: ProxyEntity
+        var currentName = ""
 
-            val profileName: TextView = view.findViewById(R.id.profile_name)
-            val profileType: TextView = view.findViewById(R.id.profile_type)
-            val profileAddress: TextView = view.findViewById(R.id.profile_address)
-            val profileStatus: TextView = view.findViewById(R.id.profile_status)
+        val profileName: TextView = view.findViewById(R.id.profile_name)
+        val profileType: TextView = view.findViewById(R.id.profile_type)
+        val profileAddress: TextView = view.findViewById(R.id.profile_address)
+        val profileStatus: TextView = view.findViewById(R.id.profile_status)
+        val trafficText: TextView = view.findViewById(R.id.traffic_text)
+        val selectedView: LinearLayout = view.findViewById(R.id.selected_view)
+        val editButton: ImageView = view.findViewById(R.id.edit)
+        val shareButton: ImageView = view.findViewById(R.id.share)
+        val removeButton: ImageView = view.findViewById(R.id.remove)
+    
+        private val TAG_SHEET_DEFAULT = "DEFAULT_BANNER_SHEET"
 
-            val trafficText: TextView = view.findViewById(R.id.traffic_text)
-            val selectedView: LinearLayout = view.findViewById(R.id.selected_view)
-            val editButton: ImageView = view.findViewById(R.id.edit)
-            val shareButton: ImageView = view.findViewById(R.id.share)
-            val removeButton: ImageView = view.findViewById(R.id.remove)
+        fun bind(proxyEntity: ProxyEntity, trafficData: TrafficData? = null) {
+            val pf = parentFragment as? ConfigurationFragment ?: return
 
-            fun bind(proxyEntity: ProxyEntity, trafficData: TrafficData? = null) {
-                val pf = parentFragment as? ConfigurationFragment ?: return
+            entity = proxyEntity
+            currentName = proxyEntity.displayName() ?: ""
 
-                entity = proxyEntity
-
-                if (select) {
-                    view.setOnClickListener {
-                        (requireActivity() as SelectCallback).returnProfile(proxyEntity.id)
-                    }
-                } else {
-                    view.setOnClickListener {
-                        runOnDefaultDispatcher {
-                            var update: Boolean
-                            var lastSelected: Long
-                            profileAccess.withLock {
-                                update = DataStore.selectedProxy != proxyEntity.id
-                                lastSelected = DataStore.selectedProxy
-                                DataStore.selectedProxy = proxyEntity.id
-                                onMainDispatcher {
-                                    selectedView.visibility = View.VISIBLE
-                                }
-                            }
-
-                            if (update) {
-                                ProfileManager.postUpdate(lastSelected)
-                                if (DataStore.serviceState.canStop && reloadAccess.tryLock()) {
-                                    SagerNet.reloadService()
-                                    reloadAccess.unlock()
-                                }
-                            } else if (SagerNet.isTv) {
-                                if (DataStore.serviceState.started) {
-                                    SagerNet.stopService()
-                                } else {
-                                    SagerNet.startService()
-                                }
+            if (select) {
+                view.setOnClickListener {
+                    (requireActivity() as SelectCallback).returnProfile(proxyEntity.id)
+                }
+            } else {
+                view.setOnClickListener {
+                    runOnDefaultDispatcher {
+                        var update: Boolean
+                        var lastSelected: Long
+                        profileAccess.withLock {
+                            update = DataStore.selectedProxy != proxyEntity.id
+                            lastSelected = DataStore.selectedProxy
+                            DataStore.selectedProxy = proxyEntity.id
+                            onMainDispatcher {
+                                selectedView.visibility = View.VISIBLE
                             }
                         }
 
+                        if (update) {
+                            ProfileManager.postUpdate(lastSelected)
+                            if (DataStore.serviceState.canStop && reloadAccess.tryLock()) {
+                                SagerNet.reloadService()
+                                reloadAccess.unlock()
+                            }
+                        } else if (SagerNet.isTv) {
+                            if (DataStore.serviceState.started) {
+                                SagerNet.stopService()
+                            } else {
+                                SagerNet.startService()
+                            }
+                        }
                     }
                 }
+            }
 
-                profileName.text = proxyEntity.displayName()
-                profileType.text = proxyEntity.displayType()
-                profileType.setTextColor(requireContext().getProtocolColor(proxyEntity.type))
+            profileName.text = proxyEntity.displayName()
+            profileType.text = proxyEntity.displayType()
+            profileType.setTextColor(requireContext().getProtocolColor(proxyEntity.type))
 
-                var rx = proxyEntity.rx
-                var tx = proxyEntity.tx
-                if (trafficData != null) {
-                    // use new data
-                    tx = trafficData.tx
-                    rx = trafficData.rx
-                }
+            var rx = proxyEntity.rx
+            var tx = proxyEntity.tx
+            if (trafficData != null) {
+                tx = trafficData.tx
+                rx = trafficData.rx
+            }
 
-                val showTraffic = rx + tx != 0L
-                trafficText.isVisible = showTraffic
+            val showTraffic = rx + tx != 0L
+            trafficText.isVisible = showTraffic
+            if (showTraffic) {
+                trafficText.text = view.context.getString(
+                    R.string.traffic,
+                    Formatter.formatFileSize(view.context, tx),
+                    Formatter.formatFileSize(view.context, rx)
+                )
+            }
+
+            var address = proxyEntity.displayAddress()
+            if (showTraffic && address.length >= 25) {
+                address = address.substring(0, 22) + "..."
+            }
+            if (proxyEntity.requireBean().name.isBlank() || !pf.alwaysShowAddress) {
+                address = ""
+            }
+            profileAddress.text = address
+            (trafficText.parent as View).isGone = (!showTraffic || proxyEntity.status <= 0) && address.isBlank()
+
+            if (proxyEntity.status <= 0) {
                 if (showTraffic) {
-                    trafficText.text = view.context.getString(
-                        R.string.traffic,
-                        Formatter.formatFileSize(view.context, tx),
-                        Formatter.formatFileSize(view.context, rx)
-                    )
+                    profileStatus.text = trafficText.text
+                    profileStatus.setTextColor(requireContext().getColorAttr(android.R.attr.textColorSecondary))
+                    trafficText.text = ""
+                } else {
+                    profileStatus.text = ""
                 }
-
-                var address = proxyEntity.displayAddress()
-                if (showTraffic && address.length >= 25) {
-                    address = address.substring(0, 22) + "..."
+            } else if (proxyEntity.status == 1) {
+                profileStatus.text = getString(R.string.available, proxyEntity.ping)
+                profileStatus.setTextColor(requireContext().getColour(R.color.profile_ping_available))
+            } else {
+                profileStatus.setTextColor(requireContext().getColour(R.color.profile_ping_unavailable))
+                if (proxyEntity.status == 2) {
+                    profileStatus.text = proxyEntity.error
                 }
+            }
 
-                if (proxyEntity.requireBean().name.isBlank() || !pf.alwaysShowAddress) {
-                    address = ""
-                }
+            if (proxyEntity.status == 3) {
+                val err = proxyEntity.error ?: "<?>"
+                val msg = Protocols.genFriendlyMsg(err)
+                profileStatus.text = if (msg != err) msg else getString(R.string.unavailable)
+                profileStatus.setOnClickListener { alert(err).tryToShow() }
+            } else {
+                profileStatus.setOnClickListener(null)
+            }
 
-                profileAddress.text = address
-                (trafficText.parent as View).isGone =
-                    (!showTraffic || proxyEntity.status <= 0) && address.isBlank()
+            editButton.setOnClickListener {
+                it.context.startActivity(proxyEntity.settingIntent(it.context, proxyGroup.type == GroupType.SUBSCRIPTION))
+            }
 
-                if (proxyEntity.status <= 0) {
-                    if (showTraffic) {
-                        profileStatus.text = trafficText.text
-                        profileStatus.setTextColor(requireContext().getColorAttr(android.R.attr.textColorSecondary))
-                        trafficText.text = ""
+            removeButton.setOnClickListener {
+                adapter?.let { adapter ->
+                    val index = adapter.configurationIdList.indexOf(proxyEntity.id)
+                    if (DataStore.confirmProfileDelete) {
+                        MaterialAlertDialogBuilder(requireContext())
+                            .setTitle(R.string.delete_confirm_prompt)
+                            .setPositiveButton(R.string.yes) { _, _ ->
+                                adapter.remove(index)
+                                undoManager.remove(index to proxyEntity)
+                            }
+                            .setNegativeButton(R.string.no, null)
+                            .showBlur()
                     } else {
-                        profileStatus.text = ""
-                    }
-                } else if (proxyEntity.status == 1) {
-                    profileStatus.text = getString(R.string.available, proxyEntity.ping)
-                    profileStatus.setTextColor(requireContext().getColour(R.color.profile_ping_available))
-                } else {
-                    profileStatus.setTextColor(requireContext().getColour(R.color.profile_ping_unavailable))
-                    if (proxyEntity.status == 2) {
-                        profileStatus.text = proxyEntity.error
+                        adapter.remove(index)
+                        undoManager.remove(index to proxyEntity)
                     }
                 }
+            }
 
-                if (proxyEntity.status == 3) {
-                    val err = proxyEntity.error ?: "<?>"
-                    val msg = Protocols.genFriendlyMsg(err)
-                    profileStatus.text = if (msg != err) msg else getString(R.string.unavailable)
-                    profileStatus.setOnClickListener {
-                        alert(err).tryToShow()
-                    }
-                } else {
-                    profileStatus.setOnClickListener(null)
-                }
+            val selectOrChain = select || proxyEntity.type == ProxyEntity.TYPE_CHAIN
+            shareButton.isGone = selectOrChain
+            editButton.isGone = select
+            removeButton.isGone = select
+            proxyEntity.nekoBean?.apply { shareButton.isGone = true }
 
-                editButton.setOnClickListener {
-                    it.context.startActivity(
-                        proxyEntity.settingIntent(
-                            it.context, proxyGroup.type == GroupType.SUBSCRIPTION
-                        )
-                    )
-                }
-
-                removeButton.setOnClickListener {
-                    adapter?.let { adapter ->
-                        val index = adapter.configurationIdList.indexOf(proxyEntity.id)
-                        if (DataStore.confirmProfileDelete) {
-                            MaterialAlertDialogBuilder(requireContext())
-                                .setTitle(R.string.delete_confirm_prompt)
-                                // .setMessage(getString(R.string.delete_confirm_prompt))
-                                .setPositiveButton(R.string.yes) { dialog: DialogInterface, which: Int ->
-                                    adapter.remove(index)
-                                    undoManager.remove(index to proxyEntity)
-                                }
-                                .setNegativeButton(R.string.no, null)
-                                .showBlur()
-                        } else {
-                            adapter.remove(index)
-                            undoManager.remove(index to proxyEntity)
-                        }
-                    }
-                }
-
-                val selectOrChain = select || proxyEntity.type == ProxyEntity.TYPE_CHAIN
-                shareButton.isGone = selectOrChain
-                editButton.isGone = select
-                removeButton.isGone = select
-
-                proxyEntity.nekoBean?.apply {
-                    shareButton.isGone = true
-                }
-
-                runOnDefaultDispatcher {
-                    val selected = (selectedItem?.id ?: DataStore.selectedProxy) == proxyEntity.id
-                    val started =
-                        selected && DataStore.serviceState.started && DataStore.currentProfile == proxyEntity.id
-                    onMainDispatcher {
-                        editButton.isEnabled = !started
-                        removeButton.isEnabled = !started
-                        selectedView.visibility = if (selected) View.VISIBLE else View.INVISIBLE
-                    }
-
-                    fun showShare(anchor: View) {
-                        val popup = PopupMenu(requireContext(), anchor)
-                        popup.menuInflater.inflate(R.menu.profile_share_menu, popup.menu)
-
-                        when {
-                            !proxyEntity.haveStandardLink() -> {
-                                popup.menu.findItem(R.id.action_group_qr).subMenu?.removeItem(R.id.action_standard_qr)
-                                popup.menu.findItem(R.id.action_group_clipboard).subMenu?.removeItem(
-                                    R.id.action_standard_clipboard
-                                )
-                            }
-
-                            !proxyEntity.haveLink() -> {
-                                popup.menu.removeItem(R.id.action_group_qr)
-                                popup.menu.removeItem(R.id.action_group_clipboard)
-                            }
-                        }
-
-                        if (proxyEntity.nekoBean != null) {
-                            popup.menu.removeItem(R.id.action_group_configuration)
-                        }
-
-                        popup.setOnMenuItemClickListener(this@ConfigurationHolder)
-                        popup.show()
-                    }
-
-                    if (!(select || proxyEntity.type == ProxyEntity.TYPE_CHAIN)) {
-                        onMainDispatcher {
-                            shareButton.isVisible = true                            
-                            shareButton.setOnClickListener {
-                                showShare(it)
+            runOnDefaultDispatcher {
+                val selected = (selectedItem?.id ?: DataStore.selectedProxy) == proxyEntity.id
+                val started = selected && DataStore.serviceState.started && DataStore.currentProfile == proxyEntity.id
+            
+                onMainDispatcher {
+                    editButton.isEnabled = !started
+                    removeButton.isEnabled = !started
+                    selectedView.visibility = if (selected) View.VISIBLE else View.INVISIBLE
+                
+                    if (!selectOrChain) {
+                        shareButton.isVisible = true                            
+                        shareButton.setOnClickListener { view ->
+                       
+                            if (DataStore.disableBottomSheetHome) {
+                                showSharePopupMenu(view)
+                            } else {
+                                showShareBottomSheet()
                             }
                         }
                     }
                 }
-
-            }
-
-            var currentName = ""
-            fun showCode(link: String) {
-                QRCodeDialog(link, currentName).showAllowingStateLoss(parentFragmentManager)
-            }
-
-            fun export(link: String) {
-                val success = SagerNet.trySetPrimaryClip(link)
-                (activity as MainActivity).snackbar(if (success) R.string.action_export_msg else R.string.action_export_err)
-                    .show()
-            }
-
-            override fun onMenuItemClick(item: MenuItem): Boolean {
-                try {
-                    currentName = entity.displayName()!!
-                    when (item.itemId) {
-                        R.id.action_standard_qr -> showCode(entity.toStdLink())
-                        R.id.action_standard_clipboard -> export(entity.toStdLink())
-                        R.id.action_universal_qr -> showCode(entity.requireBean().toUniversalLink())
-                        R.id.action_universal_clipboard -> export(
-                            entity.requireBean().toUniversalLink()
-                        )
-
-                        R.id.action_config_export_clipboard -> export(entity.exportConfig().first)
-                        R.id.action_config_export_file -> {
-                            val cfg = entity.exportConfig()
-                            DataStore.serverConfig = cfg.first
-                            startFilesForResult(
-                                (parentFragment as ConfigurationFragment).exportConfig, cfg.second
-                            )
-                        }
-                    }
-                } catch (e: Exception) {
-                    Logs.w(e)
-                    (activity as MainActivity).snackbar(e.readableMessage).show()
-                    return true
-                }
-                return true
             }
         }
 
+        private fun showSharePopupMenu(anchor: View) {
+            val popup = PopupMenu(requireContext(), anchor)
+            popup.menuInflater.inflate(R.menu.profile_share_menu, popup.menu)
+
+            if (!entity.haveStandardLink()) {
+                popup.menu.findItem(R.id.action_group_qr)?.subMenu?.removeItem(R.id.action_standard_qr)
+                popup.menu.findItem(R.id.action_group_clipboard)?.subMenu?.removeItem(R.id.action_standard_clipboard)
+            }
+            if (!entity.haveLink()) {
+                popup.menu.removeItem(R.id.action_group_qr)
+                popup.menu.removeItem(R.id.action_group_clipboard)
+            }
+            if (entity.nekoBean != null) {
+                popup.menu.removeItem(R.id.action_group_configuration)
+            }
+
+            popup.setOnMenuItemClickListener(this)
+            popup.show()
+            }
+
+            override fun onMenuItemClick(item: MenuItem): Boolean {
+            currentName = entity.displayName() ?: ""
+            return when (item.itemId) {
+                R.id.action_standard_qr -> { showCode(entity.toStdLink()); true }
+                R.id.action_standard_clipboard -> { export(entity.toStdLink()); true }
+                R.id.action_universal_qr -> { showCode(entity.requireBean().toUniversalLink()); true }
+                R.id.action_universal_clipboard -> { export(entity.requireBean().toUniversalLink()); true }
+                R.id.action_config_export_clipboard -> { export(entity.exportConfig().first); true }
+                R.id.action_config_export_file -> {
+                    val cfg = entity.exportConfig()
+                    DataStore.serverConfig = cfg.first
+                    startFilesForResult((parentFragment as ConfigurationFragment).exportConfig, cfg.second)
+                    true
+                }
+                else -> false
+            }
+        }
+
+        private fun showShareBottomSheet() {
+            val context = view.context
+            val dialog = BottomSheetDialog(context)
+        
+            Theme.applyWindowBlur(dialog.window)
+        
+            val sheetView = LayoutInflater.from(context).inflate(R.layout.uwu_bottom_sheet_share, null)
+            dialog.setContentView(sheetView)
+            
+            dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            dialog.behavior.skipCollapsed = true
+
+            val btnStandard = sheetView.findViewById<View>(R.id.btn_share_standard)
+            val btnUniversal = sheetView.findViewById<View>(R.id.btn_share_sn)
+            val btnConfig = sheetView.findViewById<View>(R.id.btn_export_config)
+            val bannerImageView = sheetView.findViewById<ImageView>(R.id.img_banner_sheet)
+
+            if (bannerImageView != null) {
+                bannerImageView.setLayerType(View.LAYER_TYPE_HARDWARE, null) 
+                val bannerUriString = DataStore.configurationStore.getString("custom_sheet_banner_uri", null) 
+                val targetTag = if (bannerUriString.isNullOrBlank()) TAG_SHEET_DEFAULT else bannerUriString
+                val currentTag = bannerImageView.tag            
+                if (currentTag != targetTag) {
+                    if (!bannerUriString.isNullOrBlank()) {
+                        val bannerSavedUriString = Uri.parse(bannerUriString)
+                        Glide.with(view.context)
+                            .load(bannerSavedUriString)
+                            .downsample(DownsampleStrategy.NONE)
+                            .set(GifOptions.DECODE_FORMAT, DecodeFormat.PREFER_ARGB_8888)
+                            .format(DecodeFormat.PREFER_ARGB_8888)
+                            .override(Target.SIZE_ORIGINAL)
+                            .diskCacheStrategy(DiskCacheStrategy.DATA)
+                            .skipMemoryCache(false)
+                            .error(R.drawable.uwu_banner_image_about)
+                            .into(bannerImageView)
+                    } else {
+                        Glide.with(view.context).clear(bannerImageView)
+                        bannerImageView.setImageResource(R.drawable.uwu_banner_image_about)
+                    }              
+                    bannerImageView.tag = targetTag
+                }
+            }
+
+            val particlesView = sheetView.findViewById<View>(R.id.ParticlesView)
+            particlesView?.visibility = if (DataStore.disableParticlesSheet) View.GONE else View.VISIBLE
+
+            if (!entity.haveStandardLink()) btnStandard.visibility = View.GONE
+            if (!entity.haveLink()) {
+                btnStandard.visibility = View.GONE
+                btnUniversal.visibility = View.GONE
+            }
+            if (entity.nekoBean != null) {
+                btnConfig.visibility = View.GONE
+            }
+
+            fun showSubSelection(title: String, options: Array<String>, onClick: (Int) -> Unit) {
+                val adapter = android.widget.ArrayAdapter(view.context, R.layout.layout_dialog_item, options)
+                MaterialAlertDialogBuilder(view.context)
+                    .setTitle(title)
+                    .setAdapter(adapter) { d, w -> onClick(w); d.dismiss() }
+                    .showBlur()
+            }
+
+            btnStandard.setOnClickListener {
+                dialog.dismiss()
+                val options = arrayOf(context.getString(R.string.share_qr_nfc), context.getString(R.string.action_export_clipboard))
+                showSubSelection(context.getString(R.string.standard), options) { w ->
+                    if (w == 0) showCode(entity.toStdLink()) else export(entity.toStdLink())
+                }
+            }
+
+            btnUniversal.setOnClickListener {
+                dialog.dismiss()
+                val options = arrayOf(context.getString(R.string.share_qr_nfc), context.getString(R.string.action_export_clipboard))
+                showSubSelection("SN Link", options) { w ->
+                    if (w == 0) showCode(entity.requireBean().toUniversalLink()) else export(entity.requireBean().toUniversalLink())
+                }
+            }
+
+            btnConfig.setOnClickListener {
+                dialog.dismiss()
+                val options = arrayOf(context.getString(R.string.action_export_clipboard), context.getString(R.string.action_export_file))
+                showSubSelection(context.getString(R.string.menu_configuration), options) { w ->
+                    if (w == 0) export(entity.exportConfig().first)
+                    else {
+                        val cfg = entity.exportConfig()
+                        DataStore.serverConfig = cfg.first
+                        startFilesForResult((parentFragment as ConfigurationFragment).exportConfig, cfg.second)
+                    }
+                }
+            }
+
+            dialog.show()
+        }
+
+        fun showCode(link: String) {
+            QRCodeDialog(link, currentName).showAllowingStateLoss(parentFragmentManager)
+        }
+
+        fun export(link: String) {
+            val success = SagerNet.trySetPrimaryClip(link)
+            (activity as MainActivity).snackbar(if (success) R.string.action_export_msg else R.string.action_export_err).show()
+        }
+    }
+    
     }
 
     private val exportConfig =
@@ -1784,33 +1843,29 @@ class ConfigurationFragment @JvmOverloads constructor(
         searchView.clearFocus()
     }
 
-    private fun setupBannerLayoutController() {
-        val bannerHome = requireView().findViewById<View>(R.id.card_expandable) 
-        val expandableView = requireView().findViewById<ExpandableView>(R.id.expandable_view) 
+    private fun setupBannerHome() {
+        val bannerHome = requireView().findViewById<View>(R.id.banner_home)
         val bannerImageView = requireView().findViewById<ImageView>(R.id.img_banner_home)
-        val horizontalMenu = requireView().findViewById<View>(R.id.horizontal_menu)
-        
+        val bannerBlurImageView = requireView().findViewById<BlurImageViewGlide>(R.id.img_banner_home_blur)
+
         bannerImageView?.setLayerType(View.LAYER_TYPE_HARDWARE, null)
+        bannerBlurImageView?.setLayerType(View.LAYER_TYPE_HARDWARE, null)
 
-        fun updateBannerSize() {
-            bannerImageView?.apply {
-                val heightDp = DataStore.bannerHeight
-                val params = layoutParams
-                params.height = dp2px(heightDp)
-                layoutParams = params
-                requestLayout()
-            }
-        }
-
-        updateBannerSize()
-
-        fun loadSavedBanner() {
+        fun loadBanners() {
+            val isBlurEnabled = DataStore.blurBannerHome
+            
+            val targetRadius = if (isBlurEnabled) 20 else 0
+            
+            bannerBlurImageView?.setBlur(targetRadius)
+            
             val bannerUriString = DataStore.configurationStore.getString("custom_banner_uri", null)
+            val bannerBlurUriString = DataStore.configurationStore.getString("custom_banner_blur_uri", null)
             val targetTag = if (bannerUriString.isNullOrBlank()) TAG_HOME_BANNER_DEFAULT else bannerUriString
             val currentTag = bannerImageView?.tag
+            
             if (currentTag != targetTag) {
                 if (!bannerUriString.isNullOrBlank()) {
-                	val bannerSavedUriString = Uri.parse(bannerUriString)
+                    val bannerSavedUriString = Uri.parse(bannerUriString)
                     bannerImageView?.let {
                         Glide.with(this)
                             .load(bannerSavedUriString)
@@ -1820,32 +1875,53 @@ class ConfigurationFragment @JvmOverloads constructor(
                             .override(Target.SIZE_ORIGINAL)
                             .diskCacheStrategy(DiskCacheStrategy.DATA)
                             .skipMemoryCache(false)
-                            .error(R.drawable.uwu_banner_image_about)
+                            .error(R.drawable.uwu_banner_image)
                             .into(bannerImageView)
                     }
                 } else {
                     bannerImageView?.let {
-                        Glide.with(this).clear(bannerImageView)
-                        bannerImageView.setImageResource(R.drawable.uwu_banner_home)
+                        Glide.with(this).clear(it)
+                        it.setImageResource(R.drawable.uwu_banner_image)
                     }
                 }
                 bannerImageView?.tag = targetTag
+            }
+
+            val targetTagBlur = targetTag + "_BLUR"
+            val currentTagBlur = bannerBlurImageView?.tag
+
+            if (currentTagBlur != targetTagBlur) {
+                if (!bannerBlurUriString.isNullOrBlank()) {
+                    val bannerSavedUriString = Uri.parse(bannerBlurUriString)
+                    bannerBlurImageView?.let {
+                        Glide.with(this)
+                            .load(bannerSavedUriString)
+                            .downsample(DownsampleStrategy.NONE)
+                            .set(GifOptions.DECODE_FORMAT, DecodeFormat.PREFER_ARGB_8888)
+                            .format(DecodeFormat.PREFER_ARGB_8888)
+                            .override(Target.SIZE_ORIGINAL)
+                            .diskCacheStrategy(DiskCacheStrategy.DATA)
+                            .skipMemoryCache(false)
+                            .error(R.drawable.uwu_banner_home)
+                            .into(it) 
+                    }
+                } else {
+                    bannerBlurImageView?.let {
+                        Glide.with(this).clear(it)
+                        it.setImageResource(R.drawable.uwu_banner_home)
+                    }
+                }
+                bannerBlurImageView?.tag = targetTagBlur
             }
         }
 
         if (DataStore.showBannerLayout) {
             bannerHome?.visibility = View.VISIBLE
-            loadSavedBanner()
         } else {
             bannerHome?.visibility = View.GONE
-            expandableView?.setExpanded(true, false)
         }
-        
-        if (DataStore.showHorizontalMenu) {
-            horizontalMenu?.visibility = View.VISIBLE
-        } else {
-            horizontalMenu?.visibility = View.GONE
-        }
+
+        loadBanners() 
 
         if (bannerLayoutListener == null) {
             bannerLayoutListener = object : OnPreferenceDataStoreChangeListener {
@@ -1857,23 +1933,9 @@ class ConfigurationFragment @JvmOverloads constructor(
                             "show_banner_layout" -> {
                                 val show = DataStore.showBannerLayout
                                 bannerHome?.visibility = if (show) View.VISIBLE else View.GONE
-                                
-                                if (show) {
-                                    loadSavedBanner()
-                                    expandableView?.setExpanded(false, true) 
-                                } else {
-                                    expandableView?.setExpanded(true, true)
-                                }
                             }
-                            "banner_height" -> {
-                                updateBannerSize()
-                            }
-                            "custom_banner_uri" -> {
-                                loadSavedBanner()
-                            }
-                            "show_horizontal_menu" -> { 
-                                val show = DataStore.showHorizontalMenu
-                                horizontalMenu?.visibility = if (show) View.VISIBLE else View.GONE
+                            "custom_banner_uri", "custom_banner_blur_uri" -> {
+                                loadBanners()
                             }
                         }
                     }
@@ -1882,4 +1944,4 @@ class ConfigurationFragment @JvmOverloads constructor(
             DataStore.configurationStore.registerChangeListener(bannerLayoutListener!!)
         }
     }
-}
+ } 

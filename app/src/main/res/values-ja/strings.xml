@@ -664,9 +664,8 @@
     <string name="banner_custom_preference_summary">ギャラリーから設定バナー用の画像を選択</string>
     <string name="delete_custom_banner_preference">カスタム設定バナーを削除</string>
     <string name="delete_custom_banner_preference_summary">デフォルトの設定バナーに戻す</string>
-    <string name="banner_height_title">バナーの高さ</string>
-    <string name="banner_height_summary">ホームページのバナーの高さを設定 (dp単位)。デフォルト: 100</string>
-    <string name="banner_custom_title">バナー画像を変更</string>
+    <string name="banner_custom_portrait_title">バナー画像を変更 (Portrait)</string>
+    <string name="banner_custom_landscape_title">バナー画像を変更 (Landscape)</string>
     <string name="banner_custom_summary">ギャラリーからホームページバナー用の画像を選択</string>
     <string name="banner_profile_category">プロファイル</string>
     <string name="banner_profile_custom_title">プロファイルバナーを変更</string>
@@ -737,8 +736,8 @@
     <string name="disable_particles_title">パーティクルアニメーションを無効化</string>
     <string name="disable_particles_sheet_summary">ボトムシートのパーティクル効果を非表示にする</string>
     <string name="disable_particles_pref_summary">設定画面のパーティクル効果を非表示にする</string>
-    <string name="horizontal_menu_home_title">横メニューを表示</string>
-    <string name="horizontal_menu_home_summary">ホーム画面での横メニューの表示・非表示を切り替えます</string>
+    <string name="enable_blur_banner_home_title">ホームバナーをぼかす</string>
+    <string name="enable_blur_banner_home_summary">ホームバナーの背景にぼかし効果をつけます</string>
     
     <string name="hotspot_proxy_title">ホットスポット・プロキシ</string>
     <string name="hotspot_proxy_summay">ここでプロキシサーバーを使用し、ホットスポット経由でVPNを共有します。</string>

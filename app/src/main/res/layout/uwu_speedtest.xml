@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     android:orientation="vertical"
-    android:background="@drawable/uwu_background_bottom_sheet"
-    android:paddingTop="0.0dip"
-    android:paddingBottom="?attr/dialogPreferredPadding"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <ScrollView
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+        <include
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/layout_appbar" />
+    <androidx.core.widget.NestedScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_marginStart="0.0dip"
@@ -528,5 +533,6 @@
                 android:paddingVertical="12.0dip"
                 style="@style/Widget.AppCompat.Button.Colored" />
         </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

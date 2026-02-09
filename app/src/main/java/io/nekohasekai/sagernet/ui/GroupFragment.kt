@@ -7,6 +7,9 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.ImageView
+import android.view.LayoutInflater
+import android.net.Uri
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.Toolbar
@@ -16,6 +19,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.gif.GifOptions
+import com.bumptech.glide.load.DecodeFormat
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy
 import io.nekohasekai.sagernet.GroupType
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.SagerNet
@@ -35,6 +46,7 @@ import java.util.*
 import io.nekohasekai.sagernet.bg.BaseService
 import io.nekohasekai.sagernet.widget.StatsBar
 import io.nekohasekai.sagernet.utils.showBlur
+import io.nekohasekai.sagernet.utils.Theme
 import io.nekohasekai.sagernet.ui.bottomsheet.GroupMenuBottomSheet
 import io.nekohasekai.sagernet.ui.toolbar.GroupMenuController
 
@@ -385,55 +397,172 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
         val optionsButton = binding.options
         val updateButton = binding.groupUpdate
         val subscriptionUpdateProgress = binding.subscriptionUpdateProgress
+        
+        private val TAG_SHEET_DEFAULT = "DEFAULT_BANNER_SHEET"
 
-        override fun onMenuItemClick(item: MenuItem): Boolean {
+        fun export(link: String) {
+            val success = SagerNet.trySetPrimaryClip(link)
+            activity.snackbar(if (success) R.string.action_export_msg else R.string.action_export_err)
+                .show()
+        }
 
-            fun export(link: String) {
-                val success = SagerNet.trySetPrimaryClip(link)
-                activity.snackbar(if (success) R.string.action_export_msg else R.string.action_export_err)
-                    .show()
+        fun exportClipboard() {
+            runOnDefaultDispatcher {
+                val profiles = SagerDatabase.proxyDao.getByGroup(selectedGroup.id)
+                val links = profiles.joinToString("\n") { it.toStdLink(compact = true) }
+                onMainDispatcher {
+                    SagerNet.trySetPrimaryClip(links)
+                    snackbar(getString(R.string.copy_toast_msg)).show()
+                }
+            }
+        }
+
+        fun exportFile() {
+             startFilesForResult(exportProfiles, "profiles_${proxyGroup.displayName()}.txt")
+        }
+
+        fun clearGroup() {
+             MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.confirm)
+                .setMessage(R.string.clear_profiles_message)
+                .setPositiveButton(R.string.yes) { _, _ ->
+                    runOnDefaultDispatcher {
+                        GroupManager.clearGroup(proxyGroup.id)
+                    }
+                }
+                .setNegativeButton(android.R.string.cancel, null)
+                .showBlur()
+        }
+
+        private fun showPopupMenu(anchor: View) {
+            val popup = PopupMenu(requireContext(), anchor)
+            popup.menuInflater.inflate(R.menu.group_action_menu, popup.menu)
+
+            if (proxyGroup.type != GroupType.SUBSCRIPTION) {
+                popup.menu.removeItem(R.id.action_share_subscription)
+            }
+            popup.setOnMenuItemClickListener(this)
+            popup.show()
+        }
+
+        private fun showBottomSheet() {
+            val context = itemView.context
+            val dialog = BottomSheetDialog(context)
+            
+            Theme.applyWindowBlur(dialog.window)
+            
+            val sheetView = LayoutInflater.from(context).inflate(R.layout.uwu_bottom_sheet_share_group, null)
+            dialog.setContentView(sheetView)
+            
+            dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            dialog.behavior.skipCollapsed = true
+
+            val btnClear = sheetView.findViewById<View>(R.id.btn_clear)
+            val btnSub = sheetView.findViewById<View>(R.id.btn_share_sub) // Used for Group Share
+            val btnExport = sheetView.findViewById<View>(R.id.btn_export_config) // Used for Export File/Clip
+            val bannerImageView = sheetView.findViewById<ImageView>(R.id.img_banner_sheet)
+            
+            if (bannerImageView != null) {
+                bannerImageView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
+                val bannerUriString = DataStore.configurationStore.getString("custom_sheet_banner_uri", null)
+                val targetTag = if (bannerUriString.isNullOrBlank()) TAG_SHEET_DEFAULT else bannerUriString
+                
+                if (bannerImageView.tag != targetTag) {
+                    if (!bannerUriString.isNullOrBlank()) {
+                        Glide.with(context)
+                            .load(Uri.parse(bannerUriString))
+                            .downsample(DownsampleStrategy.NONE)
+                            .set(GifOptions.DECODE_FORMAT, DecodeFormat.PREFER_ARGB_8888)
+                            .format(DecodeFormat.PREFER_ARGB_8888)
+                            .override(Target.SIZE_ORIGINAL)
+                            .diskCacheStrategy(DiskCacheStrategy.DATA)
+                            .skipMemoryCache(false)
+                            .error(R.drawable.uwu_banner_image_about)
+                            .into(bannerImageView)
+                    } else {
+                        Glide.with(context).clear(bannerImageView)
+                        bannerImageView.setImageResource(R.drawable.uwu_banner_image_about)
+                    }
+                    bannerImageView.tag = targetTag
+                }
+            }
+            
+            val particlesView = sheetView.findViewById<View>(R.id.ParticlesView)
+            particlesView?.visibility = if (DataStore.disableParticlesSheet) View.GONE else View.VISIBLE
+
+            if (proxyGroup.type != GroupType.SUBSCRIPTION) {
+                 btnSub.visibility = View.GONE
             }
 
-            when (item.itemId) {
+            fun showSubSelection(title: String, options: Array<String>, onClick: (Int) -> Unit) {
+                val adapter = android.widget.ArrayAdapter(context, R.layout.layout_dialog_item, options)
+                MaterialAlertDialogBuilder(context)
+                    .setTitle(title)
+                    .setAdapter(adapter) { d, w -> onClick(w); d.dismiss() }
+                    .showBlur()
+            }
+
+            btnSub.setOnClickListener {
+                dialog.dismiss()
+                val options = arrayOf(
+                    context.getString(R.string.share_qr_nfc),
+                    context.getString(R.string.action_export_clipboard)
+                )
+                showSubSelection(context.getString(R.string.share_subscription), options) { which ->
+                     when(which) {
+                         0 -> QRCodeDialog(proxyGroup.toUniversalLink(), proxyGroup.displayName()).showAllowingStateLoss(parentFragmentManager)
+                         1 -> export(proxyGroup.toUniversalLink())
+                     }
+                }
+            }
+
+            btnExport.setOnClickListener {
+                dialog.dismiss()
+                val options = arrayOf(
+                    context.getString(R.string.action_export_clipboard),
+                    context.getString(R.string.action_export_file)
+                )
+                showSubSelection(context.getString(R.string.action_export), options) { which ->
+                    when(which) {
+                        0 -> exportClipboard()
+                        1 -> exportFile()
+                    }
+                }
+            }
+            
+            btnClear.setOnClickListener {
+                dialog.dismiss()
+                clearGroup()
+            }
+            
+            dialog.show()
+        }
+
+        override fun onMenuItemClick(item: MenuItem): Boolean {
+            return when (item.itemId) {
                 R.id.action_universal_qr -> {
                     QRCodeDialog(
                         proxyGroup.toUniversalLink(), proxyGroup.displayName()
                     ).showAllowingStateLoss(parentFragmentManager)
+                    true
                 }
-
                 R.id.action_universal_clipboard -> {
                     export(proxyGroup.toUniversalLink())
+                    true
                 }
-
                 R.id.action_export_clipboard -> {
-                    runOnDefaultDispatcher {
-                        val profiles = SagerDatabase.proxyDao.getByGroup(selectedGroup.id)
-                        val links = profiles.joinToString("\n") { it.toStdLink(compact = true) }
-                        onMainDispatcher {
-                            SagerNet.trySetPrimaryClip(links)
-                            snackbar(getString(R.string.copy_toast_msg)).show()
-                        }
-                    }
+                    exportClipboard()
+                    true
                 }
-
                 R.id.action_export_file -> {
-                    startFilesForResult(exportProfiles, "profiles_${proxyGroup.displayName()}.txt")
+                    exportFile()
+                    true
                 }
-
                 R.id.action_clear -> {
-                    MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.confirm)
-                        .setMessage(R.string.clear_profiles_message)
-                        .setPositiveButton(R.string.yes) { _, _ ->
-                            runOnDefaultDispatcher {
-                                GroupManager.clearGroup(proxyGroup.id)
-                            }
-                        }
-                        .setNegativeButton(android.R.string.cancel, null)
-                        .showBlur()
+                    clearGroup()
+                    true
                 }
+                else -> false
             }
-
-            return true
         }
 
 
@@ -459,14 +588,11 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
             optionsButton.setOnClickListener {
                 selectedGroup = proxyGroup
 
-                val popup = PopupMenu(requireContext(), it)
-                popup.menuInflater.inflate(R.menu.group_action_menu, popup.menu)
-
-                if (proxyGroup.type != GroupType.SUBSCRIPTION) {
-                    popup.menu.removeItem(R.id.action_share_subscription)
+                if (DataStore.disableBottomSheetHome) {
+                    showPopupMenu(it)
+                } else {
+                    showBottomSheet()
                 }
-                popup.setOnMenuItemClickListener(this)
-                popup.show()
             }
 
             if (proxyGroup.id in GroupUpdater.updating) {

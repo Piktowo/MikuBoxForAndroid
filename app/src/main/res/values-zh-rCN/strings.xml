@@ -628,9 +628,8 @@
    <string name="banner_custom_preference_summary">从图库中选择图片作为横幅</string>
    <string name="delete_custom_banner_preference">删除自定义横幅</string>
    <string name="delete_custom_banner_preference_summary">恢复默认横幅</string>
-   <string name="banner_height_title">横幅高度</string>
-   <string name="banner_height_summary">设置首页横幅高度（单位 dp），默认值：100</string>
-   <string name="banner_custom_title">更换横幅图片</string>
+   <string name="banner_custom_portrait_title">更换横幅图片 (Portrait)</string>
+   <string name="banner_custom_landscape_title">更换横幅图片 (Landscape)</string>
    <string name="banner_custom_summary">从相册中选择图片作为首页横幅</string>
    <string name="banner_profile_category">个人资料</string>
    <string name="banner_profile_custom_title">更换个人资料横幅</string>
@@ -701,8 +700,8 @@
     <string name="disable_particles_title">禁用粒子动画</string>
     <string name="disable_particles_sheet_summary">隐藏 bottomsheet 中的粒子特效</string>
     <string name="disable_particles_pref_summary">隐藏偏好设置中的粒子特效</string>
-    <string name="horizontal_menu_home_title">显示横向菜单</string>
-    <string name="horizontal_menu_home_summary">在主页显示或隐藏横向菜单</string>
+    <string name="enable_blur_banner_home_title">主页横幅虚化</string>
+    <string name="enable_blur_banner_home_summary">让主页横幅的背景带点模糊效果</string>
     
     <string name="hotspot_proxy_title">热点代理</string>
     <string name="hotspot_proxy_summay">在这里通过代理服务器经由热点共享您的 VPN。</string>

@@ -14,6 +14,7 @@ import com.neko.hostnamefinder.HostnameFinder
 import com.neko.hosttoip.HostToIP
 import com.neko.hostpotproxy.ui.ProxySettings
 import com.neko.ip.hostchecker.HostChecker
+import com.neko.speedtest.SpeedTestActivity
 
 class NetworkFragment : NamedFragment(R.layout.layout_network) {
 
@@ -42,6 +43,10 @@ class NetworkFragment : NamedFragment(R.layout.layout_network) {
         
         binding.hostChecker.setOnClickListener {
             startActivity(Intent(requireContext(), HostChecker::class.java))
+        }
+        
+        binding.speedTest.setOnClickListener {
+            startActivity(Intent(requireContext(), SpeedTestActivity::class.java))
         }
 
         view.post {

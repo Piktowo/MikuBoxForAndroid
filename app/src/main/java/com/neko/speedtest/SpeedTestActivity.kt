@@ -4,16 +4,12 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import com.google.android.material.card.MaterialCardView
+import io.nekohasekai.sagernet.ui.ThemedActivity
 import com.github.anastr.speedviewlib.PointerSpeedometer
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.card.MaterialCardView
 import io.nekohasekai.sagernet.R
 import kotlinx.coroutines.*
 import okhttp3.MediaType.Companion.toMediaType
@@ -23,17 +19,17 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 
-class SpeedTestBottomSheet : BottomSheetDialogFragment() {
+class SpeedTestActivity : ThemedActivity() {
 
     private lateinit var speedometer: PointerSpeedometer
     private lateinit var textDownload: TextView
     private lateinit var textUpload: TextView
     private lateinit var textPing: TextView
     private lateinit var textJitter: TextView
-    
+
     private lateinit var startButton: Button
     private lateinit var stopButton: Button
-    
+
     private lateinit var cardDownload: MaterialCardView
     private lateinit var cardUpload: MaterialCardView
     private lateinit var cardPing: MaterialCardView
@@ -41,11 +37,11 @@ class SpeedTestBottomSheet : BottomSheetDialogFragment() {
 
     private val scope = CoroutineScope(Dispatchers.Main + Job())
     private var testJob: Job? = null
-    
-    private val TEST_DURATION = 15.0 
+
+    private val TEST_DURATION = 15.0
 
     private val client = OkHttpClient.Builder()
-        .connectTimeout(10, TimeUnit.SECONDS) 
+        .connectTimeout(10, TimeUnit.SECONDS)
         .readTimeout(10, TimeUnit.SECONDS)
         .writeTimeout(10, TimeUnit.SECONDS)
         .connectionPool(okhttp3.ConnectionPool(5, 5, TimeUnit.MINUTES))
@@ -53,41 +49,46 @@ class SpeedTestBottomSheet : BottomSheetDialogFragment() {
 
     private val dummyData by lazy { ByteArray(1024 * 1024) }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, 
-        container: ViewGroup?, 
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.uwu_speedtest, container, false)
-    }
-    
-    override fun onStart() {
-        super.onStart()
-        val sheetDialog = dialog as? BottomSheetDialog
-        sheetDialog?.behavior?.apply {
-            state = BottomSheetBehavior.STATE_EXPANDED
-            skipCollapsed = true
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.uwu_speedtest)
+        
+        setSupportActionBar(findViewById(R.id.toolbar))
+        supportActionBar?.apply {
+            setTitle(R.string.speedtest)
+            setDisplayHomeAsUpEnabled(true)
+            setHomeAsUpIndicator(R.drawable.baseline_arrow_back_24)
+        }
+
+        initViews()
+        setupListeners()
+        
+        setDefaultText()
+        resetButtonState()
+
+        scope.launch(Dispatchers.IO) {
+            dummyData.fill(1)
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        
-        speedometer = view.findViewById(R.id.speedometer)
-        
-        textDownload = view.findViewById(R.id.textDownload)
-        textUpload = view.findViewById(R.id.textUpload)
-        textPing = view.findViewById(R.id.textPing)
-        textJitter = view.findViewById(R.id.textJitter)
+    private fun initViews() {
+        speedometer = findViewById(R.id.speedometer)
 
-        startButton = view.findViewById(R.id.startButton)
-        stopButton = view.findViewById(R.id.stopButton)
-        
-        cardDownload = view.findViewById(R.id.cardDownload)
-        cardUpload = view.findViewById(R.id.cardUpload)
-        cardPing = view.findViewById(R.id.cardPing)
-        cardJitter = view.findViewById(R.id.cardJitter)
-        
+        textDownload = findViewById(R.id.textDownload)
+        textUpload = findViewById(R.id.textUpload)
+        textPing = findViewById(R.id.textPing)
+        textJitter = findViewById(R.id.textJitter)
+
+        startButton = findViewById(R.id.startButton)
+        stopButton = findViewById(R.id.stopButton)
+
+        cardDownload = findViewById(R.id.cardDownload)
+        cardUpload = findViewById(R.id.cardUpload)
+        cardPing = findViewById(R.id.cardPing)
+        cardJitter = findViewById(R.id.cardJitter)
+    }
+
+    private fun setupListeners() {
         startButton.setOnClickListener { startFullSpeedTest() }
         stopButton.setOnClickListener { stopSpeedTest() }
 
@@ -110,24 +111,18 @@ class SpeedTestBottomSheet : BottomSheetDialogFragment() {
             if (testJob?.isActive == true) return@setOnClickListener
             runJitterOnlyTest()
         }
-        
-        setDefaultText()
-        resetButtonState()
-        
-        scope.launch(Dispatchers.IO) {
-            dummyData.fill(1) 
-        }
     }
 
     private fun isInternetAvailable(): Boolean {
-        val connectivityManager = requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        // Menggunakan 'this' sebagai context
+        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val network = connectivityManager.activeNetwork
         val capabilities = connectivityManager.getNetworkCapabilities(network)
-        return capabilities != null && 
-               (capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
-                capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED))
+        return capabilities != null &&
+                (capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
+                        capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED))
     }
-    
+
     private fun setDefaultText() {
         textDownload.setText(R.string.st_test_download)
         textUpload.setText(R.string.st_test_upload)
@@ -141,10 +136,10 @@ class SpeedTestBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun resetButtonState() {
-        if (view == null) return      
+        if (isFinishing) return // Cek jika activity sedang ditutup
         startButton.visibility = View.VISIBLE
-        stopButton.visibility = View.GONE   
-        speedometer.visibility = View.VISIBLE 
+        stopButton.visibility = View.GONE
+        speedometer.visibility = View.VISIBLE
         speedometer.alpha = 1f
         speedometer.speedTo(0f)
     }
@@ -171,7 +166,7 @@ class SpeedTestBottomSheet : BottomSheetDialogFragment() {
 
         for (i in 0 until iterations) {
             if (!isActive) break
-            
+
             val start = System.nanoTime()
             try {
                 val request = Request.Builder()
@@ -197,7 +192,7 @@ class SpeedTestBottomSheet : BottomSheetDialogFragment() {
             results.sort()
             return@withContext results.dropLast(1)
         }
-        
+
         return@withContext results
     }
 
@@ -205,7 +200,7 @@ class SpeedTestBottomSheet : BottomSheetDialogFragment() {
         if (latencies.size < 2) return 0L
         var diffSum = 0L
         for (i in 0 until latencies.size - 1) {
-            diffSum += abs(latencies[i] - latencies[i+1])
+            diffSum += abs(latencies[i] - latencies[i + 1])
         }
         return diffSum / (latencies.size - 1)
     }
@@ -213,7 +208,7 @@ class SpeedTestBottomSheet : BottomSheetDialogFragment() {
     private fun runPingOnlyTest() {
         if (!isInternetAvailable()) return
         prepareUIForTest()
-        
+
         textPing.setText(R.string.st_status_testing)
         speedometer.speedTo(0f)
 
@@ -228,9 +223,9 @@ class SpeedTestBottomSheet : BottomSheetDialogFragment() {
                     }
                 }
             } catch (e: Exception) {
-                if (isAdded) textPing.text = "Error"
+                if (!isFinishing) textPing.text = "Error"
             } finally {
-                withContext(Dispatchers.Main) { if (isAdded) resetButtonState() }
+                withContext(Dispatchers.Main) { resetButtonState() }
             }
         }
     }
@@ -238,7 +233,7 @@ class SpeedTestBottomSheet : BottomSheetDialogFragment() {
     private fun runJitterOnlyTest() {
         if (!isInternetAvailable()) return
         prepareUIForTest()
-        
+
         textJitter.setText(R.string.st_status_testing)
         speedometer.speedTo(0f)
 
@@ -253,9 +248,9 @@ class SpeedTestBottomSheet : BottomSheetDialogFragment() {
                     }
                 }
             } catch (e: Exception) {
-                if (isAdded) textJitter.text = "Error"
+                if (!isFinishing) textJitter.text = "Error"
             } finally {
-                withContext(Dispatchers.Main) { if (isAdded) resetButtonState() }
+                withContext(Dispatchers.Main) { resetButtonState() }
             }
         }
     }
@@ -270,7 +265,7 @@ class SpeedTestBottomSheet : BottomSheetDialogFragment() {
                 if (isDownload) {
                     textDownload.setText(R.string.st_status_running)
                     speedometer.speedTo(0f)
-                    
+
                     val downloadSpeed = measureDownloadSpeed()
                     textDownload.text = getString(R.string.st_format_mbps, downloadSpeed)
                     speedometer.speedTo(downloadSpeed.toFloat())
@@ -285,7 +280,7 @@ class SpeedTestBottomSheet : BottomSheetDialogFragment() {
             } catch (e: Exception) {
             } finally {
                 withContext(Dispatchers.Main) {
-                    if (isAdded) resetButtonState()
+                    resetButtonState()
                 }
             }
         }
@@ -293,25 +288,25 @@ class SpeedTestBottomSheet : BottomSheetDialogFragment() {
 
     private fun startFullSpeedTest() {
         if (!isInternetAvailable()) return
-        
+
         prepareUIForTest()
-        
+
         textDownload.setText(R.string.st_status_testing)
-        textUpload.setText(R.string.st_status_waiting) 
+        textUpload.setText(R.string.st_status_waiting)
         textPing.setText(R.string.st_status_testing)
         textJitter.setText(R.string.st_status_testing)
-        
+
         speedometer.speedTo(0f)
 
         testJob = scope.launch {
             try {
                 val latencies = performLatencyCheck(12)
-                
+
                 withContext(Dispatchers.Main) {
                     if (latencies.isNotEmpty()) {
                         val avgPing = latencies.average().toLong()
                         textPing.text = "$avgPing ms"
-                        
+
                         val jitter = calculateJitter(latencies)
                         textJitter.text = "$jitter ms"
                     } else {
@@ -319,30 +314,30 @@ class SpeedTestBottomSheet : BottomSheetDialogFragment() {
                         textJitter.text = "N/A"
                     }
                 }
-                
+
                 delay(500)
 
                 textDownload.setText(R.string.st_status_running)
                 val downloadSpeed = measureDownloadSpeed()
                 textDownload.text = getString(R.string.st_format_mbps, downloadSpeed)
-                speedometer.speedTo(downloadSpeed.toFloat())           
-                
+                speedometer.speedTo(downloadSpeed.toFloat())
+
                 delay(1000)
-                speedometer.speedTo(0f)      
+                speedometer.speedTo(0f)
                 delay(800)
 
                 textUpload.setText(R.string.st_status_running)
                 val uploadSpeed = measureUploadSpeed()
                 textUpload.text = getString(R.string.st_format_mbps, uploadSpeed)
                 speedometer.speedTo(uploadSpeed.toFloat())
-                
+
                 delay(1000)
 
             } catch (e: CancellationException) {
             } catch (e: Exception) {
             } finally {
                 withContext(Dispatchers.Main) {
-                    if (isAdded) resetButtonState()
+                    resetButtonState()
                 }
             }
         }
@@ -365,7 +360,7 @@ class SpeedTestBottomSheet : BottomSheetDialogFragment() {
         while (isActive) {
             val elapsedSeconds = (System.nanoTime() - startTime) / 1_000_000_000.0
             if (elapsedSeconds > TEST_DURATION) break
-            
+
             if (currentUrlIndex >= urls.size) break
 
             val currentUrl = urls[currentUrlIndex]
@@ -383,7 +378,7 @@ class SpeedTestBottomSheet : BottomSheetDialogFragment() {
                     val stream = body.byteStream()
                     val buffer = ByteArray(8192)
                     var bytesRead: Int
-                    
+
                     while (isActive) {
                         bytesRead = stream.read(buffer)
                         if (bytesRead == -1) break
@@ -391,13 +386,13 @@ class SpeedTestBottomSheet : BottomSheetDialogFragment() {
                         totalBytes += bytesRead
 
                         val innerElapsed = (System.nanoTime() - startTime) / 1_000_000_000.0
-                        if (innerElapsed > TEST_DURATION) break 
+                        if (innerElapsed > TEST_DURATION) break
 
                         val now = System.currentTimeMillis()
                         if (now - lastUpdateTime > 200) {
                             speedMbps = (totalBytes * 8) / (innerElapsed * 1_000_000.0)
                             withContext(Dispatchers.Main) {
-                                if (isAdded) speedometer.speedTo(speedMbps.toFloat())
+                                if (!isFinishing) speedometer.speedTo(speedMbps.toFloat())
                             }
                             lastUpdateTime = now
                         }
@@ -408,7 +403,7 @@ class SpeedTestBottomSheet : BottomSheetDialogFragment() {
                 delay(100)
             }
         }
-        
+
         return@withContext speedMbps
     }
 
@@ -432,7 +427,7 @@ class SpeedTestBottomSheet : BottomSheetDialogFragment() {
         while (isActive) {
             val elapsedSeconds = (System.nanoTime() - startTime) / 1_000_000_000.0
             if (elapsedSeconds > TEST_DURATION) break
-            
+
             if (currentUrlIndex >= uploadUrls.size) break
 
             val currentUrl = uploadUrls[currentUrlIndex]
@@ -459,7 +454,7 @@ class SpeedTestBottomSheet : BottomSheetDialogFragment() {
                     if (currentElapsed > 0) {
                         speedMbps = (totalBytesUploaded * 8) / (currentElapsed * 1_000_000.0)
                         withContext(Dispatchers.Main) {
-                            if (isAdded) speedometer.speedTo(speedMbps.toFloat())
+                            if (!isFinishing) speedometer.speedTo(speedMbps.toFloat())
                         }
                         lastUpdateTime = now
                     }
@@ -470,12 +465,12 @@ class SpeedTestBottomSheet : BottomSheetDialogFragment() {
                 delay(100)
             }
         }
-        
+
         return@withContext speedMbps
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onDestroy() {
+        super.onDestroy()
         testJob?.cancel()
         scope.cancel()
     }

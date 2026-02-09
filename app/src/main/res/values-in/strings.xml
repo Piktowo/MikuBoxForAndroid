@@ -632,9 +632,8 @@ Tolong kasih izinnya di Settingan Sistem."</string>
      <string name="banner_custom_preference_summary">Pilih gambar dari galeri buat banner di preferensi</string>
      <string name="delete_custom_banner_preference">Ilangin banner kustom preferensi</string>
      <string name="delete_custom_banner_preference_summary">Balikin ke banner preferensi bawaan</string>
-     <string name="banner_height_title">Tinggi bannernya</string>
-     <string name="banner_height_summary">Atur tinggi banner buat di halaman beranda (dalam satuan dp), Default: 100</string>
-     <string name="banner_custom_title">Ganti gambar banner</string>
+     <string name="banner_custom_portrait_title">Ganti gambar banner (Portrait)</string>
+     <string name="banner_custom_landscape_title">Ganti gambar banner (Landscape)</string>
      <string name="banner_custom_summary">Pilih gambar dari galeri buat banner di halaman beranda</string>
      <string name="banner_profile_category">Profil</string>
      <string name="banner_profile_custom_title">Ganti gambar profile</string>
@@ -705,8 +704,8 @@ Tolong kasih izinnya di Settingan Sistem."</string>
     <string name="disable_particles_title">Matiin animasi partikel</string>
     <string name="disable_particles_sheet_summary">Sembunyiin efek partikel di bottomsheet</string>
     <string name="disable_particles_pref_summary">Sembunyiin efek partikel di preferensi</string>
-    <string name="horizontal_menu_home_title">Tampilin menu horizontal</string>
-    <string name="horizontal_menu_home_summary">Sembunyiin atau tampilin menu horizontal di beranda</string>
+    <string name="enable_blur_banner_home_title">Bikin blur banner beranda</string>
+    <string name="enable_blur_banner_home_summary">Kasih efek nge-blur di background banner halaman utama</string>
     
     <string name="hotspot_proxy_title">Hotspot Proxy</string>
     <string name="hotspot_proxy_summay">Bagikan VPN kamu lewat hotspot pakai proxy server di sini.</string>

@@ -203,6 +203,14 @@
             android:launchMode="singleTask"
             android:parentActivityName="io.nekohasekai.sagernet.ui.MainActivity"
             android:screenOrientation="portrait" />
+            
+        <activity
+            android:name="com.neko.speedtest.SpeedTestActivity"
+            android:configChanges="uiMode"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:parentActivityName="io.nekohasekai.sagernet.ui.MainActivity"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"

@@ -83,6 +83,41 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
                 Logs.e("Cropping error: ", cropError)
             }
         }
+        
+        private val pickBannerBlurImage =
+        registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            if (uri != null) {
+                if (isGif(uri)) {
+                    processGifSelection(uri, "home_banner_blur_", "custom_banner_blur_uri", R.string.custom_banner_set)
+                } else {
+                    startCropBlurActivity(uri)
+                }
+            }
+        }
+
+    private val cropBannerBlurImage =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK && result.data != null) {
+                val cacheUri = UCrop.getOutput(result.data!!)
+                if (cacheUri != null) {
+                    try {
+                        val oldUriString = DataStore.configurationStore.getString("custom_banner_blur_uri", null)
+                        deleteOldFile(oldUriString)
+
+                        val savedUri = saveToCache(cacheUri, "home_banner_blur_")
+                        DataStore.configurationStore.putString("custom_banner_blur_uri", savedUri.toString())
+                        snackbar(R.string.custom_banner_set).show()
+
+                    } catch (e: Exception) {
+                        Logs.e("Failed to save banner", e)
+                        snackbar("Failed to save: ${e.message}").show()
+                    }
+                }
+            } else if (result.resultCode == UCrop.RESULT_ERROR) {
+                val cropError = UCrop.getError(result.data!!) ?: Throwable("Unknown UCrop error")
+                Logs.e("Cropping error: ", cropError)
+            }
+        }
 
     private val pickProfileBannerImage =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -588,12 +623,11 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
             }
         }
         
-        val layoutControllerMenuHorizontal: SwitchPreference? = findPreference("show_horizontal_menu")
-        layoutControllerMenuHorizontal?.apply {
-            isChecked = DataStore.showHorizontalMenu
-            setOnPreferenceChangeListener { _: Preference, newValue: Any ->
-                val show = newValue as Boolean
-                DataStore.showHorizontalMenu = show
+        val bannerBlurSwitch = findPreference<SwitchPreference>("enable_home_banner_blur")
+        bannerBlurSwitch?.apply {
+            isChecked = DataStore.blurBannerHome
+            setOnPreferenceChangeListener { _, newValue ->
+                DataStore.blurBannerHome = newValue as Boolean
                 true
             }
         }
@@ -603,17 +637,34 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
             pickBannerImage.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
             true
         }
+        
+        val changeBannerBlurPref = findPreference<Preference>("action_change_banner_blur_image")
+        changeBannerBlurPref?.setOnPreferenceClickListener {
+            pickBannerBlurImage.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            true
+        }
 
         val deleteBannerPref = findPreference<Preference>("action_delete_banner_image")
         deleteBannerPref?.setOnPreferenceClickListener {
             val savedUriString = DataStore.configurationStore.getString("custom_banner_uri", null)
-            if (!savedUriString.isNullOrEmpty()) {
+            val secondUriString = DataStore.configurationStore.getString("custom_banner_blur_uri", null)
+
+            if (!savedUriString.isNullOrEmpty() || !secondUriString.isNullOrEmpty()) {
                 MaterialAlertDialogBuilder(requireContext())
                     .setTitle(R.string.delete_custom_banner_title)
                     .setMessage(R.string.delete_custom_banner_message)
                     .setPositiveButton(R.string.yes) { _, _ ->
-                        deleteOldFile(savedUriString)
-                        DataStore.configurationStore.putString("custom_banner_uri", null)
+                        
+                        if (!savedUriString.isNullOrEmpty()) {
+                            deleteOldFile(savedUriString)
+                            DataStore.configurationStore.putString("custom_banner_uri", null)
+                        }
+
+                        if (!secondUriString.isNullOrEmpty()) {
+                            deleteOldFile(secondUriString)
+                            DataStore.configurationStore.putString("custom_banner_blur_uri", null)
+                        }
+
                         snackbar(R.string.custom_banner_removed).show()
                     }
                     .setNegativeButton(R.string.no, null)
@@ -624,20 +675,6 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
             true
         }
 
-        val bannerHeightPref = findPreference<EditTextPreference>("banner_height")
-        bannerHeightPref?.apply {
-            setOnBindEditTextListener { editText ->
-                editText.inputType = EditorInfo.TYPE_CLASS_NUMBER
-            }
-            val currentHeight = DataStore.bannerHeight
-            text = currentHeight.toString()
-            setOnPreferenceChangeListener { _, newValue ->
-                val newHeightStr = newValue as String
-                val newHeight = newHeightStr.toIntOrNull() ?: 100
-                DataStore.bannerHeight = newHeight
-                true
-            }
-        }
 
         val changeProfileBannerPref = findPreference<Preference>("action_change_profile_banner_image")
         changeProfileBannerPref?.setOnPreferenceClickListener {
@@ -918,11 +955,35 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
         val destinationFileName = "cropped_banner_temp.jpg"
         val destinationUri = Uri.fromFile(File(requireContext().cacheDir, destinationFileName))
         
-        val heightDp = DataStore.bannerHeight
+        val displayMetrics = resources.displayMetrics
+        val screenWidthPx = dp2pxf(120)
+        val targetHeightPx = dp2pxf(170)
+        
+        val uCrop = UCrop.of(sourceUri, destinationUri)
+            .withAspectRatio(screenWidthPx, targetHeightPx)
+            .withMaxResultSize(1080, 1080)
+
+        try {
+            val options = UCrop.Options()
+            options.setDimmedLayerColor(Color.parseColor("#CCFFFFFF"))
+            options.setCircleDimmedLayer(false)
+            options.setShowCropGrid(true)
+            options.setFreeStyleCropEnabled(false)
+            uCrop.withOptions(options)
+        } catch (e: Exception) {
+            Logs.e("Failed to set UCrop theme", e)
+        }
+        cropBannerImage.launch(uCrop.getIntent(requireContext()))
+    }
+    
+    private fun startCropBlurActivity(sourceUri: Uri) {
+        val destinationFileName = "cropped_banner_temp.jpg"
+        val destinationUri = Uri.fromFile(File(requireContext().cacheDir, destinationFileName))
         
         val displayMetrics = resources.displayMetrics
         val screenWidthPx = displayMetrics.widthPixels.toFloat()
-        val targetHeightPx = dp2pxf(heightDp)
+        val targetHeightPx = dp2pxf(170)
+        
         val uCrop = UCrop.of(sourceUri, destinationUri)
             .withAspectRatio(screenWidthPx, targetHeightPx)
             .withMaxResultSize(1920, 1080)
@@ -937,7 +998,7 @@ class ThemeSettingsPreferenceFragment : PreferenceFragmentCompat() {
         } catch (e: Exception) {
             Logs.e("Failed to set UCrop theme", e)
         }
-        cropBannerImage.launch(uCrop.getIntent(requireContext()))
+        cropBannerBlurImage.launch(uCrop.getIntent(requireContext()))
     }
 
     private fun startCropProfileActivity(sourceUri: Uri) {
