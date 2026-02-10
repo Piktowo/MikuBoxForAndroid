@@ -599,11 +599,6 @@
     <string name="update">Update</string>
     <string name="release">Release</string>
     <string name="preview">Preview</string>
-    <string name="xhttp_host">XHTTP Host</string>
-    <string name="xhttp_path">XHTTP Path</string>
-    <string name="xhttp_mode">XHTTP Mode</string>
-    <string name="xhttp_extra">XHTTP Extra</string>
-    <string name="xhttp_settings">XHTTP Settings</string>
     <string name="hide">Hide</string>
     <string name="app_list_permission_denied">"Can't load the list of installed apps.
 Your device's system has likely restricted the necessary permission.
@@ -808,6 +803,8 @@ Please grant this permission in System Settings."</string>
     <string name="disable_particles_pref_summary">Hide particle effects in the preference</string>
     <string name="enable_blur_banner_home_title">Enable home banner blur</string>
     <string name="enable_blur_banner_home_summary">Apply blur effect to the background of the home banner</string>
+    <string name="quick_enable">Enable</string>
+    <string name="quick_disable">Disable</string>
     
     <string name="hotspot_proxy_title">Hotspot Proxy</string>
     <string name="hotspot_proxy_summay">Share your vpn over hotspot by a proxy server here.</string>

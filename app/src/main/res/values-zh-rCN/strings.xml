@@ -498,11 +498,6 @@
     <string name="update">更新</string>
     <string name="release">正式版</string>
     <string name="preview">预览版</string>
-    <string name="xhttp_host">XHTTP 主机</string>
-    <string name="xhttp_path">XHTTP 路径</string>
-    <string name="xhttp_mode">XHTTP 模式</string>
-    <string name="xhttp_extra">XHTTP Extra</string>
-    <string name="xhttp_settings">XHTTP 设置</string>
     <string name="hide">隐藏</string>
     <string name="app_list_permission_denied">"无法加载已安装的应用程序清单.
 您的设备系统可能限制了必要的权限(比如澎湃和MagicOS).
@@ -702,6 +697,8 @@
     <string name="disable_particles_pref_summary">隐藏偏好设置中的粒子特效</string>
     <string name="enable_blur_banner_home_title">主页横幅虚化</string>
     <string name="enable_blur_banner_home_summary">让主页横幅的背景带点模糊效果</string>
+    <string name="quick_enable">开启</string>
+    <string name="quick_disable">关闭</string>
     
     <string name="hotspot_proxy_title">热点代理</string>
     <string name="hotspot_proxy_summay">在这里通过代理服务器经由热点共享您的 VPN。</string>

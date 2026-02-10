@@ -502,11 +502,6 @@
     <string name="update">Pembaruan</string>
     <string name="release">Rilis</string>
     <string name="preview">Pratinjau</string>
-    <string name="xhttp_host">Host XHTTP</string>
-    <string name="xhttp_path">Path XHTTP</string>
-    <string name="xhttp_mode">Mode XHTTP</string>
-    <string name="xhttp_extra">Ekstra XHTTP</string>
-    <string name="xhttp_settings">Settingan XHTTP</string>
     <string name="hide">Sembunyiin</string>
     <string name="app_list_permission_denied">"Gak bisa baca daftar aplikasi yang ke-install.
 Ini biasanya gara-gara izin baca aplikasi dibatasin sama sistem.
@@ -706,7 +701,9 @@ Tolong kasih izinnya di Settingan Sistem."</string>
     <string name="disable_particles_pref_summary">Sembunyiin efek partikel di preferensi</string>
     <string name="enable_blur_banner_home_title">Bikin blur banner beranda</string>
     <string name="enable_blur_banner_home_summary">Kasih efek nge-blur di background banner halaman utama</string>
-    
+    <string name="quick_enable">Nyalain</string>
+    <string name="quick_disable">Matiin</string>
+
     <string name="hotspot_proxy_title">Hotspot Proxy</string>
     <string name="hotspot_proxy_summay">Bagikan VPN kamu lewat hotspot pakai proxy server di sini.</string>
     <string name="service_not_connected">Servis belum nyambung</string>

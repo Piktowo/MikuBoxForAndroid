@@ -191,7 +191,7 @@
                         android:ellipsize="marquee"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Sn Link"
+                        android:text="SN Link"
                         android:singleLine="false" />
                 </LinearLayout>
                 <LinearLayout

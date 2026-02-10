@@ -535,11 +535,6 @@
     <string name="update">Güncelle</string>
     <string name="release">Sürüm (Release)</string>
     <string name="preview">Önizleme (Preview)</string>
-    <string name="xhttp_host">XHTTP Host</string>
-    <string name="xhttp_path">XHTTP Yolu</string>
-    <string name="xhttp_mode">XHTTP Modu</string>
-    <string name="xhttp_extra">XHTTP Ekstra</string>
-    <string name="xhttp_settings">XHTTP Ayarları</string>
     <string name="hide">Gizle</string>
     <string name="app_list_permission_denied">"Yüklü uygulamaların listesi yüklenemiyor.
 Cihazınızın sistemi muhtemelen gerekli izni kısıtlamış.
@@ -739,6 +734,8 @@ Lütfen Sistem Ayarlarından bu izni verin."</string>
     <string name="disable_particles_pref_summary">Tercihlerdeki parçacık efektlerini gizle</string>
     <string name="enable_blur_banner_home_title">Ana sayfa banner\'ını bulanıklaştır</string>
     <string name="enable_blur_banner_home_summary">Banner arka planına hoş bir bulanıklık efekti verir</string>
+    <string name="quick_enable">Etkinleştir</string>
+    <string name="quick_disable">Devre Dışı Bırak</string>
     
     <string name="hotspot_proxy_title">Hotspot Proxy</string>
     <string name="hotspot_proxy_summay">VPN\'inizi buradaki bir proxy sunucusuyla hotspot üzerinden paylaşın.</string>

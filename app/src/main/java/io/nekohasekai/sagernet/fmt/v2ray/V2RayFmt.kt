@@ -126,20 +126,6 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                     bean.host = it
                 }
             }
-            "xhttp" -> {
-                url.queryParameter("host")?.let {
-                    bean.host = it
-                }
-                url.queryParameter("path")?.let {
-                    bean.path = it
-                }
-                url.queryParameter("mode")?.let {
-                    bean.xhttpMode = it
-                }
-                url.queryParameter("extra")?.let {
-                    bean.xhttpExtra = it
-                }
-            }
         }
     } else {
         // also vless format
@@ -239,21 +225,6 @@ fun StandardV2RayBean.parseDuckSoft(url: HttpUrl) {
             }
             url.queryParameter("path")?.let {
                 path = it
-            }
-        }
-
-        "xhttp" -> {
-            url.queryParameter("host")?.let {
-                host = it
-            }
-            url.queryParameter("path")?.let {
-                path = it
-            }
-            url.queryParameter("mode")?.let {
-                xhttpMode = it
-            }
-            url.queryParameter("extra")?.let {
-                xhttpExtra = it
             }
         }
     }
@@ -497,21 +468,6 @@ fun StandardV2RayBean.toUriVMessVLESSTrojan(isTrojan: Boolean): String {
             }
         }
 
-        "xhttp" -> {
-            if (host.isNotBlank()) {
-                builder.addQueryParameter("host", host)
-            }
-            if (path.isNotBlank()) {
-                builder.addQueryParameter("path", path)
-            }
-            if (xhttpMode.isNotBlank()) {
-                builder.addQueryParameter("mode", xhttpMode)
-            }
-            if (xhttpExtra.isNotBlank()) {
-                builder.addQueryParameter("extra", xhttpExtra)
-            }
-        }
-
         "grpc" -> {
             if (path.isNotBlank()) {
                 builder.setQueryParameter("serviceName", path)
@@ -628,33 +584,6 @@ fun buildSingBoxOutboundStreamSettings(bean: StandardV2RayBean): V2RayTransportO
                 path = bean.path
             }
         }
-        
-    "xhttp" -> {
-            val baseConfig = V2RayTransportOptions_XHTTPOptions().apply {
-                type = "xhttp"
-                mode = bean.xhttpMode.takeIf { it.isNotBlank() } ?: "auto"
-                host = bean.host.takeIf { it.isNotBlank() }
-                path = bean.path.takeIf { it.isNotBlank() } ?: "/"
-            }
-            
-            // Merge xhttpExtra JSON config if present
-            if (bean.xhttpExtra.isNotBlank()) {
-                try {
-                    val gson = Gson()
-                    val baseJson = JSONObject(gson.toJson(baseConfig))
-                    val extraJson = JSONObject(bean.xhttpExtra)
-                    if (extraJson.has("download")) {
-                        baseJson.put("download", extraJson.get("download"))
-                    }
-                    return gson.fromJson(baseJson.toString(), V2RayTransportOptions_XHTTPOptions::class.java)
-                } catch (e: Exception) {
-                    // If parsing fails, return base config
-                    e.printStackTrace()
-                    return baseConfig
-                }
-            }
-            return baseConfig
-        }
     }
 
     return null
@@ -666,16 +595,7 @@ fun buildSingBoxOutboundTLS(bean: StandardV2RayBean): OutboundTLSOptions? {
         enabled = true
         insecure = bean.allowInsecure || DataStore.globalAllowInsecure
         if (bean.sni.isNotBlank()) server_name = bean.sni
-        if (bean.alpn.isNotBlank()) {
-            // 当传输协议为WebSocket时，过滤掉h2和h3
-            val alpnList = bean.alpn.listByLineOrComma()
-            if (bean.type == "ws") {
-                val filtered = alpnList.filter { it == "http/1.1" }
-                if (filtered.isNotEmpty()) alpn = filtered
-            } else {
-                alpn = alpnList
-            }
-        }
+        if (bean.alpn.isNotBlank()) alpn = bean.alpn.listByLineOrComma()
         if (bean.certificates.isNotBlank()) certificate = bean.certificates
         var fp = bean.utlsFingerprint
         if (bean.realityPubKey.isNotBlank()) {

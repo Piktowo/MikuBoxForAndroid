@@ -14,7 +14,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
 
     //////// End of VMess & VLESS ////////
 
-    // "V2Ray Transport" tcp/http/ws/quic/grpc/httpupgrade/xhttp
+    // "V2Ray Transport" tcp/http/ws/quic/grpc/httpupgrade
     public String type;
 
     public String host;
@@ -47,11 +47,6 @@ public abstract class StandardV2RayBean extends AbstractBean {
     public String earlyDataHeaderName;
 
     public String certificates;
-
-    // --------------------------------------- xhttp
-
-    public String xhttpMode;
-    public String xhttpExtra;
 
     // --------------------------------------- ech
 
@@ -113,14 +108,11 @@ public abstract class StandardV2RayBean extends AbstractBean {
         if (muxPadding == null) muxPadding = false;
         if (muxType == null) muxType = 0;
         if (muxConcurrency == null) muxConcurrency = 1;
-
-        if (JavaUtil.isNullOrBlank(xhttpMode)) xhttpMode = "auto";
-        if (JavaUtil.isNullOrBlank(xhttpExtra)) xhttpExtra = "";
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(5);
+        output.writeInt(4);
         super.serialize(output);
         output.writeString(uuid);
         output.writeString(encryption);
@@ -149,13 +141,6 @@ public abstract class StandardV2RayBean extends AbstractBean {
             }
             case "grpc": {
                 output.writeString(path);
-                break;
-            }
-            case "xhttp": {
-                output.writeString(host);
-                output.writeString(path);
-                output.writeString(xhttpMode);
-                output.writeString(xhttpExtra);
                 break;
             }
         }
@@ -214,18 +199,9 @@ public abstract class StandardV2RayBean extends AbstractBean {
             case "grpc": {
                 path = input.readString();
                 if (version < 4) {
-                    // Solve the problem of reading old version data
+                    // 解决老版本数据的读取问题
                     input.readString();
                     input.readString();
-                }
-                break;
-            }
-            case "xhttp": {
-                host = input.readString();
-                path = input.readString();
-                if (version >= 5) {
-                    xhttpMode = input.readString();
-                    xhttpExtra = input.readString();
                 }
                 break;
             }
@@ -280,21 +256,6 @@ public abstract class StandardV2RayBean extends AbstractBean {
             muxType = input.readInt();
             muxConcurrency = input.readInt();
         }
-    }
-
-    @Override
-    public void applyFeatureSettings(AbstractBean other) {
-        if (!(other instanceof StandardV2RayBean)) return;
-        StandardV2RayBean bean = ((StandardV2RayBean) other);
-        bean.allowInsecure = allowInsecure;
-        bean.utlsFingerprint = utlsFingerprint;
-        bean.packetEncoding = packetEncoding;
-        bean.enableECH = enableECH;
-        bean.echConfig = echConfig;
-        bean.enableMux = enableMux;
-        bean.muxPadding = muxPadding;
-        bean.muxType = muxType;
-        bean.muxConcurrency = muxConcurrency;
     }
 
     public boolean isVLESS() {

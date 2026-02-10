@@ -534,11 +534,6 @@
     <string name="update">アップデート</string>
     <string name="release">リリース</string>
     <string name="preview">プレビュー</string>
-    <string name="xhttp_host">XHTTP Host</string>
-    <string name="xhttp_path">XHTTP Path</string>
-    <string name="xhttp_mode">XHTTP Mode</string>
-    <string name="xhttp_extra">XHTTP Extra</string>
-    <string name="xhttp_settings">XHTTP設定</string>
     <string name="hide">隠す</string>
     <string name="app_list_permission_denied">"インストール済みアプリのリストを読み込めません。
 デバイスのシステムが必要な権限を制限している可能性があります。
@@ -738,6 +733,8 @@
     <string name="disable_particles_pref_summary">設定画面のパーティクル効果を非表示にする</string>
     <string name="enable_blur_banner_home_title">ホームバナーをぼかす</string>
     <string name="enable_blur_banner_home_summary">ホームバナーの背景にぼかし効果をつけます</string>
+    <string name="quick_enable">有効</string>
+    <string name="quick_disable">無効</string>
     
     <string name="hotspot_proxy_title">ホットスポット・プロキシ</string>
     <string name="hotspot_proxy_summay">ここでプロキシサーバーを使用し、ホットスポット経由でVPNを共有します。</string>
